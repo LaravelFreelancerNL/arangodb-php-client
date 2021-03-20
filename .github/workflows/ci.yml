@@ -43,7 +43,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer update --prefer-dist --no-interaction --no-suggest
+          composer update --prefer-dist --no-interaction
 
       - name: Run all QA tests
         if: ${{ always() }}
