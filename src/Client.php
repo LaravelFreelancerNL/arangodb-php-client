@@ -2,7 +2,7 @@
 
 namespace ArangoClient;
 
-class Client extends \GuzzleHttp\Client
+class Client
 {
 
 }
