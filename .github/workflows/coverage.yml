@@ -1,0 +1,41 @@
+name: Test Coverage
+
+on: [workflow_dispatch, push, pull_request]
+
+env:
+  DB_ENDPOINT: 'tcp://127.0.0.1:8529'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    name:  Test coverage
+
+    services:
+      arangodb:
+        image: arangodb:latest
+        ports:
+          - 8529:8529
+        env:
+          ARANGO_NO_AUTH: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Test coverage
+        run: |
+          vendor/bin/phpunit --coverage-clover clover.xml --whitelist src
+          wget https://scrutinizer-ci.com/ocular.phar
+          php ocular.phar code-coverage:upload --format=php-clover clover.xml
