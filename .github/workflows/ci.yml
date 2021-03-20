@@ -47,4 +47,6 @@ jobs:
 
       - name: Run all QA tests
         if: ${{ always() }}
-        run: ./bin/qa.sh
+        run: |
+          chmod +x "${GITHUB_WORKSPACE}/bin/qa.sh"
+          "${GITHUB_WORKSPACE}/bin/qa.sh"
