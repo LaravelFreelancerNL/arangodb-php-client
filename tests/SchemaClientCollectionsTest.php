@@ -129,7 +129,6 @@ class SchemaClientCollectionsTest extends TestCase
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('figures', $result);
-        $this->assertArrayHasKey('engine', $result['figures']);
     }
 
     /**
