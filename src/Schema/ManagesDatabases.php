@@ -1,32 +1,24 @@
 <?php
 
-declare(strict_types=1);
+namespace ArangoClient\Schema;
 
-namespace ArangoClient;
-
+use ArangoClient\Connector;
+use ArangoClient\Exceptions\ArangoException;
 use GuzzleHttp\Exception\GuzzleException;
 
-class DatabaseClient
+/*
+ * @see https://www.arangodb.com/docs/stable/http/database.html
+ */
+trait ManagesDatabases
 {
-    /**
-     * @var Connector
-     */
     protected Connector $connector;
 
     /**
-     * Documents constructor.
-     * @param  Connector  $connector
-     */
-    public function __construct(Connector $connector)
-    {
-        $this->connector = $connector;
-    }
-
-    /**
      * @return array<mixed>
-     * @throws GuzzleException|Exceptions\ArangoDbException
+     * @throws ArangoException
+     * @throws GuzzleException
      */
-    public function read(): array
+    public function getCurrentDatabase(): array
     {
         return (array) $this->connector->request('get', '/_api/database/current');
     }
@@ -34,7 +26,7 @@ class DatabaseClient
     /**
      * @return array<mixed>
      *
-     * @throws GuzzleException|Exceptions\ArangoDbException
+     * @throws GuzzleException|ArangoException
      */
     public function listDatabases(): array
     {
@@ -42,12 +34,12 @@ class DatabaseClient
     }
 
     /**
-     * @param $database
+     * @param string    $database
      * @return bool
-     * @throws Exceptions\ArangoDbException
+     * @throws ArangoException
      * @throws GuzzleException
      */
-    public function exists($database): bool
+    public function hasDatabase(string $database): bool
     {
         $databaseList = $this->listDatabases();
         return in_array($database, $databaseList);
@@ -56,7 +48,7 @@ class DatabaseClient
     /**
      * @return array<mixed>
      *
-     * @throws GuzzleException|Exceptions\ArangoDbException
+     * @throws GuzzleException|ArangoException
      */
     public function listMyDatabases(): array
     {
@@ -68,10 +60,10 @@ class DatabaseClient
      * @param  null  $options
      * @param  null  $users
      * @return bool
-     * @throws Exceptions\ArangoDbException
+     * @throws ArangoException
      * @throws GuzzleException
      */
-    public function create(string $name, $options = null, $users = null): bool
+    public function createDatabase(string $name, $options = null, $users = null): bool
     {
         $database = json_encode((object)['name' => $name, 'options' => $options, 'users' => $users]);
 
@@ -81,10 +73,10 @@ class DatabaseClient
     /**
      * @param  string  $name
      * @return bool
-     * @throws Exceptions\ArangoDbException
+     * @throws ArangoException
      * @throws GuzzleException
      */
-    public function delete(string $name): bool
+    public function deleteDatabase(string $name): bool
     {
         $uri = '/_api/database/' . $name;
 

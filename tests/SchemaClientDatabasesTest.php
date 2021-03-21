@@ -4,23 +4,29 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use ArangoClient\DatabaseClient;
+use ArangoClient\Exceptions\ArangoException;
+use ArangoClient\Schema\SchemaClient;
+use GuzzleHttp\Exception\GuzzleException;
 
 
-class DatabaseClientTest extends TestCase
+class SchemaClientDatabasesTest extends TestCase
 {
-    protected $client;
+    protected SchemaClient $client;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = new DatabaseClient($this->connector);
+        $this->client = new SchemaClient($this->connector);
     }
 
-    public function testReadDatabase()
+    /**
+     * @throws ArangoException
+     * @throws GuzzleException
+     */
+    public function testGetDatabase()
     {
-        $result = $this->client->read();
+        $result = $this->client->getCurrentDatabase();
 
         $this->assertSame('1', $result['id']);
         $this->assertSame('_system', $result['name']);
@@ -28,6 +34,10 @@ class DatabaseClientTest extends TestCase
         $this->assertSame('none', $result['path']);
     }
 
+    /**
+     * @throws ArangoException
+     * @throws GuzzleException
+     */
     public function testListDatabases()
     {
         $result = $this->client->listDatabases();
@@ -39,6 +49,10 @@ class DatabaseClientTest extends TestCase
         }
     }
 
+    /**
+     * @throws ArangoException
+     * @throws GuzzleException
+     */
     public function testListMyDatabases()
     {
         $result = $this->client->listMyDatabases();
@@ -50,28 +64,36 @@ class DatabaseClientTest extends TestCase
         }
     }
 
+    /**
+     * @throws ArangoException
+     * @throws GuzzleException
+     */
     public function testCreateAndDeleteDatabase()
     {
         $database = 'arangodb_php_client_database__test';
         $existingDatabases = $this->client->listDatabases();
 
         if (! in_array($database, $existingDatabases)) {
-            $result = $this->client->create($database);
+            $result = $this->client->createDatabase($database);
             $this->assertTrue($result);
         }
 
-        $result = $this->client->delete($database);
+        $result = $this->client->deleteDatabase($database);
         $this->assertTrue($result);
         $existingDatabases = $this->client->listDatabases();
         $this->assertNotContains($database, $existingDatabases);
     }
 
-    public function testDatabaseExists()
+    /**
+     * @throws ArangoException
+     * @throws GuzzleException
+     */
+    public function testHasDatabase()
     {
-        $check = $this->databaseClient->exists('someNoneExistingDatabase');
+        $check = $this->schemaClient->hasDatabase('someNoneExistingDatabase');
         $this->assertFalse($check);
 
-        $check = $this->databaseClient->exists($this->testDatabaseName);
+        $check = $this->schemaClient->hasDatabase($this->testDatabaseName);
         $this->assertTrue($check);
     }
 }

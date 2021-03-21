@@ -2,7 +2,7 @@
 
 namespace ArangoClient\Exceptions;
 
-class ArangoDbException extends \Exception
+class ArangoException extends \Exception
 {
 
 }

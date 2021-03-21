@@ -5,7 +5,6 @@ echo "Fix coding style"
 echo "Check for remaining coding style errors"
 ./vendor/bin/phpcs
 
-
 echo "Run PHPMD"
 ./vendor/bin/phpmd src/ text phpmd-ruleset.xml
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ArangoClient;
 
-use ArangoClient\Exceptions\ArangoDbException;
+use ArangoClient\Exceptions\ArangoException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
@@ -55,7 +55,7 @@ class Connector implements ConnectorInterface
      * @param  string  $uri
      * @param  array<mixed>  $options
      * @return mixed
-     * @throws ArangoDbException|GuzzleException
+     * @throws ArangoException|GuzzleException
      * @throws \Exception
      */
     public function request(string $method, string $uri, array $options = [])
@@ -68,7 +68,7 @@ class Connector implements ConnectorInterface
             if (isset($response)) {
                 $decodeResponse = $this->decodeResponse($response);
                 throw(
-                    new ArangoDbException(
+                    new ArangoException(
                         (string) $decodeResponse['errorMessage'],
                         (int) $decodeResponse['code'],
                         $e
@@ -118,7 +118,6 @@ class Connector implements ConnectorInterface
 
         $phpStream = StreamWrapper::getResource($response->getBody());
         $decodedStream = JsonMachine::fromStream($phpStream);
-
 
         foreach ($decodedStream as $key => $value) {
             $decodedResponse[$key] = $value;

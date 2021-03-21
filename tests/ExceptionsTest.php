@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use ArangoClient\DatabaseClient;
+use ArangoClient\Schema\SchemaClient;
 
 class ExceptionsTest extends TestCase
 {
     public function test409ConflictException()
     {
-        $database = 'test__arangodb_php_existing_database';
-        $databaseClient =  new DatabaseClient($this->connector);
+        $database = 'test_arangodb_php_existing_database';
+        $databaseClient =  new SchemaClient($this->connector);
         $existingDatabases = $databaseClient->listDatabases();
 
         if (! in_array($database, $existingDatabases)) {
-            $result = $databaseClient->create($database);
-            $this->assertTrue($result);
+            $result = $databaseClient->createDatabase($database);
         }
         $this->expectExceptionCode(409);
-        $databaseClient->create($database);
+        $databaseClient->createDatabase($database);
 
-        $result = $databaseClient->delete($database);
-        $this->assertTrue($result);
+        $databaseClient->deleteDatabase($database);
     }
 }
