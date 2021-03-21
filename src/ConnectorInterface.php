@@ -2,7 +2,7 @@
 
 namespace ArangoClient;
 
-class Client
+interface ConnectorInterface
 {
 
 }
