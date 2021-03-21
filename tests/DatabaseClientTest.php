@@ -52,7 +52,7 @@ class DatabaseClientTest extends TestCase
 
     public function testCreateAndDeleteDatabase()
     {
-        $database = 'test__arangodb_php_client_database';
+        $database = 'arangodb_php_client_database__test';
         $existingDatabases = $this->client->listDatabases();
 
         if (! in_array($database, $existingDatabases)) {
@@ -64,6 +64,14 @@ class DatabaseClientTest extends TestCase
         $this->assertTrue($result);
         $existingDatabases = $this->client->listDatabases();
         $this->assertNotContains($database, $existingDatabases);
+    }
 
+    public function testDatabaseExists()
+    {
+        $check = $this->databaseClient->exists('someNoneExistingDatabase');
+        $this->assertFalse($check);
+
+        $check = $this->databaseClient->exists($this->testDatabaseName);
+        $this->assertTrue($check);
     }
 }

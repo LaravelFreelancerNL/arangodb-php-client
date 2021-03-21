@@ -42,6 +42,18 @@ class DatabaseClient
     }
 
     /**
+     * @param $database
+     * @return bool
+     * @throws Exceptions\ArangoDbException
+     * @throws GuzzleException
+     */
+    public function exists($database): bool
+    {
+        $databaseList = $this->listDatabases();
+        return in_array($database, $databaseList);
+    }
+
+    /**
      * @return array<mixed>
      *
      * @throws GuzzleException|Exceptions\ArangoDbException
