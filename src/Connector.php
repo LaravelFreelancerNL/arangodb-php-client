@@ -125,4 +125,12 @@ class Connector implements ConnectorInterface
 
         return $decodedResponse;
     }
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return (string) $this->config['AuthUser'];
+    }
 }

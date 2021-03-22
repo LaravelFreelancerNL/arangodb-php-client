@@ -11,13 +11,9 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class SchemaClientDatabasesTest extends TestCase
 {
-    protected SchemaClient $client;
-
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->client = new SchemaClient($this->connector);
     }
 
     /**
@@ -26,7 +22,7 @@ class SchemaClientDatabasesTest extends TestCase
      */
     public function testGetDatabase()
     {
-        $result = $this->client->getCurrentDatabase();
+        $result = $this->schemaClient->getCurrentDatabase();
 
         $this->assertSame('1', $result['id']);
         $this->assertSame('_system', $result['name']);
@@ -38,24 +34,9 @@ class SchemaClientDatabasesTest extends TestCase
      * @throws ArangoException
      * @throws GuzzleException
      */
-    public function testListDatabases()
+    public function testGetDatabases()
     {
-        $result = $this->client->listDatabases();
-
-        $this->assertIsArray($result);
-        $this->assertLessThanOrEqual(count($result), 2);
-        foreach ($result as $database) {
-            $this->assertIsString($database);
-        }
-    }
-
-    /**
-     * @throws ArangoException
-     * @throws GuzzleException
-     */
-    public function testListMyDatabases()
-    {
-        $result = $this->client->listMyDatabases();
+        $result = $this->schemaClient->getDatabases();
 
         $this->assertIsArray($result);
         $this->assertLessThanOrEqual(count($result), 2);
@@ -71,16 +52,16 @@ class SchemaClientDatabasesTest extends TestCase
     public function testCreateAndDeleteDatabase()
     {
         $database = 'arangodb_php_client_database__test';
-        $existingDatabases = $this->client->listDatabases();
+        $existingDatabases = $this->schemaClient->getDatabases();
 
         if (! in_array($database, $existingDatabases)) {
-            $result = $this->client->createDatabase($database);
+            $result = $this->schemaClient->createDatabase($database);
             $this->assertTrue($result);
         }
 
-        $result = $this->client->deleteDatabase($database);
+        $result = $this->schemaClient->deleteDatabase($database);
         $this->assertTrue($result);
-        $existingDatabases = $this->client->listDatabases();
+        $existingDatabases = $this->schemaClient->getDatabases();
         $this->assertNotContains($database, $existingDatabases);
     }
 

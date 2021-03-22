@@ -35,7 +35,6 @@ trait ManagesCollections
         );
     }
 
-
     /**
      * Check for collection existence in current DB.
      *
@@ -53,14 +52,14 @@ trait ManagesCollections
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-information-about-a-collection
      *
-     * @param  string  $collection
+     * @param  string  $name
      * @return array<mixed>
      * @throws ArangoException
      * @throws GuzzleException
      */
-    public function getCollection(string $collection): array
+    public function getCollection(string $name): array
     {
-        $uri = '/_api/collection/' . $collection;
+        $uri = '/_api/collection/' . $name;
         return (array) $this->connector->request('get', $uri);
     }
 

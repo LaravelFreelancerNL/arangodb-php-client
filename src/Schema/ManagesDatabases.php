@@ -24,13 +24,24 @@ trait ManagesDatabases
     }
 
     /**
+     * @param  bool  $full
      * @return array<mixed>
      *
-     * @throws GuzzleException|ArangoException
+     * @throws ArangoException
+     * @throws GuzzleException
      */
-    public function listDatabases(): array
+    public function getDatabases(bool $full = false): array
     {
-        return (array) $this->connector->request('get', '/_api/database');
+        $user = $this->connector->getUser();
+
+        $uri = '/_api/user/' . $user . '/database';
+        $options = [
+            'query' => [
+                'full' => $full
+            ]
+        ];
+
+        return (array) $this->connector->request('get', $uri, $options);
     }
 
     /**
@@ -41,18 +52,9 @@ trait ManagesDatabases
      */
     public function hasDatabase(string $database): bool
     {
-        $databaseList = $this->listDatabases();
-        return in_array($database, $databaseList);
-    }
+        $databaseList = $this->getDatabases();
 
-    /**
-     * @return array<mixed>
-     *
-     * @throws GuzzleException|ArangoException
-     */
-    public function listMyDatabases(): array
-    {
-        return (array) $this->connector->request('get', '/_api/database/user');
+        return isset($databaseList[$database]);
     }
 
     /**

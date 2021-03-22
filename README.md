@@ -37,3 +37,8 @@ Manages administrative functions
 
 ### SchemaClient
 Manages schema related tasks like creating databases, collections, indexes, views and graphs
+
+## Related packages
+[AQL query builder](https://github.com/LaravelFreelancerNL/fluentaql)
+
+[ArangoDB Laravel Driver](https://github.com/LaravelFreelancerNL/laravel-arangodb)

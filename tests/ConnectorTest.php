@@ -30,4 +30,10 @@ class ConnectorTest extends TestCase
         $this->assertIsString($result['version']);
     }
 
+    public function testGetUser()
+    {
+        $user = $this->connector->getUser();
+        $this->assertSame('root', $user);
+    }
+
 }

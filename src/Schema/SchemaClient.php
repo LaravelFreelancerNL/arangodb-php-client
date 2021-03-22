@@ -10,6 +10,9 @@ class SchemaClient
 {
     use ManagesDatabases;
     use ManagesCollections;
+    use ManagesIndexes;
+    use ManagesViews;
+    use ManagesUsers;
 
     /**
      * @var Connector

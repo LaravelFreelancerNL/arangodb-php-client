@@ -8,18 +8,20 @@ use ArangoClient\Schema\SchemaClient;
 
 class ExceptionsTest extends TestCase
 {
+    /**
+     * @throws \ArangoClient\Exceptions\ArangoException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function test409ConflictException()
     {
         $database = 'test_arangodb_php_existing_database';
-        $databaseClient =  new SchemaClient($this->connector);
-        $existingDatabases = $databaseClient->listDatabases();
-
-        if (! in_array($database, $existingDatabases)) {
-            $result = $databaseClient->createDatabase($database);
+        if (! $this->schemaClient->hasDatabase($database)) {
+            $this->schemaClient->createDatabase($database);
         }
-        $this->expectExceptionCode(409);
-        $databaseClient->createDatabase($database);
 
-        $databaseClient->deleteDatabase($database);
+       $this->expectExceptionCode(409);
+        $this->schemaClient->createDatabase($database);
+
+        $this->schemaClient->deleteDatabase($database);
     }
 }

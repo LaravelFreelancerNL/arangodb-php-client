@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests;
 
 use ArangoClient\Exceptions\ArangoException;
-use ArangoClient\Schema\SchemaClient;
 use GuzzleHttp\Exception\GuzzleException;
 
 
