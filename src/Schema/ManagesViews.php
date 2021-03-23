@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArangoClient\Schema;
 
-use ArangoClient\Connector;
+use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
-use GuzzleHttp\Exception\GuzzleException;
 
 /*
  * @see https://www.arangodb.com/docs/stable/http/views.html
  */
 trait ManagesViews
 {
-    protected Connector $connector;
+    protected ArangoClient $arangoClient;
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#create-an-arangosearch-view
@@ -19,7 +20,6 @@ trait ManagesViews
      * @param  array<mixed>  $view
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function createView(array $view): array
     {
@@ -28,7 +28,9 @@ trait ManagesViews
         $uri = '/_api/view#' . $view['type'];
         $body = json_encode((object) $view);
 
-        return (array) $this->connector->request('post', $uri, ['body' => $body]);
+        $results =  $this->arangoClient->request('post', $uri, ['body' => $body]);
+
+        return $this->sanitizeRequestMetadata($results);
     }
 
     /**
@@ -37,13 +39,12 @@ trait ManagesViews
      * @param  string  $name
      * @return bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function deleteView(string $name): bool
     {
         $uri = '/_api/view/' . $name;
 
-        return (bool) $this->connector->request('delete', $uri);
+        return (bool) $this->arangoClient->request('delete', $uri);
     }
 
     /**
@@ -51,11 +52,12 @@ trait ManagesViews
      *
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getViews(): array
     {
-        return (array) $this->connector->request('get', '/_api/view');
+        $results = $this->arangoClient->request('get', '/_api/view');
+
+        return (array) $results['result'];
     }
 
     /**
@@ -64,11 +66,11 @@ trait ManagesViews
      * @param  string  $name
      * @return bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function hasView(string $name): bool
     {
         $views = $this->getViews();
+
         return array_search($name, array_column($views, 'name'), true) !== false;
     }
 
@@ -78,11 +80,12 @@ trait ManagesViews
      * @param  string  $name
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getView(string $name): array
     {
-        return $this->getViewProperties($name);
+        $result =  $this->getViewProperties($name);
+
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -91,12 +94,14 @@ trait ManagesViews
      * @param  string  $name
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getViewProperties(string $name): array
     {
         $uri = '/_api/view/' . $name . '/properties';
-        return (array) $this->connector->request('get', $uri);
+
+        $result =  $this->arangoClient->request('get', $uri);
+
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -104,7 +109,6 @@ trait ManagesViews
      * @param  string  $new
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function renameView(string $old, string $new): array
     {
@@ -113,7 +117,9 @@ trait ManagesViews
         $body = json_encode((object) ['name' => $new]);
         $options = ['body' => $body];
 
-        return (array) $this->connector->request('put', $uri, $options);
+        $result = $this->arangoClient->request('put', $uri, $options);
+
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -123,7 +129,6 @@ trait ManagesViews
      * @param  array<mixed>  $properties
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function updateView(string $name, array $properties): array
     {
@@ -142,7 +147,8 @@ trait ManagesViews
         $body = json_encode((object) $properties);
         $options = ['body' => $body];
 
-        return (array) $this->connector->request('patch', $uri, $options);
+        $result = $this->arangoClient->request('patch', $uri, $options);
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -155,7 +161,6 @@ trait ManagesViews
      * @param array<mixed> $newView
      * @return false|array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function replaceView(string $name, array $newView)
     {

@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArangoClient\Schema;
 
-use ArangoClient\Connector;
+use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
-use GuzzleHttp\Exception\GuzzleException;
 
-/*
+/**
+ * Manage collection indexes
+ *
  * @see https://www.arangodb.com/docs/stable/http/indexes.html
  */
 trait ManagesIndexes
 {
-    protected Connector $connector;
+    protected ArangoClient $arangoClient;
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#read-all-indexes-of-a-collection
@@ -19,7 +22,6 @@ trait ManagesIndexes
      * @param  string  $collection
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getIndexes(string $collection): array
     {
@@ -28,7 +30,7 @@ trait ManagesIndexes
                 'collection' => $collection
             ]
         ];
-        $results = (array) $this->connector->request('get', '/_api/index', $options);
+        $results = $this->arangoClient->request('get', '/_api/index', $options);
         return (array) $results['indexes'];
     }
 
@@ -38,12 +40,12 @@ trait ManagesIndexes
      * @param  string  $id
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getIndex(string $id): array
     {
         $uri = '/_api/index/' . $id;
-        return (array) $this->connector->request('get', $uri);
+        $result = $this->arangoClient->request('get', $uri);
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -53,7 +55,6 @@ trait ManagesIndexes
      * @param  string  $name
      * @return array<mixed>|bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getIndexByName(string $collection, string $name)
     {
@@ -72,7 +73,6 @@ trait ManagesIndexes
      * @param  array<mixed>  $index
      * @return bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function createIndex(string $collection, array $index): bool
     {
@@ -87,7 +87,7 @@ trait ManagesIndexes
         $options = ['body' => $index];
         $options['query']['collection'] = $collection;
 
-        return (bool) $this->connector->request('post', $uri, $options);
+        return (bool) $this->arangoClient->request('post', $uri, $options);
     }
 
     /**
@@ -96,12 +96,11 @@ trait ManagesIndexes
      * @param  string  $id
      * @return bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function deleteIndex(string $id): bool
     {
         $uri = '/_api/index/' . $id;
 
-        return (bool) $this->connector->request('delete', $uri);
+        return (bool) $this->arangoClient->request('delete', $uri);
     }
 }

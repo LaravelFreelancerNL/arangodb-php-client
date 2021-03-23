@@ -4,19 +4,11 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use ArangoClient\Exceptions\ArangoException;
-use GuzzleHttp\Exception\GuzzleException;
-
-
-class SchemaClientUsersTest extends TestCase
+class SchemaManagerUsersTest extends TestCase
 {
     protected string $userName = 'kimiko';
     protected string $accessDatabase = 'arangodb_php_client_access__test';
 
-    /**
-     * @throws ArangoException
-     * @throws GuzzleException
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,43 +18,31 @@ class SchemaClientUsersTest extends TestCase
             'password' => 'yee random hashed pw'
         ];
 
-        if (! $this->schemaClient->hasUser($this->userName)) {
-            $this->schemaClient->createUser($user);
+        if (! $this->schemaManager->hasUser($this->userName)) {
+            $this->schemaManager->createUser($user);
         }
     }
 
-    /**
-     * @throws ArangoException
-     * @throws GuzzleException
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        if ($this->schemaClient->hasUser($this->userName)) {
-            $this->schemaClient->deleteUser($this->userName);
+        if ($this->schemaManager->hasUser($this->userName)) {
+            $this->schemaManager->deleteUser($this->userName);
         }
     }
 
-    /**
-     * @throws ArangoException
-     * @throws GuzzleException
-     */
     public function testGetUser()
     {
         $name = 'root';
-        $user = $this->schemaClient->getUser($name);
+        $user = $this->schemaManager->getUser($name);
         $this->assertIsArray($user);
         $this->assertSame($name, $user['user']);
     }
 
-    /**
-     * @throws ArangoException
-     * @throws GuzzleException
-     */
     public function testGetUsers()
     {
-        $users = $this->schemaClient->getUsers();
+        $users = $this->schemaManager->getUsers();
         $this->assertIsArray($users);
         $this->assertArrayHasKey('user', $users[0]);
     }
@@ -73,18 +53,14 @@ class SchemaClientUsersTest extends TestCase
      */
     public function testHasUser()
     {
-        $result = $this->schemaClient->hasUser('root');
+        $result = $this->schemaManager->hasUser('root');
         $this->assertTrue($result);
 
-        $result = $this->schemaClient->hasUser('nonExistingUser');
+        $result = $this->schemaManager->hasUser('nonExistingUser');
         $this->assertFalse($result);
 
     }
 
-    /**
-     * @throws ArangoException
-     * @throws GuzzleException
-     */
     public function testCreateAndDeleteUser()
     {
         $user = [
@@ -97,10 +73,10 @@ class SchemaClientUsersTest extends TestCase
                 ]
             ]
         ];
-        $created = $this->schemaClient->createUser($user);
+        $created = $this->schemaManager->createUser($user);
         $this->assertSame($user['user'], $created['user']);
 
-        $this->schemaClient->deleteUser($user['user']);
+        $this->schemaManager->deleteUser($user['user']);
     }
 
     public function testUpdateUser()
@@ -109,7 +85,7 @@ class SchemaClientUsersTest extends TestCase
             'user' => $this->userName,
             'active' => false
         ];
-        $updated = $this->schemaClient->updateUser($this->userName, $newUserData);
+        $updated = $this->schemaManager->updateUser($this->userName, $newUserData);
 
         $this->assertSame($newUserData['user'], $updated['user']);
     }
@@ -120,14 +96,14 @@ class SchemaClientUsersTest extends TestCase
             'user' => 'newUserName',
             'active' => false
         ];
-        $replaced = $this->schemaClient->replaceUser($this->userName, $newUserData);
+        $replaced = $this->schemaManager->replaceUser($this->userName, $newUserData);
 
         $this->assertSame($this->userName, $replaced['user']);
     }
 
     public function testGetDatabaseAccessLevel()
     {
-        $accessLevel = $this->schemaClient->getDatabaseAccessLevel('root', '_system');
+        $accessLevel = $this->schemaManager->getDatabaseAccessLevel('root', '_system');
 
         $this->assertSame('rw', $accessLevel);
     }
@@ -137,8 +113,8 @@ class SchemaClientUsersTest extends TestCase
         $this->setUpAccessTest();
         $grant = 'rw';
 
-        $results = $this->schemaClient->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
-        $accessLevel = $this->schemaClient->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
+        $results = $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
+        $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
         $this->assertArrayHasKey( $this->accessDatabase, $results);
         $this->assertSame($grant, $results[ $this->accessDatabase]);
@@ -152,12 +128,12 @@ class SchemaClientUsersTest extends TestCase
         $this->setUpAccessTest();
         $grant = 'rw';
 
-        $this->schemaClient->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
-        $accessLevel = $this->schemaClient->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
+        $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
+        $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
         $this->assertSame($grant, $accessLevel);
 
-        $result = $this->schemaClient->clearDatabaseAccessLevel($this->userName, $this->accessDatabase);
-        $accessLevel = $this->schemaClient->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
+        $result = $this->schemaManager->clearDatabaseAccessLevel($this->userName, $this->accessDatabase);
+        $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
         $this->assertTrue($result);
         $this->assertSame('none', $accessLevel);
@@ -167,11 +143,11 @@ class SchemaClientUsersTest extends TestCase
 
     protected function setUpAccessTest()
     {
-        $this->schemaClient->createDatabase($this->accessDatabase);
+        $this->schemaManager->createDatabase($this->accessDatabase);
     }
 
     protected function tearDownAccessTest()
     {
-        $this->schemaClient->deleteDatabase($this->accessDatabase);
+        $this->schemaManager->deleteDatabase($this->accessDatabase);
     }
 }

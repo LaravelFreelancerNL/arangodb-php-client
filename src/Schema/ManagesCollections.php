@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArangoClient\Schema;
 
-use ArangoClient\Connector;
+use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
-use GuzzleHttp\Exception\GuzzleException;
 
 /*
  * @see https://www.arangodb.com/docs/stable/http/collection.html
  */
 trait ManagesCollections
 {
-    protected Connector $connector;
+    protected ArangoClient $arangoClient;
 
     /**
      *
@@ -20,11 +21,10 @@ trait ManagesCollections
      * @param  bool  $excludeSystemCollections
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getCollections(bool $excludeSystemCollections = false): array
     {
-        return (array) $this->connector->request(
+        $results = $this->arangoClient->request(
             'get',
             '/_api/collection',
             [
@@ -33,6 +33,8 @@ trait ManagesCollections
                 ]
             ]
         );
+
+        return (array) $results['result'];
     }
 
     /**
@@ -41,12 +43,11 @@ trait ManagesCollections
      * @param  string  $collection
      * @return bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function hasCollection(string $collection): bool
     {
-        $collections = $this->getCollections();
-        return array_search($collection, array_column($collections, 'name'), true) !== false;
+        $results = $this->getCollections();
+        return array_search($collection, array_column($results, 'name'), true) !== false;
     }
 
     /**
@@ -55,12 +56,12 @@ trait ManagesCollections
      * @param  string  $name
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getCollection(string $name): array
     {
         $uri = '/_api/collection/' . $name;
-        return (array) $this->connector->request('get', $uri);
+        $result = $this->arangoClient->request('get', $uri);
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -69,12 +70,12 @@ trait ManagesCollections
      * @param  string  $collection
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getCollectionProperties(string $collection): array
     {
         $uri = '/_api/collection/' . $collection . '/properties';
-        return (array) $this->connector->request('get', $uri);
+        $result = $this->arangoClient->request('get', $uri);
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -83,12 +84,12 @@ trait ManagesCollections
      * @param  string  $collection
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getCollectionDocumentCount(string $collection): array
     {
         $uri = '/_api/collection/' . $collection . '/count';
-        return (array) $this->connector->request('get', $uri);
+        $result = $this->arangoClient->request('get', $uri);
+        return $this->sanitizeRequestMetadata($result);
     }
 
 
@@ -101,12 +102,11 @@ trait ManagesCollections
      * @param  bool  $details
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function getCollectionStatistics(string $collection, bool $details = false): array
     {
         $uri = '/_api/collection/' . $collection . '/figures';
-        return (array) $this->connector->request(
+        $result = $this->arangoClient->request(
             'get',
             $uri,
             [
@@ -115,6 +115,7 @@ trait ManagesCollections
                 ]
             ]
         );
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -124,7 +125,6 @@ trait ManagesCollections
      * @param  int|null  $enforceReplicationFactor
      * @return bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function createCollection(
         string $collection,
@@ -142,7 +142,7 @@ trait ManagesCollections
             $options['query']['enforceReplicationFactor'] = $enforceReplicationFactor;
         }
 
-        return (bool) $this->connector->request('post', '/_api/collection', $options);
+        return (bool) $this->arangoClient->request('post', '/_api/collection', $options);
     }
 
     /**
@@ -150,7 +150,6 @@ trait ManagesCollections
      * @param  array<mixed>  $config
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function updateCollection(string $name, array $config = []): array
     {
@@ -159,7 +158,8 @@ trait ManagesCollections
         $config = json_encode((object) $config);
         $options = ['body' => $config];
 
-        return (array) $this->connector->request('put', $uri, $options);
+        $result = $this->arangoClient->request('put', $uri, $options);
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
@@ -167,7 +167,6 @@ trait ManagesCollections
      * @param  string  $new
      * @return array<mixed>
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function renameCollection(string $old, string $new): array
     {
@@ -176,19 +175,19 @@ trait ManagesCollections
         $newName = json_encode((object) ['name' => $new]);
         $options = ['body' => $newName];
 
-        return (array) $this->connector->request('put', $uri, $options);
+        $result = $this->arangoClient->request('put', $uri, $options);
+        return $this->sanitizeRequestMetadata($result);
     }
 
     /**
      * @param  string  $name
      * @return bool
      * @throws ArangoException
-     * @throws GuzzleException
      */
     public function deleteCollection(string $name): bool
     {
         $uri = '/_api/collection/' . $name;
 
-        return (bool) $this->connector->request('delete', $uri);
+        return (bool) $this->arangoClient->request('delete', $uri);
     }
 }

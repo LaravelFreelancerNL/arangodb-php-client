@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace ArangoClient\Administration;
+namespace ArangoClient\Admin;
 
-use ArangoClient\Connector;
+use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
-use GuzzleHttp\Exception\GuzzleException;
+use ArangoClient\Manager;
 
-class AdministrationClient
+class AdminManager extends Manager
 {
     /**
-     * @var Connector
+     * @var ArangoClient
      */
-    protected Connector $connector;
+    protected ArangoClient $arangoClient;
 
     /**
      * Documents constructor.
-     * @param  Connector  $connector
+     * @param  ArangoClient  $arangoClient
      */
-    public function __construct(Connector $connector)
+    public function __construct(ArangoClient $arangoClient)
     {
-        $this->connector = $connector;
+        $this->arangoClient = $arangoClient;
     }
 
     /**
@@ -32,11 +32,10 @@ class AdministrationClient
      * @return array<mixed>
      *
      * @throws ArangoException
-     * @throws GuzzleException
      */
-    public function version(bool $details = false): array
+    public function getVersion(bool $details = false): array
     {
-        return (array) $this->connector->request(
+        return $this->arangoClient->request(
             'get',
             '/_api/version',
             [

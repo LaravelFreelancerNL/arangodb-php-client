@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use ArangoClient\Administration\AdministrationClient;
-use ArangoClient\Connector;
+use ArangoClient\Admin\AdminManager;
+use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
-use ArangoClient\Schema\SchemaClient;
+use ArangoClient\Schema\SchemaManager;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 abstract class TestCase extends PhpUnitTestCase
 {
-    protected Connector $connector;
+    protected ArangoClient $arangoClient;
 
-    protected SchemaClient $schemaClient;
+    protected SchemaManager $schemaManager;
 
-    protected AdministrationClient $administrationClient;
+    protected AdminManager $administrationClient;
 
     protected string $testDatabaseName = 'arangodb_php_client__test';
 
@@ -27,10 +27,10 @@ abstract class TestCase extends PhpUnitTestCase
      */
     protected function setUp(): void
     {
-        $this->connector = new Connector();
+        $this->arangoClient = new ArangoClient();
 
-        $this->schemaClient = new SchemaClient($this->connector);
-        $this->administrationClient = new AdministrationClient($this->connector);
+        $this->schemaManager = new SchemaManager($this->arangoClient);
+        $this->administrationClient = new AdminManager($this->arangoClient);
 
         $this->createTestDatabase();
     }
@@ -41,8 +41,8 @@ abstract class TestCase extends PhpUnitTestCase
      */
     protected function createTestDatabase()
     {
-        if(! $this->schemaClient->hasDatabase($this->testDatabaseName)) {
-            $this->schemaClient->createDatabase($this->testDatabaseName);
+        if(! $this->schemaManager->hasDatabase($this->testDatabaseName)) {
+            $this->schemaManager->createDatabase($this->testDatabaseName);
         }
     }
 }
