@@ -49,23 +49,27 @@ $statement->execute();
 $users = $statement->fetchAll(); 
 ```
 
+Alternatively you can traverse over the statement itself to get the results one at a time.
+``` 
+$statement = $client->prepare('FOR user in users RETURN user');
+$statement->execute();
+foreach ($statement as $document) {
+    //
+}
+```
+
 ## Managers
 You have access to several managers that allow you to perform specific tasks on your ArangoDB instance(s).
 
-(ArangoDB's endpoints are mapped to these managers in a semantically functional manner. Therefore a manager
-may have functionality from different endpoints within ArangoDB's HTTP API.)
-
-### Admin
-Manages administrative functions to manage the server/cluster and retrieve server level information. 
-``` 
-$client->admin()->getVersion();
-``` 
-
-### Schema
-The schema manager allows you perform tasks like creating databases, collections, indexes, views and graphs
-``` 
-$client->schema()->createCollection('users');
-``` 
+## Documentation
+1) [ArangoDB PHP Client](docs/arangodb-client.md)
+2) [Statements](docs/statements.md)
+3) [Database schema](docs/schema-databases.md)
+4) [User schema](docs/schema-users.md)
+5) [Collection schema](docs/schema-collections.md)
+6) [Index schema](docs/schema-indexes.md)
+7) [View schema](docs/schema-views.md)
+8) [Admin manager](docs/admin-manager.md)
 
 ## Related packages
 [AQL query builder](https://github.com/LaravelFreelancerNL/fluentaql)

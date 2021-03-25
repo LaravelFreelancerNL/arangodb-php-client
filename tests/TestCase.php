@@ -27,7 +27,9 @@ abstract class TestCase extends PhpUnitTestCase
      */
     protected function setUp(): void
     {
-        $this->arangoClient = new ArangoClient();
+        $this->arangoClient = new ArangoClient([
+            'username' => 'root'
+        ]);
 
         $this->schemaManager = new SchemaManager($this->arangoClient);
         $this->administrationClient = new AdminManager($this->arangoClient);

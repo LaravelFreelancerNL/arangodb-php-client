@@ -40,15 +40,15 @@ trait ManagesDatabases
     }
 
     /**
-     * @param string    $database
+     * @param string    $name
      * @return bool
      * @throws ArangoException
      */
-    public function hasDatabase(string $database): bool
+    public function hasDatabase(string $name): bool
     {
         $databaseList = $this->getDatabases();
 
-        return in_array($database, $databaseList);
+        return in_array($name, $databaseList);
     }
 
     /**

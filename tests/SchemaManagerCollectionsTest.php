@@ -62,7 +62,7 @@ class SchemaManagerCollectionsTest extends TestCase
     {
         $collections = $this->schemaManager->getCollections();
 
-        $result = $this->schemaManager->getCollectionDocumentCount($collections[0]['name']);
+        $result = $this->schemaManager->getCollectionWithDocumentCount($collections[0]['name']);
 
         $this->assertArrayHasKey('name', $result);
         $this->assertArrayHasKey('isSystem', $result);

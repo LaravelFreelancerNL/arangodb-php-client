@@ -6,19 +6,20 @@ namespace Tests;
 
 use ArangoClient\Admin\AdminManager;
 use ArangoClient\Schema\SchemaManager;
-use ArangoClient\Statement;
+use ArangoClient\Statement\Statement;
 
 class ArangoClientTest extends TestCase
 {
     public function testGetConfig()
     {
         $defaultConfig = [
-            'host' => 'http://localhost',
-            'port' => '8529',
-            'AuthUser' => 'root',
-            'AuthPassword' => null,
-            'AuthType' => 'basic',
-            'base_uri' => 'http://localhost:8529'
+            'endpoint' => 'http://localhost:8529',
+            'username' => 'root',
+            'password' => null,
+            'database' => '_system',
+            'connection' => 'Keep-Alive',
+            'allow_redirects' => false,
+            'connect_timeout' => 0.0
         ];
 
         $config = $this->arangoClient->getConfig();
@@ -38,6 +39,18 @@ class ArangoClientTest extends TestCase
     {
         $user = $this->arangoClient->getUser();
         $this->assertSame('root', $user);
+    }
+
+    public function testSetAndGetDatabaseName()
+    {
+        $database = $this->arangoClient->getDatabase();
+        $this->assertSame('_system', $database);
+
+        $newDatabaseName = 'ArangoClientDB';
+        $this->arangoClient->setDatabase($newDatabaseName);
+
+        $database = $this->arangoClient->getDatabase();
+        $this->assertSame($newDatabaseName, $database);
     }
 
     public function testSchema()

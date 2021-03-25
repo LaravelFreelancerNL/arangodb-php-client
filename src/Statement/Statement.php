@@ -1,8 +1,12 @@
 <?php
 
-namespace ArangoClient;
+namespace ArangoClient\Statement;
 
-use Generator;
+use ArangoClient\ArangoClient;
+use ArangoClient\Exceptions\ArangoException;
+use ArangoClient\Manager;
+use ArrayIterator;
+use IteratorAggregate;
 
 /**
  * Executes queries on ArangoDB
@@ -10,8 +14,10 @@ use Generator;
  * @see https://www.arangodb.com/docs/stable/http/aql-query-cursor.html
  *
  * @package ArangoClient
+ *
+ * @template-implements \IteratorAggregate<mixed>
  */
-class Statement extends Manager
+class Statement extends Manager implements IteratorAggregate
 {
     protected ArangoClient $arangoClient;
 
@@ -23,42 +29,57 @@ class Statement extends Manager
     protected array $bindVars = [];
 
     /**
-     * @var array<array>
+     * @var array<array<string>>
      */
     protected array $collections = [];
 
     /**
-     * @var array<scalar>
+     * @var array<mixed>
      */
     protected array $options = [];
 
     /**
      * @var array<mixed>
      */
-    protected array $queryResults = [];
+    protected array $results = [];
 
     /**
      * @var array<mixed>
      */
-    protected array $queryStatistics = [];
+    protected array $stats = [];
 
     /**
      * @var array<mixed>
      */
-    protected array $queryWarnings = [];
+    protected array $warnings = [];
+
+    /**
+     * @var int|null
+     */
+    protected ?int $cursorId = null;
+
+    /**
+     * @var bool
+     */
+    protected bool $cursorHasMoreResults = false;
+
+    /**
+     * @var int|null
+     */
+    protected ?int $count = null;
 
     /**
      * @var array<mixed>
      */
-    protected array $cursor = [];
+    protected array $extra = [];
 
     /**
      * Statement constructor.
      * @param  ArangoClient  $arangoClient
      * @param  string  $query
      * @param  array<scalar>  $bindVars
-     * @param  array<array>  $collections
-     * @param  array<scalar>  $options
+     * @param  array<array<string>>  $collections
+     * @param  array<mixed>  $options
      */
     public function __construct(
         ArangoClient $arangoClient,
@@ -75,12 +96,22 @@ class Statement extends Manager
     }
 
     /**
+     * A statement can be used like an array to access the results.
+     *
+     * @return ArrayIterator<array-key, mixed>
+     */
+    public function getIterator(): ArrayIterator
+    {
+        return new ArrayIterator($this->results);
+    }
+
+    /**
      * @return bool
-     * @throws Exceptions\ArangoException
+     * @throws ArangoException
      */
     public function execute(): bool
     {
-        $this->queryResults = [];
+        $this->results = [];
 
         $bodyContent = $this->prepareQueryBodyContent();
         $body = $this->arangoClient->jsonEncode($bodyContent);
@@ -112,26 +143,28 @@ class Statement extends Manager
      */
     protected function handleQueryResults(array $results): void
     {
-        $this->queryResults = array_merge($this->queryResults, (array) $results['result']);
+        $this->results = array_merge($this->results, (array) $results['result']);
 
-        if (isset($results['extra']['stats'])) {
-            $this->queryStatistics = (array)((array)$results['extra'])['stats'];
+        if (isset($results['extra'])) {
+            $this->extra = (array) $results['extra'];
         }
-        if (isset($results['extra']['warnings'])) {
-            $this->queryWarnings = (array) ((array)$results['extra'])['warnings'];
+
+        if (array_key_exists('count', $results)) {
+            $this->count = (int) $results['count'];
         }
-        $this->cursor['hasMore'] = (bool) $results['hasMore'];
-        $this->cursor['id'] = $results['hasMore'] ?  $results['id'] : null;
+
+        $this->cursorHasMoreResults = (bool) $results['hasMore'];
+        $this->cursorId = $results['hasMore'] ?  (int) $results['id'] : null;
     }
 
     /**
      * @param  string  $body
-     * @throws Exceptions\ArangoException
+     * @throws ArangoException
      */
-    public function requestOutstandingResults(string $body): void
+    protected function requestOutstandingResults(string $body): void
     {
-        while ($this->cursor['hasMore']) {
-            $uri = '/_api/cursor/' . (string) $this->cursor['id'];
+        while ($this->cursorHasMoreResults) {
+            $uri = '/_api/cursor/' . (string) $this->cursorId;
 
             $results = $this->arangoClient->request('put', $uri, ['body' => $body]);
 
@@ -140,8 +173,10 @@ class Statement extends Manager
     }
 
     /**
+     * Explain the given query
+     *
      * @return array<mixed>
-     * @throws Exceptions\ArangoException
+     * @throws ArangoException
      */
     public function explain(): array
     {
@@ -154,8 +189,10 @@ class Statement extends Manager
     }
 
     /**
+     * Parse and validate the query, will through an ArangoException if the query is invalid.
+     *
      * @return array<mixed>
-     * @throws Exceptions\ArangoException
+     * @throws ArangoException
      */
     public function parse(): array
     {
@@ -167,7 +204,39 @@ class Statement extends Manager
         return $this->sanitizeRequestMetadata($results);
     }
 
+
     /**
+     * Execute the query and return performance information on the query.
+     * @see https://www.arangodb.com/docs/3.7/aql/execution-and-performance-query-profiler.html
+     *
+     * @param  int|bool  $mode
+     * @return array<mixed>
+     * @throws ArangoException
+     */
+    public function profile($mode = 1): array
+    {
+        $bodyContent = $this->prepareQueryBodyContent();
+
+        if (! isset($bodyContent['options']) || ! is_array($bodyContent['options'])) {
+            $bodyContent['options'] = [];
+        }
+        $bodyContent['options']['profile'] = $mode;
+
+        $body = $this->arangoClient->jsonEncode($bodyContent);
+
+        $results = $this->arangoClient->request('post', '/_api/cursor', ['body' => $body]);
+
+        $this->handleQueryResults($results);
+
+        $this->requestOutstandingResults($body);
+
+        return $this->extra;
+    }
+
+
+    /**
+     * Set a query on the statement
+     *
      * @param  string  $query
      * @return Statement
      */
@@ -179,6 +248,8 @@ class Statement extends Manager
     }
 
     /**
+     * Get the statement's query.
+     *
      * @return string
      */
     public function getQuery(): string
@@ -186,20 +257,24 @@ class Statement extends Manager
         return $this->query;
     }
 
-    // phpmd barfs on the return yield from lin
-//    /**
-//     * @return Generator<mixed>
-//     */
-//    public function fetch(): Generator
-//    {
-//        return yield from $this->queryResults;
-//    }
-
     /**
+     * Fetch all results.
+     *
      * @return array<mixed>
      */
     public function fetchAll(): array
     {
-        return $this->queryResults;
+        return $this->results;
+    }
+
+    /**
+     * Return the total number of results.
+     * Useful if not all results have been retrieved from the database yet.
+     *
+     * @return int|null
+     */
+    public function getCount(): ?int
+    {
+        return $this->count;
     }
 }

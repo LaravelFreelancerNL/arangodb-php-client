@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use ArangoClient\Statement;
+use Traversable;
 
 class StatementTest extends TestCase
 {
-    protected Statement $statement;
+    protected Traversable $statement;
 
     protected string $collection = 'users';
 
@@ -33,6 +33,20 @@ class StatementTest extends TestCase
         }
     }
 
+    protected function generateTestDocuments(): void
+    {
+        $query = 'FOR i IN 1..10
+          INSERT {
+                _key: CONCAT("test", i),
+            name: "test",
+            foobar: true
+          } INTO '.$this->collection.' OPTIONS { ignoreErrors: true }';
+
+        $statement = $this->arangoClient->prepare($query);
+
+        $statement->execute();
+    }
+
     public function testSetAndGetQuery()
     {
         $query = 'FOR doc IN ' . $this->collection . ' LIMIT 1 RETURN doc';
@@ -48,18 +62,56 @@ class StatementTest extends TestCase
         $this->assertTrue($results);
     }
 
+    public function testExplain()
+    {
+        $explanation = $this->statement->explain();
+
+        $this->assertArrayHasKey('plan', $explanation);
+    }
+
+    public function testParse()
+    {
+        $parsed = $this->statement->parse();
+
+        $this->assertArrayHasKey('ast', $parsed);
+    }
+
+    public function testProfile()
+    {
+        $profile = $this->statement->profile();
+        $this->assertArrayHasKey('stats', $profile);
+        $this->assertArrayHasKey('profile', $profile);
+    }
+
+    public function testProfileModeTwo()
+    {
+        $profile = $this->statement->profile(2);
+
+        $this->assertArrayHasKey('stats', $profile);
+        $this->assertArrayHasKey('profile', $profile);
+        $this->assertArrayHasKey('plan', $profile);
+    }
+
+    public function testGetCount()
+    {
+        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
+        $options = ['count' => true];
+        $statement = $this->arangoClient->prepare($query, [], [], $options);
+        $statement->execute();
+
+        $this->assertSame(0, $statement->getCount());
+    }
+
+    public function testGetCountNotSet()
+    {
+        $this->statement->execute();
+
+        $this->assertNull($this->statement->getCount());
+    }
+
     public function testFetchAll()
     {
-        $query = 'FOR i IN 1..10
-          INSERT {
-                _key: CONCAT("test", i),
-            name: "test",
-            foobar: true
-          } INTO ' . $this->collection . ' OPTIONS { ignoreErrors: true }';
-
-        $this->statement->setQuery($query);
-        $executed = $this->statement->execute();
-        $this->assertTrue($executed);
+        $this->generateTestDocuments();
 
         $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
         $this->statement->setQuery($query);
@@ -74,15 +126,7 @@ class StatementTest extends TestCase
 
     public function testResultsGreaterThanBatchSize()
     {
-        // Create 10 objects
-        $query = 'FOR i IN 1..10
-          INSERT {
-                _key: CONCAT("test", i),
-            name: "test",
-            foobar: true
-          } INTO ' . $this->collection . ' OPTIONS { ignoreErrors: true }';
-        $statement = $this->arangoClient->prepare($query);
-        $statement->execute();
+        $this->generateTestDocuments();
 
         // Retrieve data in batches of 2
         $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
@@ -96,41 +140,16 @@ class StatementTest extends TestCase
         $this->assertSame('test1', $results[0]['_key']);
     }
 
-//    public function testFetch()
-//    {
-//        // Create objects
-//        $query = 'FOR i IN 1..10
-//          INSERT {
-//                _key: CONCAT("test", i),
-//            name: "test",
-//            foobar: true
-//          } INTO ' . $this->collection . ' OPTIONS { ignoreErrors: true }';
-//        $statement = $this->arangoClient->prepare($query);
-//        $statement->execute();
-//
-//        // Retrieve data
-//        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
-//        $retrievalStatement = $this->arangoClient->prepare($query);
-//        $retrievalStatement->execute();
-//
-//        $results = [];
-//        foreach($retrievalStatement->fetch() as $result) {
-//            $results[] = $result;
-//        }
-//        $this->assertEquals(count($results =$retrievalStatement->fetchAll()), count($results));
-//    }
-
-    public function testExplain()
+    public function testStatementIsIterable()
     {
-        $explanation = $this->statement->explain();
+        $this->generateTestDocuments();
+        $this->statement->execute();
 
-        $this->assertArrayHasKey('plan', $explanation);
-    }
-
-    public function testParse()
-    {
-        $parsed = $this->statement->parse();
-
-        $this->assertArrayHasKey('ast', $parsed);
+        $count = 0;
+        foreach ($this->statement as $document) {
+            $this->assertArrayHasKey('foobar', $document);
+            $count++;
+        }
+        $this->assertEquals(10, $count);
     }
 }

@@ -7,33 +7,59 @@ namespace ArangoClient;
 use ArangoClient\Admin\AdminManager;
 use ArangoClient\Exceptions\ArangoException;
 use ArangoClient\Schema\SchemaManager;
-use Exception;
+use ArangoClient\Statement\Statement;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\StreamWrapper;
 use JsonMachine\JsonMachine;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
+use Traversable;
 
-/*
+/**
  * The arangoClient handles connections to ArangoDB's HTTP REST API.
+ *
  * @see https://www.arangodb.com/docs/stable/http/
  */
 class ArangoClient
 {
-    /**
-     * @var array<string|numeric|null>
-     */
-    protected array $config = [
-        'host' => 'http://localhost',
-        'port' => '8529',
-        'AuthUser' => 'root',
-        'AuthPassword' => null,
-        'AuthType' => 'basic'
-    ];
 
     protected Client $httpClient;
+
+    /**
+     * @var string
+     */
+    protected string $endpoint;
+
+    /**
+     * @var array<mixed>|false
+     */
+    protected $allowRedirects;
+
+    /**
+     * @var float
+     */
+    protected float $connectTimeout;
+
+    /**
+     * @var string
+     */
+    protected string $connection;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $username = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $password = null;
+
+    /**
+     * @var string
+     */
+    protected string $database;
 
     /**
      * @var SchemaManager|null
@@ -48,18 +74,55 @@ class ArangoClient
     /**
      * ArangoClient constructor.
      *
-     * @param  array<string|numeric|null>|null  $config
+     * @param  array<string|numeric|null>  $config
      * @param  Client|null  $httpClient
      */
-    public function __construct(array $config = null, Client $httpClient = null)
+    public function __construct(array $config = [], Client $httpClient = null)
     {
-        if ($config !== null) {
-            $this->config = $config;
+        $this->endpoint = $this->generateEndpoint($config);
+        $this->username = (isset($config['username'])) ? (string) $config['username'] : null;
+        $this->password = (isset($config['password'])) ? (string) $config['password'] : null;
+        $this->database = (isset($config['database'])) ? (string) $config['database'] : '_system';
+        $this->connection = (isset($config['connection'])) ? (string) $config['connection'] : 'Keep-Alive';
+        $this->allowRedirects = (isset($config['allow_redirects'])) ? (array) $config['allow_redirects'] : false;
+        $this->connectTimeout = (isset($config['connect_timeout'])) ? (float) $config['connect_timeout'] : 0;
+
+        $this->httpClient = isset($httpClient) ? $httpClient : new Client($this->mapHttpClientConfig());
+    }
+
+    /**
+     * @param  array<mixed>  $config
+     * @return string
+     */
+    public function generateEndpoint(array $config): string
+    {
+        if (isset($config['endpoint'])) {
+            return (string) $config['endpoint'];
         }
 
-        $this->config = $this->mapHttpClientConfig();
+        $endpoint = (isset($config['host'])) ? (string) $config['host'] : 'http://localhost';
+        $endpoint .= (isset($config['port'])) ? ':' . (string) $config['port'] : ':8529';
 
-        $this->httpClient = isset($httpClient) ? $httpClient : new Client($this->config);
+        return $endpoint;
+    }
+
+    /**
+     * @return array<array<mixed>|string|numeric|bool|null>
+     */
+    protected function mapHttpClientConfig(): array
+    {
+        $config = [];
+        $config['base_uri'] = $this->endpoint;
+        $config['allow_redirects'] = $this->allowRedirects;
+        $config['connect_timeout'] = $this->connectTimeout;
+        $config['auth'] = [
+            $this->username,
+            $this->password,
+        ];
+        $config['header'] = [
+            'Connection' => $this->connection
+        ];
+        return $config;
     }
 
     /**
@@ -84,21 +147,20 @@ class ArangoClient
     }
 
     /**
-     * @return array<string|numeric|null>
-     */
-    protected function mapHttpClientConfig(): array
-    {
-        $this->config['base_uri'] = (string) $this->config['host'] . ':' . (string) $this->config['port'];
-
-        return $this->config;
-    }
-
-    /**
-     * @return array<string|numeric|null>
+     * @return array<array<mixed>|string|numeric|bool|null>
      */
     public function getConfig(): array
     {
-        return $this->config;
+        $config = [];
+        $config['endpoint'] = $this->endpoint;
+        $config['username'] = $this->username;
+        $config['password'] = $this->password;
+        $config['database'] = $this->database;
+        $config['connection'] = $this->connection;
+        $config['allow_redirects'] = $this->allowRedirects;
+        $config['connect_timeout'] = $this->connectTimeout;
+
+        return $config;
     }
 
     /**
@@ -130,7 +192,7 @@ class ArangoClient
      * @param  array<mixed>  $data
      * @return string
      */
-    public function jsonEncode(array $data)
+    public function jsonEncode(array $data): string
     {
         return (string) json_encode($data, JSON_FORCE_OBJECT);
     }
@@ -140,22 +202,39 @@ class ArangoClient
      */
     public function getUser(): string
     {
-        return (string) $this->config['AuthUser'];
+        return (string) $this->username;
+    }
+
+    /**
+     * @param string $name
+     * @return void
+     */
+    public function setDatabase(string $name): void
+    {
+        $this->database = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDatabase(): string
+    {
+        return $this->database;
     }
 
     /**
      * @param  string  $query
      * @param  array<scalar>  $bindVars
-     * @param  array<array>  $collections
-     * @param  array<scalar>  $options
-     * @return Statement
+     * @param  array<array<string>>  $collections
+     * @param  array<mixed>  $options
+     * @return Traversable<mixed>
      */
     public function prepare(
         string $query,
         array $bindVars = [],
         array $collections = [],
         array $options = []
-    ): Statement {
+    ): Traversable {
         return new Statement($this, $query, $bindVars, $collections, $options);
     }
 

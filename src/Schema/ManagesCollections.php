@@ -85,7 +85,7 @@ trait ManagesCollections
      * @return array<mixed>
      * @throws ArangoException
      */
-    public function getCollectionDocumentCount(string $collection): array
+    public function getCollectionWithDocumentCount(string $collection): array
     {
         $uri = '/_api/collection/' . $collection . '/count';
         $result = $this->arangoClient->request('get', $uri);
