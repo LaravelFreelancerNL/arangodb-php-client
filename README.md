@@ -1,4 +1,4 @@
-# ArangoDB PHP client
+# ArangoClient - ArangoDB PHP client
 
 Low level PHP client for ArangoDB. Supports PHP versions 7.4 & ^8.0
 
@@ -60,16 +60,37 @@ foreach ($statement as $document) {
 
 ## Managers
 You have access to several managers that allow you to perform specific tasks on your ArangoDB instance(s).
+Their functions can be called on the manager.
+
+### Admin manager
+The admin manager manages administrative functions and information retrieval for the server/cluster.
+``` 
+$client->admin()->version();
+```
+
+### Schema manager
+The schema manager manages all schema related operations.
+``` 
+$client->schema()->createDatabase('new_db');
+```
+
+### Transaction manager
+The transaction manager takes care of all transactions. 
+``` 
+$client->transactions()->begin(['write' => ['users', 'teams']]);
+```
 
 ## Documentation
-1) [ArangoDB PHP Client](docs/arangodb-client.md)
-2) [Statements](docs/statements.md)
-3) [Database schema](docs/schema-databases.md)
-4) [User schema](docs/schema-users.md)
-5) [Collection schema](docs/schema-collections.md)
-6) [Index schema](docs/schema-indexes.md)
-7) [View schema](docs/schema-views.md)
-8) [Admin manager](docs/admin-manager.md)
+1) [ArangoDB PHP client](docs/arangodb-client.md)
+2) [AQL query statements](docs/statements.md)
+3) [Admin manager](docs/admin-manager.md)
+4) Schema manager
+    1) [Database schema](docs/schema-databases.md)
+    2) [User schema](docs/schema-users.md)
+    3) [Collection schema](docs/schema-collections.md)
+    4) [Index schema](docs/schema-indexes.md)
+    5) [View schema](docs/schema-views.md)
+5) [Transaction manager](docs/transaction-manager.md)
 
 ## Related packages
 [AQL query builder](https://github.com/LaravelFreelancerNL/fluentaql)

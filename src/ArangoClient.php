@@ -8,6 +8,7 @@ use ArangoClient\Admin\AdminManager;
 use ArangoClient\Exceptions\ArangoException;
 use ArangoClient\Schema\SchemaManager;
 use ArangoClient\Statement\Statement;
+use ArangoClient\Transactions\SupportsTransactions;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\StreamWrapper;
@@ -23,6 +24,7 @@ use Traversable;
  */
 class ArangoClient
 {
+    use SupportsTransactions;
 
     protected Client $httpClient;
 
@@ -62,14 +64,14 @@ class ArangoClient
     protected string $database;
 
     /**
-     * @var SchemaManager|null
-     */
-    protected ?SchemaManager $schemaManager = null;
-
-    /**
      * @var AdminManager|null
      */
     protected ?AdminManager $adminManager = null;
+
+    /**
+     * @var SchemaManager|null
+     */
+    protected ?SchemaManager $schemaManager = null;
 
     /**
      * ArangoClient constructor.
@@ -131,11 +133,14 @@ class ArangoClient
      * @param  string  $method
      * @param  string  $uri
      * @param  array<mixed>  $options
+     * @param  string|null  $database
      * @return array<mixed>
      * @throws ArangoException
      */
-    public function request(string $method, string $uri, array $options = []): array
+    public function request(string $method, string $uri, array $options = [], ?string $database = null): array
     {
+        $uri = $this->prependDatabaseToUri($uri, $database);
+
         $response = null;
         try {
             $response = $this->httpClient->request($method, $uri, $options);
@@ -191,10 +196,23 @@ class ArangoClient
     /**
      * @param  array<mixed>  $data
      * @return string
+     * @throws ArangoException
      */
     public function jsonEncode(array $data): string
     {
-        return (string) json_encode($data, JSON_FORCE_OBJECT);
+        $response = '';
+
+        if (! empty($data)) {
+            $response = json_encode($data);
+        }
+        if (empty($data)) {
+            $response = json_encode($data, JSON_FORCE_OBJECT);
+        }
+
+        if ($response === false) {
+            throw new ArangoException('JSON encoding failed with error: ' . json_last_error_msg(), json_last_error());
+        }
+        return $response;
     }
 
     /**
@@ -225,29 +243,17 @@ class ArangoClient
     /**
      * @param  string  $query
      * @param  array<scalar>  $bindVars
-     * @param  array<array<string>>  $collections
      * @param  array<mixed>  $options
      * @return Traversable<mixed>
      */
     public function prepare(
         string $query,
         array $bindVars = [],
-        array $collections = [],
         array $options = []
     ): Traversable {
-        return new Statement($this, $query, $bindVars, $collections, $options);
+        return new Statement($this, $query, $bindVars, $options);
     }
 
-    /**
-     * @return SchemaManager
-     */
-    public function schema(): SchemaManager
-    {
-        if (! isset($this->schemaManager)) {
-            $this->schemaManager = new SchemaManager($this);
-        }
-        return $this->schemaManager;
-    }
     /**
      * @return AdminManager
      */
@@ -259,14 +265,23 @@ class ArangoClient
         return $this->adminManager;
     }
 
+    public function schema(): SchemaManager
+    {
+        if (! isset($this->schemaManager)) {
+            $this->schemaManager = new SchemaManager($this);
+        }
+        return $this->schemaManager;
+    }
+
     /**
      * @param  Throwable  $e
      * @throws ArangoException
      */
-    private function handleGuzzleException(Throwable $e): void
+    protected function handleGuzzleException(Throwable $e): void
     {
         $message = $e->getMessage();
         $code = $e->getCode();
+
         if ($e instanceof RequestException && $e->hasResponse()) {
             $decodedResponse = $this->decodeResponse($e->getResponse());
             $message = (string) $decodedResponse['errorMessage'];
@@ -279,5 +294,23 @@ class ArangoClient
                 (int) $code
             )
         );
+    }
+
+    protected function prependDatabaseToUri(string $uri, ?string $database = null): string
+    {
+        if (! isset($database)) {
+            $database = $this->database;
+        }
+        return '/_db/' . urlencode($database) . $uri;
+    }
+
+    public function setHttpClient(Client $httpClient): void
+    {
+        $this->httpClient = $httpClient;
+    }
+
+    public function getHttpClient(): Client
+    {
+        return $this->httpClient;
     }
 }

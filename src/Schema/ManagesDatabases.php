@@ -24,17 +24,18 @@ trait ManagesDatabases
     }
 
     /**
+     * @param  string|null  $database
      * @return array<mixed>
      *
      * @throws ArangoException
      */
-    public function getDatabases(): array
+    public function getDatabases(?string $database = null): array
     {
         $user = $this->arangoClient->getUser();
 
         $uri = '/_api/user/' . $user . '/database';
 
-        $results = $this->arangoClient->request('get', $uri);
+        $results = $this->arangoClient->request('get', $uri, [], $database);
 
         return array_keys((array) $results['result']);
     }
@@ -62,7 +63,7 @@ trait ManagesDatabases
     {
         $database = json_encode((object)['name' => $name, 'options' => $options, 'users' => $users]);
 
-        return (bool) $this->arangoClient->request('post', '/_api/database', ['body' => $database]);
+        return (bool) $this->arangoClient->request('post', '/_api/database', ['body' => $database], '_system');
     }
 
     /**
@@ -74,6 +75,6 @@ trait ManagesDatabases
     {
         $uri = '/_api/database/' . $name;
 
-        return (bool) $this->arangoClient->request('delete', $uri);
+        return (bool) $this->arangoClient->request('delete', $uri, [], '_system');
     }
 }

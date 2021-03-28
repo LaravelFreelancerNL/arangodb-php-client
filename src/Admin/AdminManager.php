@@ -45,4 +45,15 @@ class AdminManager extends Manager
             ]
         );
     }
+
+    /**
+     * @return array<mixed>
+     * @throws ArangoException
+     */
+    public function getRunningTransactions(): array
+    {
+        $result = $this->arangoClient->request('get', '/_api/transaction');
+
+        return (isset($result['transactions'])) ? (array) $result['transactions'] : [];
+    }
 }

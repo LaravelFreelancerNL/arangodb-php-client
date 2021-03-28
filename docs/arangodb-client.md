@@ -47,8 +47,9 @@ $arangoClient = new ArangoClient($config);
 
 ## Functions
 
-### request(string $method, string $uri, array $options = []): array
+### request(string $method, string $uri, array $options = [], ?string $database = null): array
 Send a request to ArangoDB's HTTP REST API. This is mostly for internal use but allows you to use unsupported endpoints.
+
 ```
 $arangoClient->request(
     'get',

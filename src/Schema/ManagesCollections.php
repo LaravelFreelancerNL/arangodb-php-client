@@ -88,7 +88,7 @@ trait ManagesCollections
     public function getCollectionWithDocumentCount(string $collection): array
     {
         $uri = '/_api/collection/' . $collection . '/count';
-        $result = $this->arangoClient->request('get', $uri);
+        $result = $this->arangoClient->transactionAwareRequest('get', $uri);
         return $this->sanitizeRequestMetadata($result);
     }
 

@@ -24,14 +24,9 @@ class Statement extends Manager implements IteratorAggregate
     protected string $query;
 
     /**
-     * @var array<scalar>
+     * @var array<scalar>|null
      */
-    protected array $bindVars = [];
-
-    /**
-     * @var array<array<string>>
-     */
-    protected array $collections = [];
+    protected ?array $bindVars;
 
     /**
      * @var array<mixed>
@@ -78,20 +73,17 @@ class Statement extends Manager implements IteratorAggregate
      * @param  ArangoClient  $arangoClient
      * @param  string  $query
      * @param  array<scalar>  $bindVars
-     * @param  array<array<string>>  $collections
      * @param  array<mixed>  $options
      */
     public function __construct(
         ArangoClient $arangoClient,
         string $query,
-        array $bindVars = [],
-        array $collections = [],
+        array $bindVars = null,
         array $options = []
     ) {
         $this->arangoClient = $arangoClient;
         $this->query = $query;
         $this->bindVars = $bindVars;
-        $this->collections = $collections;
         $this->options = $options;
     }
 
@@ -116,7 +108,7 @@ class Statement extends Manager implements IteratorAggregate
         $bodyContent = $this->prepareQueryBodyContent();
         $body = $this->arangoClient->jsonEncode($bodyContent);
 
-        $results = $this->arangoClient->request('post', '/_api/cursor', ['body' => $body]);
+        $results = $this->arangoClient->transactionAwareRequest('post', '/_api/cursor', ['body' => $body]);
 
         $this->handleQueryResults($results);
 
@@ -132,8 +124,9 @@ class Statement extends Manager implements IteratorAggregate
     {
         $bodyContent = $this->options;
         $bodyContent['query'] = $this->query;
-        $bodyContent['bindVars'] = $this->bindVars;
-        $bodyContent['collections'] = $this->collections;
+        if (! empty($this->bindVars)) {
+            $bodyContent['bindVars'] = $this->bindVars;
+        }
 
         return $bodyContent;
     }

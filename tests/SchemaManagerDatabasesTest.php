@@ -13,6 +13,7 @@ class SchemaManagerDatabasesTest extends TestCase
 
     public function testGetDatabase()
     {
+        $this->arangoClient->setDatabase('_system');
         $result = $this->schemaManager->getCurrentDatabase();
 
         $this->assertSame('1', $result['id']);

@@ -1,6 +1,6 @@
 # Admin manager
 
-Manages administrative functions to manage the server/cluster and retrieve server level information.
+Manages administrative functions and information retrieval for the server/cluster.
 
 ## Functions
 The admin manager supports the following functions:

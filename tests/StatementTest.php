@@ -96,7 +96,7 @@ class StatementTest extends TestCase
     {
         $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
         $options = ['count' => true];
-        $statement = $this->arangoClient->prepare($query, [], [], $options);
+        $statement = $this->arangoClient->prepare($query, [], $options);
         $statement->execute();
 
         $this->assertSame(0, $statement->getCount());
@@ -131,7 +131,7 @@ class StatementTest extends TestCase
         // Retrieve data in batches of 2
         $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
         $options = ['batchSize' => 2];
-        $statement = $this->arangoClient->prepare($query, [], [], $options);
+        $statement = $this->arangoClient->prepare($query, [], $options);
         $executed = $statement->execute();
         $this->assertTrue($executed);
         $results =$statement->fetchAll();

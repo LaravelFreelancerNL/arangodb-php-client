@@ -12,7 +12,7 @@ class SchemaManagerCollectionsTest extends TestCase
         $result = $this->schemaManager->getCollections();
 
         $this->assertIsArray($result);
-        $this->assertLessThanOrEqual(count($result), 14);
+        $this->assertLessThanOrEqual(count($result), 10);
         $this->assertIsArray($result[0]);
     }
 

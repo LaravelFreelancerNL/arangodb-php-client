@@ -8,18 +8,18 @@ use ArangoClient\Admin\AdminManager;
 
 class AdminManagerTest extends TestCase
 {
-    protected AdminManager $client;
+    protected AdminManager $adminManager;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = new AdminManager($this->arangoClient);
+        $this->adminManager = new AdminManager($this->arangoClient);
     }
 
     public function testGetVersion()
     {
-        $result = $this->client->getVersion();
+        $result = $this->adminManager->getVersion();
 
         $this->assertSame('arango', $result['server']);
         $this->assertSame('community', $result['license']);
@@ -29,7 +29,7 @@ class AdminManagerTest extends TestCase
 
     public function testGetVersionWithDetails()
     {
-        $result = $this->client->getVersion(true);
+        $result = $this->adminManager->getVersion(true);
 
         $this->assertSame('arango', $result['server']);
         $this->assertSame('community', $result['license']);
@@ -37,6 +37,12 @@ class AdminManagerTest extends TestCase
         $this->assertArrayHasKey('details', $result);
         $this->assertNotEmpty($result['details']);
 
+    }
+
+    public function testGetRunningTransactions()
+    {
+        $transactions = $this->adminManager->getRunningTransactions();
+        $this->assertEmpty($transactions);
     }
 
 }
