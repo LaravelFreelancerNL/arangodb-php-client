@@ -22,18 +22,19 @@ abstract class TestCase extends PhpUnitTestCase
     protected function setUp(): void
     {
         $this->arangoClient = new ArangoClient([
-            'username' => 'root',
-            'database' => $this->testDatabaseName
+            'username' => 'root'
         ]);
 
         $this->schemaManager = new SchemaManager($this->arangoClient);
         $this->administrationClient = new AdminManager($this->arangoClient);
 
         $this->createTestDatabase();
+        $this->arangoClient->setDatabase($this->testDatabaseName);
     }
 
     protected function createTestDatabase()
     {
+        $this->arangoClient->setDatabase('_system');
         if(! $this->arangoClient->schema()->hasDatabase($this->testDatabaseName)) {
             $this->arangoClient->schema()->createDatabase($this->testDatabaseName);
         }
