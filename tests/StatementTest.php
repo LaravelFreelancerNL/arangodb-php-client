@@ -152,4 +152,19 @@ class StatementTest extends TestCase
         }
         $this->assertEquals(10, $count);
     }
+
+    public function testGetWritesExecuted(): void
+    {
+        $query = 'FOR i IN 1..10
+          INSERT {
+                _key: CONCAT("test", i),
+            name: "test",
+            foobar: true
+          } INTO '.$this->collection.' OPTIONS { ignoreErrors: true }';
+
+        $statement = $this->arangoClient->prepare($query);
+        $statement->execute();
+
+        $this->assertSame(10, $statement->getWritesExecuted());
+    }
 }

@@ -58,7 +58,7 @@ class SchemaManagerCollectionsTest extends TestCase
         $this->assertArrayHasKey('keyOptions', $result);
     }
 
-    public function testGetCollectionDocumentCount()
+    public function testGetCollectionWithDocumentCount()
     {
         $collections = $this->schemaManager->getCollections();
 
@@ -70,6 +70,15 @@ class SchemaManagerCollectionsTest extends TestCase
         $this->assertArrayHasKey('keyOptions', $result);
         $this->assertArrayHasKey('count', $result);
         $this->assertIsNumeric($result['count']);
+    }
+
+    public function testGetCollectionDocumentCount()
+    {
+        $collections = $this->schemaManager->getCollections();
+
+        $result = $this->schemaManager->getCollectionDocumentCount($collections[0]['name']);
+
+        $this->assertIsNumeric($result);
     }
 
     public function testGetCollectionStatistics()
@@ -122,6 +131,30 @@ class SchemaManagerCollectionsTest extends TestCase
         $this->assertSame($newName, $result['name']);
 
         $this->schemaManager->deleteCollection($newName);
+    }
+
+    public function testTruncateCollection()
+    {
+        $collection = 'users';
+        if (! $this->schemaManager->hasCollection($collection)) {
+            $this->schemaManager->createCollection($collection);
+        }
+        $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)['count']);
+        $query = 'FOR i IN 1..10
+          INSERT {
+                _key: CONCAT("test", i),
+            name: "test",
+            foobar: true
+          } INTO ' . $collection . ' OPTIONS { ignoreErrors: true }';
+        $statement = $this->arangoClient->prepare($query);
+        $statement->execute();
+
+        $this->assertSame(0, count($statement->fetchAll()));
+
+        $this->schemaManager->truncateCollection($collection);
+
+        $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)['count']);
+        $this->schemaManager->deleteCollection($collection);
     }
 
     public function testCreateAndDeleteCollection()

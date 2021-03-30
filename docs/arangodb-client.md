@@ -6,12 +6,13 @@ $arangoClient = new ArangoClient($config);
 ## Configuration
 Upon creation, you can alter the default configuration of the client. The following options are available:
 * endpoint = 'http://localhost:8529'
+* connection = 'Keep-Alive'
+* version = 1.1
 * host = null 
 * port = null 
 * username = null
 * password = null
 * database = '_system'
-* connection = 'Keep-Alive'
 
 ```
 $config = [
@@ -26,8 +27,9 @@ $arangoClient = new ArangoClient($config);
 
 ### Support Guzzle configuration
 In addition to the above mentioned options you can use the following Guzzle 7 specific options:
-* allow_redirects
-* connect_timeout
+* [version](https://docs.guzzlephp.org/en/stable/request-options.html#version)
+* [allow_redirects](https://docs.guzzlephp.org/en/stable/request-options.html#allow-redirects)
+* [connect_timeout](https://docs.guzzlephp.org/en/stable/request-options.html#connect-timeout)   
 
 ### Endpoint vs host/port
 Some common packages and frameworks work with a host/port combination by default. 

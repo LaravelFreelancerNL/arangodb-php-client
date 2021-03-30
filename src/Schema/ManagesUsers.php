@@ -23,9 +23,7 @@ trait ManagesUsers
     {
         $uri = '/_api/user/' . $username;
 
-        $result = $this->arangoClient->request('get', $uri);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('get', $uri);
     }
 
     /**
@@ -60,9 +58,7 @@ trait ManagesUsers
     {
         $body = json_encode((object) $user);
 
-        $result = $this->arangoClient->request('post', '/_api/user', ['body' => $body]);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('post', '/_api/user', ['body' => $body]);
     }
 
     /**
@@ -75,12 +71,10 @@ trait ManagesUsers
     {
         $uri = '/_api/user/' . $username;
 
-        $properties = json_encode((object) $properties);
+        $properties = json_encode((object)$properties);
         $options = ['body' => $properties];
 
-        $result = $this->arangoClient->request('patch', $uri, $options);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('patch', $uri, $options);
     }
 
     /**
@@ -96,9 +90,7 @@ trait ManagesUsers
         $user = json_encode((object) $user);
         $options = ['body' => $user];
 
-        $result = $this->arangoClient->request('put', $uri, $options);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('put', $uri, $options);
     }
 
     /**
@@ -142,9 +134,7 @@ trait ManagesUsers
         $grant = json_encode((object) ['grant' => $grant]);
         $options = ['body' => $grant];
 
-        $result = $this->arangoClient->request('put', $uri, $options);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('put', $uri, $options);
     }
 
     /**
@@ -157,8 +147,8 @@ trait ManagesUsers
     {
         $uri = '/_api/user/' . $username . '/database/' . $database;
 
-        $result = $this->arangoClient->request('delete', $uri);
+        $this->arangoClient->request('delete', $uri);
 
-        return ((int) $result['code'] === 202);
+        return true;
     }
 }

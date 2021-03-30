@@ -28,6 +28,12 @@ Get the properties of the requested collection.
 $arangoClient->schema()->getCollectionWithDocumentCount('_fishbowl');
 ```
 
+### getCollectionDocumentCount(string $collection): int
+Get the number of documents within the requested collection.
+```
+$arangoClient->schema()->getCollectionDocumentCount('users');
+```
+
 ### getCollectionStatistics(string $collection, bool $details = false): array
 Get the properties of the requested collection.
 ```
@@ -56,6 +62,12 @@ $arangoClient->schema()->updateCollection('users', ['waitForSync' => true]);
 Rename a collection
 ```
 $arangoClient->schema()->renameCollection('users', 'characters');
+```
+
+### truncateCollection(string $name): bool
+Truncate a collection.
+```
+$arangoClient->schema()->truncateCollection('teams');
 ```
 
 ### deleteCollection(string $name): bool

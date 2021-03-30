@@ -28,9 +28,7 @@ trait ManagesViews
         $uri = '/_api/view#' . $view['type'];
         $body = json_encode((object) $view);
 
-        $results =  $this->arangoClient->request('post', $uri, ['body' => $body]);
-
-        return $this->sanitizeRequestMetadata($results);
+        return  $this->arangoClient->request('post', $uri, ['body' => $body]);
     }
 
     /**
@@ -83,9 +81,7 @@ trait ManagesViews
      */
     public function getView(string $name): array
     {
-        $result =  $this->getViewProperties($name);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->getViewProperties($name);
     }
 
     /**
@@ -99,9 +95,7 @@ trait ManagesViews
     {
         $uri = '/_api/view/' . $name . '/properties';
 
-        $result =  $this->arangoClient->request('get', $uri);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('get', $uri);
     }
 
     /**
@@ -117,9 +111,7 @@ trait ManagesViews
         $body = json_encode((object) ['name' => $new]);
         $options = ['body' => $body];
 
-        $result = $this->arangoClient->request('put', $uri, $options);
-
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('put', $uri, $options);
     }
 
     /**
@@ -147,8 +139,7 @@ trait ManagesViews
         $body = json_encode((object) $properties);
         $options = ['body' => $body];
 
-        $result = $this->arangoClient->request('patch', $uri, $options);
-        return $this->sanitizeRequestMetadata($result);
+        return $this->arangoClient->request('patch', $uri, $options);
     }
 
     /**

@@ -114,7 +114,7 @@ class Statement extends Manager implements IteratorAggregate
 
         $this->requestOutstandingResults($body);
 
-        return ! $results['error'];
+        return true;
     }
 
     /**
@@ -176,9 +176,7 @@ class Statement extends Manager implements IteratorAggregate
         $bodyContent = $this->prepareQueryBodyContent();
         $body = $this->arangoClient->jsonEncode($bodyContent);
 
-        $results = $this->arangoClient->request('post', '/_api/explain', ['body' => $body]);
-
-        return $this->sanitizeRequestMetadata($results);
+        return $this->arangoClient->request('post', '/_api/explain', ['body' => $body]);
     }
 
     /**
@@ -192,9 +190,7 @@ class Statement extends Manager implements IteratorAggregate
         $bodyContent = $this->prepareQueryBodyContent();
         $body = $this->arangoClient->jsonEncode($bodyContent);
 
-        $results = $this->arangoClient->request('post', '/_api/query', ['body' => $body]);
-
-        return $this->sanitizeRequestMetadata($results);
+        return $this->arangoClient->request('post', '/_api/query', ['body' => $body]);
     }
 
 
@@ -269,5 +265,15 @@ class Statement extends Manager implements IteratorAggregate
     public function getCount(): ?int
     {
         return $this->count;
+    }
+
+    /**
+     * Return the number writes executed to by the query.
+     *
+     * @return int
+     */
+    public function getWritesExecuted(): int
+    {
+        return (isset($this->extra['stats']['writesExecuted'])) ? (int) $this->extra['stats']['writesExecuted'] : 0;
     }
 }

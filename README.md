@@ -93,6 +93,5 @@ $client->transactions()->begin(['write' => ['users', 'teams']]);
 5) [Transaction manager](docs/transaction-manager.md)
 
 ## Related packages
-[AQL query builder](https://github.com/LaravelFreelancerNL/fluentaql)
-
-[ArangoDB Laravel Driver](https://github.com/LaravelFreelancerNL/laravel-arangodb)
+* [AQL query builder](https://github.com/LaravelFreelancerNL/fluentaql)
+* [ArangoDB Laravel Driver](https://github.com/LaravelFreelancerNL/laravel-arangodb)

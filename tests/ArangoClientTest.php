@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use ArangoClient\Admin\AdminManager;
+use ArangoClient\ArangoClient;
 use ArangoClient\Schema\SchemaManager;
 use ArangoClient\Statement\Statement;
 use GuzzleHttp\Client;
@@ -20,12 +21,13 @@ class ArangoClientTest extends TestCase
     {
         $defaultConfig = [
             'endpoint' => 'http://localhost:8529',
-            'username' => 'root',
-            'password' => null,
-            'database' => $this->testDatabaseName,
+            'version' => 1.1,
             'connection' => 'Keep-Alive',
             'allow_redirects' => false,
-            'connect_timeout' => 0.0
+            'connect_timeout' => 0.0,
+            'username' => 'root',
+            'password' => null,
+            'database' => $this->testDatabaseName
         ];
 
         $config = $this->arangoClient->getConfig();
@@ -125,4 +127,44 @@ class ArangoClientTest extends TestCase
 
         $this->assertInstanceOf(Statement::class, $statement);
     }
+
+    public function testConnectionProtocolVersion()
+    {
+        $this->checkHttp2Support();
+
+        $uri = '/_api/version';
+
+        $options = [];
+        $options['version'] = 2;
+        $response = $this->arangoClient->debugRequest('get', $uri, $options);
+
+        $this->assertEquals(2, $response->getProtocolVersion());
+    }
+
+    public function testConnectionProtocolVersionWithDefaultSetting()
+    {
+        $this->checkHttp2Support();
+
+        $uri = '/_api/version';
+
+        $client = new ArangoClient(['username' => 'root', 'version' => 2.0]);
+
+        $options = [];
+        $options['version'] = 2;
+        $response = $this->arangoClient->debugRequest('get', $uri, $options);
+
+        $this->assertEquals(2, $response->getProtocolVersion());
+    }
+
+    protected function checkHttp2Support()
+    {
+        // First assert that CURL supports http2!
+        if(! curl_version()["features"] || CURL_VERSION_HTTP2 === 0) {
+            $this->markTestSkipped('The installed version of CURL does not support the HTTP2 protocol.');
+        }
+        // HTTP/2 is only supported by ArangoDB 3.7 and up.
+        $this->skipTestOnArangoVersionsBefore('3.7');
+    }
+
+
 }

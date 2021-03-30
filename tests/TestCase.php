@@ -19,6 +19,7 @@ abstract class TestCase extends PhpUnitTestCase
 
     protected string $testDatabaseName = 'arangodb_php_client__test';
 
+
     protected function setUp(): void
     {
         $this->arangoClient = new ArangoClient([
@@ -37,6 +38,13 @@ abstract class TestCase extends PhpUnitTestCase
         $this->arangoClient->setDatabase('_system');
         if(! $this->arangoClient->schema()->hasDatabase($this->testDatabaseName)) {
             $this->arangoClient->schema()->createDatabase($this->testDatabaseName);
+        }
+    }
+
+    protected function skipTestOnArangoVersionsBefore(string $version)
+    {
+        if (version_compare( getenv('ARANGODB_VERSION'), $version, '<' )) {
+            $this->markTestSkipped('This test does not support ArangoDB versions before ' . $version);
         }
     }
 }

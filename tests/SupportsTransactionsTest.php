@@ -28,6 +28,15 @@ class SupportsTransactionsTest extends TestCase
         $this->arangoClient->abort();
     }
 
+    public function testBegin()
+    {
+        $transactionId = $this->arangoClient->begin();
+        $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
+        $this->assertSame($transactionId, $runningTransactions[0]['id']);
+
+        $this->arangoClient->abort();
+    }
+
     public function testAbort()
     {
         $transactionId = $this->arangoClient->beginTransaction();

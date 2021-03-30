@@ -118,4 +118,17 @@ trait SupportsTransactions
             return $this->request($method, $uri, $options, $database);
         }
     }
+
+    public function setTransactionManager(TransactionManager $transactionManager): void
+    {
+        $this->transactionManager = $transactionManager;
+    }
+
+    /**
+     * @return TransactionManager|null
+     */
+    public function getTransactionManager(): ?TransactionManager
+    {
+        return $this->transactionManager;
+    }
 }

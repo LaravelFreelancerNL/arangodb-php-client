@@ -44,8 +44,8 @@ trait ManagesIndexes
     public function getIndex(string $id): array
     {
         $uri = '/_api/index/' . $id;
-        $result = $this->arangoClient->request('get', $uri);
-        return $this->sanitizeRequestMetadata($result);
+
+        return $this->arangoClient->request('get', $uri);
     }
 
     /**
@@ -63,6 +63,7 @@ trait ManagesIndexes
         if (is_integer($searchResult)) {
             return (array) $indexes[$searchResult];
         }
+
         return (bool) $searchResult;
     }
 
