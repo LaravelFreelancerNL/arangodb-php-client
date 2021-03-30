@@ -22,6 +22,16 @@ class HttpClientConfig extends DataTransferObject
     public string $endpoint = 'http://localhost:8529';
 
     /**
+     * @var string|null
+     */
+    public ?string $host = null;
+
+    /**
+     * @var string|int|null
+     */
+    public $port = null;
+
+    /**
      * @var float|int
      */
     public $version = 1.1;

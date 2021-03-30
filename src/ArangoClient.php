@@ -61,7 +61,7 @@ class ArangoClient
             $endpoint = (string) $config['host'];
         }
         if (isset($config['port'])) {
-            $endpoint .= (string) $config['port'];
+            $endpoint .= ':' . (string) $config['port'];
         }
 
         return $endpoint;

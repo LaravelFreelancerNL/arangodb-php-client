@@ -21,6 +21,8 @@ class ArangoClientTest extends TestCase
     {
         $defaultConfig = [
             'endpoint' => 'http://localhost:8529',
+            'host' => null,
+            'port' => null,
             'version' => 1.1,
             'connection' => 'Keep-Alive',
             'allow_redirects' => false,
@@ -34,6 +36,18 @@ class ArangoClientTest extends TestCase
         $this->assertSame($defaultConfig, $config);
     }
 
+    public function testClientWithHostPortConfig()
+    {
+        $config = [
+            'host' => 'http://127.0.0.1',
+            'port' => '1234',
+            'username' => 'root',
+        ];
+        $client = new ArangoClient($config);
+        $retrievedConfig = $client->getConfig();
+
+        $this->assertEquals('http://127.0.0.1:1234', $retrievedConfig['endpoint']);
+    }
 
     public function testSetAndGetHttpClient()
     {

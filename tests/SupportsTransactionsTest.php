@@ -107,4 +107,16 @@ class SupportsTransactionsTest extends TestCase
         $this->arangoClient->schema()->deleteCollection('Users');
         $this->arangoClient->schema()->deleteCollection('Customers');
     }
+
+    public function testTransactionManagerSetterAndGetter()
+    {
+        $oldTransactionManager = $this->arangoClient->getTransactionManager();
+        $newTransactionManager = new TransactionManager($this->arangoClient);
+        $this->arangoClient->setTransactionManager($newTransactionManager);
+        $retrievedNewTransactionManager = $this->arangoClient->getTransactionManager();
+
+        $this->assertNull($oldTransactionManager);
+        $this->assertEquals(spl_object_id($newTransactionManager), spl_object_id($retrievedNewTransactionManager));
+
+    }
 }
