@@ -46,14 +46,4 @@ class HttpRequestOptions extends FlexibleDataTransferObject
 
         return array_filter($array);
     }
-
-    /**
-     * @return array<mixed>
-     */
-    public function toArray(): array
-    {
-        $array = parent::toArray();
-
-        return array_filter($array);
-    }
 }
