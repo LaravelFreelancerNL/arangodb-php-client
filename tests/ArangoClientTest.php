@@ -36,6 +36,18 @@ class ArangoClientTest extends TestCase
         $this->assertSame($defaultConfig, $config);
     }
 
+    public function testGetConfigWithEndpointWithoutHostPort()
+    {
+        $config = [
+            'endpoint' => 'http://localhost:8529',
+            'username' => 'root',
+        ];
+
+        $returnedConfig = $this->arangoClient->getConfig();
+        $this->assertSame($config['endpoint'], $returnedConfig['endpoint']);
+    }
+
+
     public function testClientWithHostPortConfig()
     {
         $config = [
@@ -47,6 +59,22 @@ class ArangoClientTest extends TestCase
         $retrievedConfig = $client->getConfig();
 
         $this->assertEquals('http://127.0.0.1:1234', $retrievedConfig['endpoint']);
+    }
+
+    public function testConfigWithAlienProperties()
+    {
+        $config = [
+            'name' => 'arangodb',
+            'driver' => 'arangodb',
+            'host' => 'http://127.0.0.1',
+            'port' => '1234',
+            'username' => 'root',
+        ];
+        $client = new ArangoClient($config);
+        $retrievedConfig = $client->getConfig();
+
+        $this->assertArrayNotHasKey('name', $retrievedConfig);
+        $this->assertArrayNotHasKey('driver', $retrievedConfig);
     }
 
     public function testSetAndGetHttpClient()
@@ -170,6 +198,36 @@ class ArangoClientTest extends TestCase
         $this->assertEquals(2, $response->getProtocolVersion());
     }
 
+
+    public function testJsonEncode()
+    {
+        $results = $this->arangoClient->jsonEncode([]);
+
+        $this->assertSame('{}', $results);
+    }
+
+    public function testJsonEncodeEmptyArray()
+    {
+        $results = $this->arangoClient->jsonEncode([]);
+
+        $this->assertSame('{}', $results);
+    }
+
+    public function testJsonEncodeEmptyString()
+    {
+        $results = $this->arangoClient->jsonEncode('');
+
+        $this->assertSame('""', $results);
+    }
+
+    public function testJsonEncodeInvalidData()
+    {
+        $data = [];
+        $data[] = "\xB1\x31";
+        $this->expectExceptionCode(JSON_ERROR_UTF8);
+        $this->arangoClient->jsonEncode($data);
+    }
+
     protected function checkHttp2Support()
     {
         // First assert that CURL supports http2!
@@ -179,6 +237,4 @@ class ArangoClientTest extends TestCase
         // HTTP/2 is only supported by ArangoDB 3.7 and up.
         $this->skipTestOnArangoVersionsBefore('3.7');
     }
-
-
 }

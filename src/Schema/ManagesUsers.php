@@ -56,9 +56,11 @@ trait ManagesUsers
      */
     public function createUser(array $user): array
     {
-        $body = json_encode((object) $user);
+        $options = [
+            'body' => $user
+        ];
 
-        return $this->arangoClient->request('post', '/_api/user', ['body' => $body]);
+        return $this->arangoClient->request('post', '/_api/user', $options);
     }
 
     /**
@@ -71,7 +73,6 @@ trait ManagesUsers
     {
         $uri = '/_api/user/' . $username;
 
-        $properties = json_encode((object)$properties);
         $options = ['body' => $properties];
 
         return $this->arangoClient->request('patch', $uri, $options);
@@ -87,7 +88,6 @@ trait ManagesUsers
     {
         $uri = '/_api/user/' . $username;
 
-        $user = json_encode((object) $user);
         $options = ['body' => $user];
 
         return $this->arangoClient->request('put', $uri, $options);
@@ -131,8 +131,11 @@ trait ManagesUsers
     {
         $uri = '/_api/user/' . $username . '/database/' . $database;
 
-        $grant = json_encode((object) ['grant' => $grant]);
-        $options = ['body' => $grant];
+        $options = [
+            'body' => [
+                'grant' => $grant
+            ]
+        ];
 
         return $this->arangoClient->request('put', $uri, $options);
     }

@@ -15,7 +15,7 @@ class SchemaManagerUsersTest extends TestCase
 
         $user = [
             'user' => $this->userName,
-            'password' => 'yee random hashed pw'
+            'password' => 'yee random pw'
         ];
 
         if (! $this->schemaManager->hasUser($this->userName)) {
@@ -47,10 +47,6 @@ class SchemaManagerUsersTest extends TestCase
         $this->assertArrayHasKey('user', $users[0]);
     }
 
-    /**
-     * @throws ArangoException
-     * @throws GuzzleException
-     */
     public function testHasUser()
     {
         $result = $this->schemaManager->hasUser('root');
@@ -65,7 +61,7 @@ class SchemaManagerUsersTest extends TestCase
     {
         $user = [
             'user' => 'admin',
-            'passwd' => 'highly secretive hashed password',
+            'passwd' => 'highly secretive password',
             'active' => true,
             'extra' => [
                 'profile' => [

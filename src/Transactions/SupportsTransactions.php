@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ArangoClient\Transactions;
 
 use ArangoClient\Exceptions\ArangoException;
+use ArangoClient\Http\HttpRequestOptions;
 
 trait SupportsTransactions
 {
@@ -90,7 +91,7 @@ trait SupportsTransactions
      *
      * @param  string  $method
      * @param  string  $uri
-     * @param  array<mixed>  $options
+     * @param  array<mixed>|HttpRequestOptions  $options
      * @param  string|null  $database
      * @param  int|null  $transactionId
      * @return array<mixed>
@@ -99,21 +100,18 @@ trait SupportsTransactions
     public function transactionAwareRequest(
         string $method,
         string $uri,
-        array $options = [],
+        $options = [],
         ?string $database = null,
         ?int $transactionId = null
     ): array {
+        if (is_array($options)) {
+            $options = $this->prepareRequestOptions($options);
+        }
         try {
             if (! isset($transactionId)) {
                 $transactionId = $this->transactions()->getTransaction();
             }
-            if (! isset($options['headers'])) {
-                $options['headers'] = [];
-            }
-            if (! is_array($options['headers'])) {
-                $options['headers'] = [$options['headers']];
-            }
-            $options['headers']['x-arango-trx-id'] = $transactionId;
+            $options->addHeader('x-arango-trx-id', $transactionId);
         } finally {
             return $this->request($method, $uri, $options, $database);
         }

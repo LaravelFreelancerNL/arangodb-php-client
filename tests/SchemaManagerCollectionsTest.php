@@ -171,4 +171,25 @@ class SchemaManagerCollectionsTest extends TestCase
         $this->assertTrue($result);
         $this->assertFalse($this->schemaManager->hasCollection($collection));
     }
+
+    public function testCreateCollectionWithOptions()
+    {
+        $collection = 'users';
+        $options = ['waitForSync' => true];
+
+        if (! $this->schemaManager->hasCollection($collection)) {
+            $result = $this->schemaManager->createCollection($collection, $options, 1, 1);
+            $this->assertTrue($result);
+        }
+
+        $collectionProperties = $this->schemaManager->getCollectionProperties('users');
+        $this->assertTrue($collectionProperties['waitForSync']);
+
+        // $waitForSyncReplication & $enforceReplicationFactor are not listed in the properties, so the lack of
+        // of an exception somewhat tests these options...
+
+        $result = $this->schemaManager->deleteCollection($collection);
+        $this->assertTrue($result);
+        $this->assertFalse($this->schemaManager->hasCollection($collection));
+    }
 }

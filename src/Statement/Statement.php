@@ -106,13 +106,15 @@ class Statement extends Manager implements IteratorAggregate
         $this->results = [];
 
         $bodyContent = $this->prepareQueryBodyContent();
-        $body = $this->arangoClient->jsonEncode($bodyContent);
 
-        $results = $this->arangoClient->transactionAwareRequest('post', '/_api/cursor', ['body' => $body]);
+        $options = [
+            'body' => $bodyContent
+        ];
+        $results = $this->arangoClient->transactionAwareRequest('post', '/_api/cursor', $options);
 
         $this->handleQueryResults($results);
 
-        $this->requestOutstandingResults($body);
+        $this->requestOutstandingResults($bodyContent);
 
         return true;
     }
@@ -151,15 +153,19 @@ class Statement extends Manager implements IteratorAggregate
     }
 
     /**
-     * @param  string  $body
+     * @param  array<mixed>  $body
      * @throws ArangoException
      */
-    protected function requestOutstandingResults(string $body): void
+    protected function requestOutstandingResults(array $body): void
     {
         while ($this->cursorHasMoreResults) {
             $uri = '/_api/cursor/' . (string) $this->cursorId;
 
-            $results = $this->arangoClient->request('put', $uri, ['body' => $body]);
+            $options = [
+                'body' => $body
+            ];
+
+            $results = $this->arangoClient->request('put', $uri, $options);
 
             $this->handleQueryResults($results);
         }
@@ -173,10 +179,12 @@ class Statement extends Manager implements IteratorAggregate
      */
     public function explain(): array
     {
-        $bodyContent = $this->prepareQueryBodyContent();
-        $body = $this->arangoClient->jsonEncode($bodyContent);
+        $body = $this->prepareQueryBodyContent();
+        $options = [
+            'body' => $body
+        ];
 
-        return $this->arangoClient->request('post', '/_api/explain', ['body' => $body]);
+        return $this->arangoClient->request('post', '/_api/explain', $options);
     }
 
     /**
@@ -187,12 +195,13 @@ class Statement extends Manager implements IteratorAggregate
      */
     public function parse(): array
     {
-        $bodyContent = $this->prepareQueryBodyContent();
-        $body = $this->arangoClient->jsonEncode($bodyContent);
+        $body = $this->prepareQueryBodyContent();
+        $options = [
+            'body' => $body
+        ];
 
-        return $this->arangoClient->request('post', '/_api/query', ['body' => $body]);
+        return $this->arangoClient->request('post', '/_api/query', $options);
     }
-
 
     /**
      * Execute the query and return performance information on the query.
@@ -211,17 +220,18 @@ class Statement extends Manager implements IteratorAggregate
         }
         $bodyContent['options']['profile'] = $mode;
 
-        $body = $this->arangoClient->jsonEncode($bodyContent);
+        $options = [
+            'body' => $bodyContent
+        ];
 
-        $results = $this->arangoClient->request('post', '/_api/cursor', ['body' => $body]);
+        $results = $this->arangoClient->request('post', '/_api/cursor', $options);
 
         $this->handleQueryResults($results);
 
-        $this->requestOutstandingResults($body);
+        $this->requestOutstandingResults($bodyContent);
 
         return $this->extra;
     }
-
 
     /**
      * Set a query on the statement

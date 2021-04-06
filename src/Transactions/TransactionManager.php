@@ -74,8 +74,7 @@ class TransactionManager extends Manager
     {
         $options['collections'] = $this->prepareCollections($collections);
 
-        $config = [];
-        $config['body'] = $this->arangoClient->jsonEncode($options);
+        $config = ['body' => $options];
         $results = $this->arangoClient->request('post', '/_api/transaction/begin', $config);
 
         $id = (string) ((array)$results['result'])['id'];

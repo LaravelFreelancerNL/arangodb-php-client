@@ -16,37 +16,37 @@ Get the requested collection.
 $arangoClient->schema()->getCollection('_fishbowl');
 ```
 
-### getCollectionProperties(string $collection): array
+### getCollectionProperties(string $name): array
 Get the properties of the requested collection.
 ```
 $arangoClient->schema()->getCollectionProperties('_fishbowl');
 ```
 
-### getCollectionWithDocumentCount(string $collection): array
+### getCollectionWithDocumentCount(string $name): array
 Get the properties of the requested collection.
 ```
 $arangoClient->schema()->getCollectionWithDocumentCount('_fishbowl');
 ```
 
-### getCollectionDocumentCount(string $collection): int
+### getCollectionDocumentCount(string $name): int
 Get the number of documents within the requested collection.
 ```
 $arangoClient->schema()->getCollectionDocumentCount('users');
 ```
 
-### getCollectionStatistics(string $collection, bool $details = false): array
+### getCollectionStatistics(string $name, bool $details = false): array
 Get the properties of the requested collection.
 ```
 $arangoClient->schema()->getCollectionStatistics('_fishbowl');
 ```
 
-### hasCollection(string $collection): bool
+### hasCollection(string $name): bool
 Check if a collection exists.
 ```
 $arangoClient->schema()->hasCollection('_fishbowl');
 ```
 
-### createCollection(string $collection, array $config = [], $waitForSyncReplication = null, $enforceReplicationFactor = null): bool
+### createCollection(string $name, array $config = [], $waitForSyncReplication = null, $enforceReplicationFactor = null): bool
 Create a collection
 ```
 $arangoClient->schema()->createCollection('users');

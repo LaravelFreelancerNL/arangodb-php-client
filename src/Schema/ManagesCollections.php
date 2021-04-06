@@ -40,14 +40,14 @@ trait ManagesCollections
     /**
      * Check for collection existence in current DB.
      *
-     * @param  string  $collection
+     * @param  string  $name
      * @return bool
      * @throws ArangoException
      */
-    public function hasCollection(string $collection): bool
+    public function hasCollection(string $name): bool
     {
         $results = $this->getCollections();
-        return array_search($collection, array_column($results, 'name'), true) !== false;
+        return array_search($name, array_column($results, 'name'), true) !== false;
     }
 
     /**
@@ -66,39 +66,39 @@ trait ManagesCollections
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#read-properties-of-a-collection
      *
-     * @param  string  $collection
+     * @param  string  $name
      * @return array<mixed>
      * @throws ArangoException
      */
-    public function getCollectionProperties(string $collection): array
+    public function getCollectionProperties(string $name): array
     {
-        $uri = '/_api/collection/' . $collection . '/properties';
+        $uri = '/_api/collection/' . $name . '/properties';
         return $this->arangoClient->request('get', $uri);
     }
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-number-of-documents-in-a-collection
      *
-     * @param  string  $collection
+     * @param  string  $name
      * @return array<mixed>
      * @throws ArangoException
      */
-    public function getCollectionWithDocumentCount(string $collection): array
+    public function getCollectionWithDocumentCount(string $name): array
     {
-        $uri = '/_api/collection/' . $collection . '/count';
+        $uri = '/_api/collection/' . $name . '/count';
         return $this->arangoClient->transactionAwareRequest('get', $uri);
     }
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-number-of-documents-in-a-collection
      *
-     * @param  string  $collection
+     * @param  string  $name
      * @return int
      * @throws ArangoException
      */
-    public function getCollectionDocumentCount(string $collection): int
+    public function getCollectionDocumentCount(string $name): int
     {
-        $results = $this->getCollectionWithDocumentCount($collection);
+        $results = $this->getCollectionWithDocumentCount($name);
 
         return (int) $results['count'];
     }
@@ -108,14 +108,14 @@ trait ManagesCollections
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     * @param  string  $collection
+     * @param  string  $name
      * @param  bool  $details
      * @return array<mixed>
      * @throws ArangoException
      */
-    public function getCollectionStatistics(string $collection, bool $details = false): array
+    public function getCollectionStatistics(string $name, bool $details = false): array
     {
-        $uri = '/_api/collection/' . $collection . '/figures';
+        $uri = '/_api/collection/' . $name . '/figures';
         return $this->arangoClient->request(
             'get',
             $uri,
@@ -128,28 +128,29 @@ trait ManagesCollections
     }
 
     /**
-     * @param  string  $collection
+     * @param  string  $name
      * @param  array<mixed>  $config
-     * @param  int|null  $waitForSyncReplication
-     * @param  int|null  $enforceReplicationFactor
+     * @param  int|bool|null  $waitForSyncReplication
+     * @param  int|bool|null  $enforceReplicationFactor
      * @return bool
      * @throws ArangoException
      */
     public function createCollection(
-        string $collection,
+        string $name,
         array $config = [],
         $waitForSyncReplication = null,
         $enforceReplicationFactor = null
     ): bool {
-        $collection = json_encode((object) array_merge($config, ['name' => $collection]));
-
-        $options = ['body' => $collection];
+        $options = [];
         if (isset($waitForSyncReplication)) {
-            $options['query']['waitForSyncReplication'] = $waitForSyncReplication;
+            $options['query']['waitForSyncReplication'] = (int) $waitForSyncReplication;
         }
         if (isset($enforceReplicationFactor)) {
-            $options['query']['enforceReplicationFactor'] = $enforceReplicationFactor;
+            $options['query']['enforceReplicationFactor'] = (int) $enforceReplicationFactor;
         }
+
+        $collection = array_merge($config, ['name' => $name]);
+        $options['body'] = $collection;
 
         return (bool) $this->arangoClient->request('post', '/_api/collection', $options);
     }
@@ -164,7 +165,6 @@ trait ManagesCollections
     {
         $uri = '/_api/collection/' . $name . '/properties';
 
-        $config = json_encode((object) $config);
         $options = ['body' => $config];
 
         return $this->arangoClient->request('put', $uri, $options);
@@ -180,8 +180,11 @@ trait ManagesCollections
     {
         $uri = '/_api/collection/' . $old . '/rename';
 
-        $newName = json_encode((object) ['name' => $new]);
-        $options = ['body' => $newName];
+        $options = [
+            'body' => [
+                'name' => $new
+            ]
+        ];
 
         return $this->arangoClient->request('put', $uri, $options);
     }

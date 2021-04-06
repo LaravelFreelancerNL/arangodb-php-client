@@ -6,6 +6,7 @@ namespace ArangoClient;
 
 use ArangoClient\Exceptions\ArangoException;
 use ArangoClient\Http\HttpClientConfig;
+use ArangoClient\Http\HttpRequestOptions;
 use ArangoClient\Statement\Statement;
 use ArangoClient\Transactions\SupportsTransactions;
 use GuzzleHttp\Client as GuzzleClient;
@@ -72,23 +73,41 @@ class ArangoClient
      *
      * @param  string  $method
      * @param  string  $uri
-     * @param  array<mixed>  $options
+     * @param  array<mixed>|HttpRequestOptions  $options
      * @param  string|null  $database
      * @return array<mixed>
      * @throws ArangoException
      */
-    public function request(string $method, string $uri, array $options = [], ?string $database = null): array
+    public function request(string $method, string $uri, $options = [], ?string $database = null): array
     {
         $uri = $this->prependDatabaseToUri($uri, $database);
 
+        if (is_array($options)) {
+            $options = $this->prepareRequestOptions($options);
+        }
+
         $response = null;
         try {
-            $response = $this->httpClient->request($method, $uri, $options);
+            $response = $this->httpClient->request($method, $uri, $options->all());
         } catch (Throwable $e) {
             $this->handleGuzzleException($e);
         }
 
         return $this->cleanupResponse($response);
+    }
+
+    /**
+     * @param array<mixed> $options
+     * @return HttpRequestOptions
+     * @throws ArangoException
+     */
+    protected function prepareRequestOptions(array $options): HttpRequestOptions
+    {
+        if (isset($options['body'])) {
+            $options['body'] = $this->jsonEncode($options['body']);
+        }
+
+        return new HttpRequestOptions($options);
     }
 
     /**
@@ -186,24 +205,23 @@ class ArangoClient
     }
 
     /**
-     * @param  array<mixed>  $data
+     * @param  mixed  $data
      * @return string
      * @throws ArangoException
      */
-    public function jsonEncode(array $data): string
+    public function jsonEncode($data): string
     {
-        $response = '';
-
-        if (! empty($data)) {
-            $response = json_encode($data);
-        }
+        $options = 0;
         if (empty($data)) {
-            $response = json_encode($data, JSON_FORCE_OBJECT);
+            $options = JSON_FORCE_OBJECT;
         }
+
+        $response = json_encode($data, $options);
 
         if ($response === false) {
             throw new ArangoException('JSON encoding failed with error: ' . json_last_error_msg(), json_last_error());
         }
+
         return $response;
     }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ArangoClient\Http;
 
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\FlexibleDataTransferObject;
 
 /**
  * Class HttpClientConfig
@@ -14,7 +14,7 @@ use Spatie\DataTransferObject\DataTransferObject;
  *
  * @package ArangoClient\Http
  */
-class HttpClientConfig extends DataTransferObject
+class HttpClientConfig extends FlexibleDataTransferObject
 {
     /**
      * @var string

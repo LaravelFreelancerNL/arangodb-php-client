@@ -26,9 +26,12 @@ trait ManagesViews
         $view['type'] = isset($view['type']) ? (string) $view['type'] : 'arangosearch';
 
         $uri = '/_api/view#' . $view['type'];
-        $body = json_encode((object) $view);
 
-        return  $this->arangoClient->request('post', $uri, ['body' => $body]);
+        $options = [
+            'body' => $view
+        ];
+
+        return  $this->arangoClient->request('post', $uri, $options);
     }
 
     /**
@@ -108,8 +111,11 @@ trait ManagesViews
     {
         $uri = '/_api/view/' . $old . '/rename';
 
-        $body = json_encode((object) ['name' => $new]);
-        $options = ['body' => $body];
+        $options = [
+            'body' => [
+                'name' => $new
+            ]
+        ];
 
         return $this->arangoClient->request('put', $uri, $options);
     }
@@ -126,18 +132,16 @@ trait ManagesViews
     {
         // PrimarySort & primarySortCompression are immutable and will throw if we try to change it.
         // Use replaceView if you want to update these properties.
-        if (isset($properties['primarySort'])) {
-            unset($properties['primarySort']);
-        }
-        if (isset($properties['primarySortCompression'])) {
-            unset($properties['primarySortCompression']);
-        }
+        $removeKeys = ['primarySort', 'primarySortCompression'];
+        $properties = array_diff_key($properties, array_flip($removeKeys));
 
         $properties['type'] = isset($properties['type']) ? (string) $properties['type'] : 'arangosearch';
 
         $uri = '/_api/view/' . $name . '/properties#' . $properties['type'];
-        $body = json_encode((object) $properties);
-        $options = ['body' => $body];
+
+        $options = [
+            'body' => $properties
+        ];
 
         return $this->arangoClient->request('patch', $uri, $options);
     }

@@ -84,7 +84,6 @@ trait ManagesIndexes
         }
         $uri = '/_api/index#' . $indexType;
 
-        $index = json_encode((object) $index);
         $options = ['body' => $index];
         $options['query']['collection'] = $collection;
 
