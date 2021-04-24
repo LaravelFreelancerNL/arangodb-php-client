@@ -14,6 +14,7 @@ class SchemaManager extends Manager
     use ManagesIndexes;
     use ManagesViews;
     use ManagesUsers;
+    use ManagesGraphs;
 
     /**
      * @var ArangoClient

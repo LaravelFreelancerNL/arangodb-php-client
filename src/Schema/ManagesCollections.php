@@ -7,7 +7,7 @@ namespace ArangoClient\Schema;
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
 
-/*
+/**
  * @see https://www.arangodb.com/docs/stable/http/collection.html
  */
 trait ManagesCollections
