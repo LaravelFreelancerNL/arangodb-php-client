@@ -28,7 +28,7 @@ trait SupportsTransactions
     /**
      * Shortcut to begin() on the transactionManager
      *
-     * @param  array{read?: string[], write?: string[], exclusive?: string[]}  $collections
+     * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
      * @return string
      * @throws ArangoException
@@ -41,7 +41,7 @@ trait SupportsTransactions
     /**
      * Shortcut to begin() on the transactionManager
      *
-     * @param  array{read?: string[], write?: string[], exclusive?: string[]}  $collections
+     * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
      * @return string
      * @throws ArangoException

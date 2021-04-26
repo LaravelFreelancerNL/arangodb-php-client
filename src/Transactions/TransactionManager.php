@@ -65,7 +65,7 @@ class TransactionManager extends Manager
 
     /**
      * Begin a transactions and return its id.
-     * @param  array{read?: string[], write?: string[], exclusive?: string[]}  $collections
+     * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
      * @return string
      * @throws ArangoException
@@ -138,7 +138,7 @@ class TransactionManager extends Manager
     }
 
     /**
-     * @param  array{read?: string[], write?: string[], exclusive?: string[]}  $collections
+     * @param  array<string, array<string>>  $collections
      * @return array<string, array<string>>
      */
     protected function prepareCollections(array $collections): array
