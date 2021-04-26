@@ -16,17 +16,16 @@ class SchemaManagerDatabasesTest extends TestCase
         $this->arangoClient->setDatabase('_system');
         $result = $this->schemaManager->getCurrentDatabase();
 
-        $this->assertSame('1', $result['id']);
-        $this->assertSame('_system', $result['name']);
-        $this->assertSame(true, $result['isSystem']);
-        $this->assertSame('none', $result['path']);
+        $this->assertSame('1', $result->id);
+        $this->assertSame('_system', $result->name);
+        $this->assertSame(true, $result->isSystem);
+        $this->assertSame('none', $result->path);
     }
 
     public function testGetDatabases()
     {
         $result = $this->schemaManager->getDatabases();
 
-        $this->assertIsArray($result);
         $this->assertLessThanOrEqual(count($result), 2);
         foreach ($result as $database) {
             $this->assertIsString($database);

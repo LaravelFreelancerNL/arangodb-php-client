@@ -5,7 +5,7 @@ Manages administrative functions and information retrieval for the server/cluste
 ## Functions
 The admin manager supports the following functions:
 
-### getVersion(bool $details = false): array
+### getVersion(bool $details = false): stdClass
 Get the ArangoDB version of the server
 
 ```

@@ -6,6 +6,7 @@ namespace ArangoClient\Schema;
 
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
+use stdClass;
 
 /**
  * Manage collection indexes
@@ -31,17 +32,17 @@ trait ManagesIndexes
             ]
         ];
         $results = $this->arangoClient->request('get', '/_api/index', $options);
-        return (array) $results['indexes'];
+        return (array) $results->indexes;
     }
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#read-index
      *
      * @param  string  $id
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function getIndex(string $id): array
+    public function getIndex(string $id): stdClass
     {
         $uri = '/_api/index/' . $id;
 
@@ -51,20 +52,17 @@ trait ManagesIndexes
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#read-index
      *
-     * @param  string  $collection
-     * @param  string  $name
-     * @return array<mixed>|bool
      * @throws ArangoException
      */
-    public function getIndexByName(string $collection, string $name)
+    public function getIndexByName(string $collection, string $name): stdClass|false
     {
         $indexes = $this->getIndexes($collection);
         $searchResult = array_search($name, array_column($indexes, 'name'));
-        if (is_integer($searchResult)) {
-            return (array) $indexes[$searchResult];
-        }
 
-        return (bool) $searchResult;
+        if (is_integer($searchResult)) {
+            return (object) $indexes[$searchResult];
+        }
+        return false;
     }
 
     /**
@@ -72,10 +70,10 @@ trait ManagesIndexes
      *
      * @param  string  $collection
      * @param  array<mixed>  $index
-     * @return bool
+     * @return stdClass
      * @throws ArangoException
      */
-    public function createIndex(string $collection, array $index): bool
+    public function createIndex(string $collection, array $index): stdClass
     {
         $indexType = 'persistent';
 
@@ -87,20 +85,20 @@ trait ManagesIndexes
         $options = ['body' => $index];
         $options['query']['collection'] = $collection;
 
-        return (bool) $this->arangoClient->request('post', $uri, $options);
+        return  $this->arangoClient->request('post', $uri, $options);
     }
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#delete-index
      *
      * @param  string  $id
-     * @return bool
+     * @return stdClass
      * @throws ArangoException
      */
-    public function deleteIndex(string $id): bool
+    public function deleteIndex(string $id): stdClass
     {
         $uri = '/_api/index/' . $id;
 
-        return (bool) $this->arangoClient->request('delete', $uri);
+        return $this->arangoClient->request('delete', $uri);
     }
 }

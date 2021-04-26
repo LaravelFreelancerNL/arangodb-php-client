@@ -7,6 +7,7 @@ namespace ArangoClient\Transactions;
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
 use ArangoClient\Manager;
+use stdClass;
 
 /**
  * Class TransactionManager
@@ -18,9 +19,6 @@ use ArangoClient\Manager;
  */
 class TransactionManager extends Manager
 {
-    /**
-     * @var ArangoClient
-     */
     protected ArangoClient $arangoClient;
 
     /**
@@ -28,10 +26,6 @@ class TransactionManager extends Manager
      */
     protected array $transactions = [];
 
-    /**
-     * Documents constructor.
-     * @param  ArangoClient  $arangoClient
-     */
     public function __construct(ArangoClient $arangoClient)
     {
         $this->arangoClient = $arangoClient;
@@ -48,11 +42,9 @@ class TransactionManager extends Manager
     }
 
     /**
-     * @param  string|null  $id
-     * @return string
      * @throws ArangoException
      */
-    public function getTransaction(string $id = null): string
+    public function getTransaction(?string $id = null): string
     {
         $this->validateId($id);
 
@@ -75,20 +67,18 @@ class TransactionManager extends Manager
         $options['collections'] = $this->prepareCollections($collections);
 
         $config = ['body' => $options];
-        $results = $this->arangoClient->request('post', '/_api/transaction/begin', $config);
+        $result = (object) $this->arangoClient->request('post', '/_api/transaction/begin', $config)->result;
 
-        $id = (string) ((array)$results['result'])['id'];
+        $id = (string) $result->id;
         $this->transactions[$id] = $id;
 
         return $id;
     }
 
     /**
-     * @param  string|null  $id
-     * @return bool
      * @throws ArangoException
      */
-    public function commit(string $id = null): bool
+    public function commit(?string $id = null): bool
     {
         $id = $this->getTransaction($id);
 
@@ -101,11 +91,9 @@ class TransactionManager extends Manager
     }
 
     /**
-     * @param  string|null  $id
-     * @return true
      * @throws ArangoException
      */
-    public function abort(string $id = null): bool
+    public function abort(?string $id = null): bool
     {
         $id = $this->getTransaction($id);
 
@@ -118,11 +106,9 @@ class TransactionManager extends Manager
     }
 
     /**
-     * @param  string|null  $id
-     * @return bool
      * @throws ArangoException
      */
-    protected function validateId(string $id = null): bool
+    protected function validateId(?string $id = null): bool
     {
         if (
             empty($this->transactions)

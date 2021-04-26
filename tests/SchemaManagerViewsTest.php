@@ -33,25 +33,25 @@ class SchemaManagerViewsTest extends TestCase
     {
         $views = $this->schemaManager->getViews();
 
-        $this->assertSame($this->view['name'], $views[0]['name']);
+        $this->assertSame($this->view['name'], $views[0]->name);
     }
 
     public function testGetView()
     {
         $view = $this->schemaManager->getView($this->view['name']);
 
-        $this->assertSame($this->view['name'], $view['name']);
-        $this->assertArrayHasKey('type', $view);
-        $this->assertArrayHasKey('links', $view);
+        $this->assertSame($this->view['name'], $view->name);
+        $this->assertObjectHasAttribute('type', $view);
+        $this->assertObjectHasAttribute('links', $view);
     }
 
     public function testGetViewProperties()
     {
         $view = $this->schemaManager->getViewProperties($this->view['name']);
 
-        $this->assertSame($this->view['name'], $view['name']);
-        $this->assertArrayHasKey('type', $view);
-        $this->assertArrayHasKey('links', $view);
+        $this->assertSame($this->view['name'], $view->name);
+        $this->assertObjectHasAttribute('type', $view);
+        $this->assertObjectHasAttribute('links', $view);
     }
 
     public function testHasView()
@@ -67,7 +67,7 @@ class SchemaManagerViewsTest extends TestCase
     {
         $newName = 'newName';
         $result = $this->schemaManager->renameView($this->view['name'], $newName);
-        $this->assertSame($newName, $result['name']);
+        $this->assertSame($newName, $result->name);
 
         $this->schemaManager->deleteView($newName);
     }
@@ -80,7 +80,7 @@ class SchemaManagerViewsTest extends TestCase
         ];
         $result = $this->schemaManager->updateView($this->view['name'], $newViewProps);
 
-        $this->assertSame(3, $result['cleanupIntervalStep']);
+        $this->assertSame(3, $result->cleanupIntervalStep);
     }
 
     public function testReplaceView()
@@ -93,8 +93,8 @@ class SchemaManagerViewsTest extends TestCase
         ];
         $newView = $this->schemaManager->replaceView($this->view['name'], $newViewProps);
 
-        $this->assertSame($newViewProps['primarySort'][0]['field'], $newView['primarySort'][0]['field']);
-        $this->assertFalse($newView['primarySort'][0]['asc']);
+        $this->assertSame($newViewProps['primarySort'][0]['field'], $newView->primarySort[0]->field);
+        $this->assertFalse($newView->primarySort[0]->asc);
     }
 
     public function testCreateAndDeleteView()
@@ -103,8 +103,8 @@ class SchemaManagerViewsTest extends TestCase
             'name' => 'coolnewview'
         ];
         $created = $this->schemaManager->createView($view);
-        $this->assertArrayHasKey('name', $created);
-        $this->assertSame($view['name'], $created['name']);
+        $this->assertObjectHasAttribute('name', $created);
+        $this->assertSame($view['name'], $created->name);
 
         $deleted = $this->schemaManager->deleteView($view['name']);
         $this->assertTrue($deleted);

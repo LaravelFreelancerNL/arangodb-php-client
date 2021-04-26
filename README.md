@@ -1,6 +1,6 @@
 # ArangoClient - ArangoDB PHP client
 
-Low level PHP client for ArangoDB. Supports PHP versions 7.4 & ^8.0
+Low level PHP client for ArangoDB. Supports PHP ^8.0
 
 ![Github CI tests](https://github.com/LaravelFreelancerNL/arangodb-php-client/workflows/CI%20tests/badge.svg)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LaravelFreelancerNL/arangodb-php-client/badges/quality-score.png?b=next)](https://scrutinizer-ci.com/g/LaravelFreelancerNL/arangodb-php-client/?branch=next)

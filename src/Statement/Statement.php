@@ -7,6 +7,7 @@ use ArangoClient\Exceptions\ArangoException;
 use ArangoClient\Manager;
 use ArrayIterator;
 use IteratorAggregate;
+use stdClass;
 
 /**
  * Executes queries on ArangoDB
@@ -38,35 +39,20 @@ class Statement extends Manager implements IteratorAggregate
      */
     protected array $results = [];
 
-    /**
-     * @var array<mixed>
-     */
-    protected array $stats = [];
+    protected ?stdClass $stats = null;
 
     /**
      * @var array<mixed>
      */
     protected array $warnings = [];
 
-    /**
-     * @var int|null
-     */
     protected ?int $cursorId = null;
 
-    /**
-     * @var bool
-     */
     protected bool $cursorHasMoreResults = false;
 
-    /**
-     * @var int|null
-     */
     protected ?int $count = null;
 
-    /**
-     * @var array<mixed>
-     */
-    protected array $extra = [];
+    protected ?stdClass $extra = null;
 
     /**
      * Statement constructor.
@@ -98,7 +84,6 @@ class Statement extends Manager implements IteratorAggregate
     }
 
     /**
-     * @return bool
      * @throws ArangoException
      */
     public function execute(): bool
@@ -133,23 +118,20 @@ class Statement extends Manager implements IteratorAggregate
         return $bodyContent;
     }
 
-    /**
-     * @param  array<mixed>  $results
-     */
-    protected function handleQueryResults(array $results): void
+    protected function handleQueryResults(stdClass $results): void
     {
-        $this->results = array_merge($this->results, (array) $results['result']);
+        $this->results = array_merge($this->results, (array) $results->result);
 
-        if (isset($results['extra'])) {
-            $this->extra = (array) $results['extra'];
+        if (isset($results->extra)) {
+            $this->extra = (object) $results->extra;
         }
 
-        if (array_key_exists('count', $results)) {
-            $this->count = (int) $results['count'];
+        if (isset($results->count)) {
+            $this->count = (int) $results->count;
         }
 
-        $this->cursorHasMoreResults = (bool) $results['hasMore'];
-        $this->cursorId = $results['hasMore'] ?  (int) $results['id'] : null;
+        $this->cursorHasMoreResults = (bool) $results->hasMore;
+        $this->cursorId = $results->hasMore ?  (int) $results->id : null;
     }
 
     /**
@@ -172,12 +154,9 @@ class Statement extends Manager implements IteratorAggregate
     }
 
     /**
-     * Explain the given query
-     *
-     * @return array<mixed>
      * @throws ArangoException
      */
-    public function explain(): array
+    public function explain(): stdClass
     {
         $body = $this->prepareQueryBodyContent();
         $options = [
@@ -190,10 +169,9 @@ class Statement extends Manager implements IteratorAggregate
     /**
      * Parse and validate the query, will through an ArangoException if the query is invalid.
      *
-     * @return array<mixed>
      * @throws ArangoException
      */
-    public function parse(): array
+    public function parse(): stdClass
     {
         $body = $this->prepareQueryBodyContent();
         $options = [
@@ -207,11 +185,9 @@ class Statement extends Manager implements IteratorAggregate
      * Execute the query and return performance information on the query.
      * @see https://www.arangodb.com/docs/3.7/aql/execution-and-performance-query-profiler.html
      *
-     * @param  int|bool  $mode
-     * @return array<mixed>
      * @throws ArangoException
      */
-    public function profile($mode = 1): array
+    public function profile(int|bool $mode = 1): stdClass|null
     {
         $bodyContent = $this->prepareQueryBodyContent();
 
@@ -233,12 +209,6 @@ class Statement extends Manager implements IteratorAggregate
         return $this->extra;
     }
 
-    /**
-     * Set a query on the statement
-     *
-     * @param  string  $query
-     * @return Statement
-     */
     public function setQuery(string $query): self
     {
         $this->query = $query;
@@ -246,11 +216,6 @@ class Statement extends Manager implements IteratorAggregate
         return $this;
     }
 
-    /**
-     * Get the statement's query.
-     *
-     * @return string
-     */
     public function getQuery(): string
     {
         return $this->query;
@@ -267,23 +232,20 @@ class Statement extends Manager implements IteratorAggregate
     }
 
     /**
-     * Return the total number of results.
+     * Return the total number of results. (not just the retrieved results)
      * Useful if not all results have been retrieved from the database yet.
-     *
-     * @return int|null
      */
     public function getCount(): ?int
     {
         return $this->count;
     }
 
-    /**
-     * Return the number writes executed to by the query.
-     *
-     * @return int
-     */
     public function getWritesExecuted(): int
     {
-        return (isset($this->extra['stats']['writesExecuted'])) ? (int) $this->extra['stats']['writesExecuted'] : 0;
+        if (! isset($this->extra->stats) || ! is_object($this->extra->stats)) {
+            return 0;
+        }
+
+        return (isset($this->extra->stats->writesExecuted)) ? (int) $this->extra->stats->writesExecuted : 0;
     }
 }

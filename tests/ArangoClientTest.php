@@ -93,9 +93,9 @@ class ArangoClientTest extends TestCase
     {
         $result = $this->arangoClient->request('get', '/_api/version', []);
 
-        $this->assertSame('arango', $result['server']);
-        $this->assertSame('community', $result['license']);
-        $this->assertIsString($result['version']);
+        $this->assertSame('arango', $result->server);
+        $this->assertSame('community', $result->license);
+        $this->assertIsString($result->version);
     }
 
     public function testGetUser()
@@ -150,7 +150,7 @@ class ArangoClientTest extends TestCase
 
         $database = $this->arangoClient->schema()->getCurrentDatabase();
 
-        $this->assertArrayHasKey('name', $database);
+        $this->assertObjectHasAttribute('name', $database);
     }
 
     public function testAdmin()
@@ -160,7 +160,7 @@ class ArangoClientTest extends TestCase
 
         $version = $this->arangoClient->admin()->getVersion();
 
-        $this->assertArrayHasKey('version', $version);
+        $this->assertObjectHasAttribute('version', $version);
     }
 
     public function testPrepare()

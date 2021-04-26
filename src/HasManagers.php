@@ -10,19 +10,10 @@ use ArangoClient\Schema\SchemaManager;
 trait HasManagers
 {
 
-    /**
-     * @var AdminManager|null
-     */
     protected ?AdminManager $adminManager = null;
 
-    /**
-     * @var SchemaManager|null
-     */
     protected ?SchemaManager $schemaManager = null;
 
-    /**
-     * @return AdminManager
-     */
     public function admin(): AdminManager
     {
         if (! isset($this->adminManager)) {

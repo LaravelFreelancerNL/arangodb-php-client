@@ -66,30 +66,30 @@ class StatementTest extends TestCase
     {
         $explanation = $this->statement->explain();
 
-        $this->assertArrayHasKey('plan', $explanation);
+        $this->assertObjectHasAttribute('plan', $explanation);
     }
 
     public function testParse()
     {
         $parsed = $this->statement->parse();
 
-        $this->assertArrayHasKey('ast', $parsed);
+        $this->assertObjectHasAttribute('ast', $parsed);
     }
 
     public function testProfile()
     {
         $profile = $this->statement->profile();
-        $this->assertArrayHasKey('stats', $profile);
-        $this->assertArrayHasKey('profile', $profile);
+        $this->assertObjectHasAttribute('stats', $profile);
+        $this->assertObjectHasAttribute('profile', $profile);
     }
 
     public function testProfileModeTwo()
     {
         $profile = $this->statement->profile(2);
 
-        $this->assertArrayHasKey('stats', $profile);
-        $this->assertArrayHasKey('profile', $profile);
-        $this->assertArrayHasKey('plan', $profile);
+        $this->assertObjectHasAttribute('stats', $profile);
+        $this->assertObjectHasAttribute('profile', $profile);
+        $this->assertObjectHasAttribute('plan', $profile);
     }
 
     public function testGetCount()
@@ -120,7 +120,7 @@ class StatementTest extends TestCase
 
         $results = $this->statement->fetchAll();
         $this->assertEquals(10, count($results));
-        $this->assertSame('test1', $results[0]['_key']);
+        $this->assertSame('test1', $results[0]->_key);
     }
 
 
@@ -137,7 +137,7 @@ class StatementTest extends TestCase
         $results =$statement->fetchAll();
 
         $this->assertEquals(10, count($results));
-        $this->assertSame('test1', $results[0]['_key']);
+        $this->assertSame('test1', $results[0]->_key);
     }
 
     public function testStatementIsIterable()
@@ -147,7 +147,7 @@ class StatementTest extends TestCase
 
         $count = 0;
         foreach ($this->statement as $document) {
-            $this->assertArrayHasKey('foobar', $document);
+            $this->assertObjectHasAttribute('foobar', $document);
             $count++;
         }
         $this->assertEquals(10, $count);

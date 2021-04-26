@@ -6,6 +6,7 @@ namespace ArangoClient\Schema;
 
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
+use stdClass;
 
 /**
  * @see https://www.arangodb.com/docs/stable/http/collection.html
@@ -34,7 +35,7 @@ trait ManagesCollections
             ]
         );
 
-        return (array) $results['result'];
+        return (array) $results->result;
     }
 
     /**
@@ -53,11 +54,9 @@ trait ManagesCollections
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-information-about-a-collection
      *
-     * @param  string  $name
-     * @return array<mixed>
      * @throws ArangoException
      */
-    public function getCollection(string $name): array
+    public function getCollection(string $name): stdClass
     {
         $uri = '/_api/collection/' . $name;
         return $this->arangoClient->request('get', $uri);
@@ -67,10 +66,10 @@ trait ManagesCollections
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#read-properties-of-a-collection
      *
      * @param  string  $name
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function getCollectionProperties(string $name): array
+    public function getCollectionProperties(string $name): stdClass
     {
         $uri = '/_api/collection/' . $name . '/properties';
         return $this->arangoClient->request('get', $uri);
@@ -80,10 +79,10 @@ trait ManagesCollections
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-number-of-documents-in-a-collection
      *
      * @param  string  $name
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function getCollectionWithDocumentCount(string $name): array
+    public function getCollectionWithDocumentCount(string $name): stdClass
     {
         $uri = '/_api/collection/' . $name . '/count';
         return $this->arangoClient->transactionAwareRequest('get', $uri);
@@ -100,7 +99,7 @@ trait ManagesCollections
     {
         $results = $this->getCollectionWithDocumentCount($name);
 
-        return (int) $results['count'];
+        return (int) $results->count;
     }
 
     /**
@@ -110,10 +109,10 @@ trait ManagesCollections
      *
      * @param  string  $name
      * @param  bool  $details
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function getCollectionStatistics(string $name, bool $details = false): array
+    public function getCollectionStatistics(string $name, bool $details = false): stdClass
     {
         $uri = '/_api/collection/' . $name . '/figures';
         return $this->arangoClient->request(
@@ -132,7 +131,7 @@ trait ManagesCollections
      * @param  array<mixed>  $config
      * @param  int|bool|null  $waitForSyncReplication
      * @param  int|bool|null  $enforceReplicationFactor
-     * @return bool
+     * @return stdClass
      * @throws ArangoException
      */
     public function createCollection(
@@ -140,7 +139,7 @@ trait ManagesCollections
         array $config = [],
         $waitForSyncReplication = null,
         $enforceReplicationFactor = null
-    ): bool {
+    ): stdClass {
         $options = [];
         if (isset($waitForSyncReplication)) {
             $options['query']['waitForSyncReplication'] = (int) $waitForSyncReplication;
@@ -152,16 +151,16 @@ trait ManagesCollections
         $collection = array_merge($config, ['name' => $name]);
         $options['body'] = $collection;
 
-        return (bool) $this->arangoClient->request('post', '/_api/collection', $options);
+        return $this->arangoClient->request('post', '/_api/collection', $options);
     }
 
     /**
      * @param  string  $name
      * @param  array<mixed>  $config
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function updateCollection(string $name, array $config = []): array
+    public function updateCollection(string $name, array $config = []): stdClass
     {
         $uri = '/_api/collection/' . $name . '/properties';
 
@@ -173,10 +172,10 @@ trait ManagesCollections
     /**
      * @param  string  $old
      * @param  string  $new
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function renameCollection(string $old, string $new): array
+    public function renameCollection(string $old, string $new): stdClass
     {
         $uri = '/_api/collection/' . $old . '/rename';
 
@@ -191,14 +190,14 @@ trait ManagesCollections
 
     /**
      * @param  string  $name
-     * @return bool
+     * @return stdClass
      * @throws ArangoException
      */
-    public function truncateCollection(string $name): bool
+    public function truncateCollection(string $name): stdClass
     {
         $uri = '/_api/collection/' . $name . '/truncate';
 
-        return (bool) $this->arangoClient->request('put', $uri);
+        return $this->arangoClient->request('put', $uri);
     }
 
     /**

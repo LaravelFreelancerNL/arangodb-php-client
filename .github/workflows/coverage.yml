@@ -26,7 +26,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           coverage: xdebug
@@ -37,5 +37,4 @@ jobs:
       - name: Test coverage
         run: |
           vendor/bin/phpunit --coverage-clover clover.xml --whitelist src
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover clover.xml
+          vendor/bin/ocular code-coverage:upload --format=php-clover clover.xml

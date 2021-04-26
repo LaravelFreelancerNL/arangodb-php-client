@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ArangoClient\Http;
 
-use Spatie\DataTransferObject\FlexibleDataTransferObject;
+use Spatie\DataTransferObject\DataTransferObject;
 
 /**
  * Class HttpClientConfig
@@ -14,31 +14,16 @@ use Spatie\DataTransferObject\FlexibleDataTransferObject;
  *
  * @package ArangoClient\Http
  */
-class HttpClientConfig extends FlexibleDataTransferObject
+class HttpClientConfig extends DataTransferObject
 {
-    /**
-     * @var string
-     */
     public string $endpoint = 'http://localhost:8529';
 
-    /**
-     * @var string|null
-     */
     public ?string $host = null;
 
-    /**
-     * @var string|int|null
-     */
-    public $port = null;
+    public string|int|null $port = null;
 
-    /**
-     * @var float|int
-     */
-    public $version = 1.1;
+    public int|float $version = 1.1;
 
-    /**
-     * @var string
-     */
     public string $connection = 'Keep-Alive';
 
     /**
@@ -46,24 +31,12 @@ class HttpClientConfig extends FlexibleDataTransferObject
      */
     public $allow_redirects = false;
 
-    /**
-     * @var float
-     */
     public float $connect_timeout = 0;
 
-    /**
-     * @var string|null
-     */
     public ?string $username = null;
 
-    /**
-     * @var string|null
-     */
     public ?string $password = null;
 
-    /**
-     * @var string
-     */
     public string $database = '_system';
 
     /**

@@ -30,31 +30,31 @@ class SchemaManagerIndexesTest extends TestCase
     {
         $indexes = $this->schemaManager->getIndexes($this->collection);
 
-        $this->assertIsArray($indexes[0]);
-        $this->assertArrayHasKey('name', $indexes[0]);
-        $this->assertSame('primary', $indexes[0]['name']);
+        $this->assertIsObject($indexes[0]);
+        $this->assertObjectHasAttribute('name', $indexes[0]);
+        $this->assertSame('primary', $indexes[0]->name);
     }
 
     public function testGetIndex()
     {
         $indexes = $this->schemaManager->getIndexes($this->collection);
-        $indexId = $indexes[0]['id'];
+        $indexId = $indexes[0]->id;
 
         $index = $this->schemaManager->getIndex($indexId);
 
-        $this->assertArrayHasKey('name', $index);
-        $this->assertArrayHasKey('id', $index);
-        $this->assertArrayHasKey('fields', $index);
+        $this->assertObjectHasAttribute('name', $index);
+        $this->assertObjectHasAttribute('id', $index);
+        $this->assertObjectHasAttribute('fields', $index);
     }
 
     public function testGetIndexByName()
     {
         $indexes = $this->schemaManager->getIndexes($this->collection);
-        $indexName = $indexes[0]['name'];
+        $indexName = $indexes[0]->name;
 
         $index = $this->schemaManager->getIndexByName($this->collection, $indexName);
 
-        $this->assertSame($indexName, $index['name']);
+        $this->assertSame($indexName, $index->name);
     }
 
     public function testCreateIndex()
@@ -69,11 +69,10 @@ class SchemaManagerIndexesTest extends TestCase
         $created = $this->schemaManager->createIndex($this->collection, $index);
         $result = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
 
-        $this->assertTrue($created);
-        $this->assertSame($index['name'], $result['name']);
-        $this->assertSame($index['fields'][0], $result['fields'][0]);
-        $this->assertSame($index['unique'], $result['unique']);
-        $this->assertSame($index['sparse'], $result['sparse']);
+        $this->assertSame($index['name'], $result->name);
+        $this->assertSame($index['fields'][0], $result->fields[0]);
+        $this->assertSame($index['unique'], $result->unique);
+        $this->assertSame($index['sparse'], $result->sparse);
     }
 
     public function testDeleteIndex()
@@ -88,8 +87,8 @@ class SchemaManagerIndexesTest extends TestCase
         $created = $this->schemaManager->createIndex($this->collection, $index);
         $found = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
 
-        $deleted = $this->schemaManager->deleteIndex($found['id']);
-        $this->assertTrue($deleted);
+        $deleted = $this->schemaManager->deleteIndex($found->id);
+        $this->assertEquals($created->id, $deleted->id);
         $searchForDeleted =  $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
         $this->assertFalse($searchForDeleted);
     }

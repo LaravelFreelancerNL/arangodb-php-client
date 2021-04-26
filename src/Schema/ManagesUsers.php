@@ -6,6 +6,7 @@ namespace ArangoClient\Schema;
 
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
+use stdClass;
 
 /*
  * @see https://www.arangodb.com/docs/stable/http/views.html
@@ -16,10 +17,10 @@ trait ManagesUsers
 
     /**
      * @param  string  $username
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function getUser(string $username): array
+    public function getUser(string $username): stdClass
     {
         $uri = '/_api/user/' . $username;
 
@@ -34,7 +35,7 @@ trait ManagesUsers
     {
         $results = $this->arangoClient->request('get', '/_api/user');
 
-        return (array) $results['result'];
+        return (array) $results->result;
     }
 
     /**
@@ -51,10 +52,10 @@ trait ManagesUsers
 
     /**
      * @param  array<mixed>  $user
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function createUser(array $user): array
+    public function createUser(array $user): stdClass
     {
         $options = [
             'body' => $user
@@ -66,10 +67,10 @@ trait ManagesUsers
     /**
      * @param  string  $username
      * @param array<mixed> $properties
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function updateUser(string $username, array $properties): array
+    public function updateUser(string $username, array $properties): stdClass
     {
         $uri = '/_api/user/' . $username;
 
@@ -81,10 +82,10 @@ trait ManagesUsers
     /**
      * @param  string  $username
      * @param  array<mixed>  $user
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function replaceUser(string $username, array $user): array
+    public function replaceUser(string $username, array $user): stdClass
     {
         $uri = '/_api/user/' . $username;
 
@@ -117,17 +118,17 @@ trait ManagesUsers
 
         $results = $this->arangoClient->request('get', $uri);
 
-        return (string) $results['result'];
+        return (string) $results->result;
     }
 
     /**
      * @param  string  $username
      * @param  string  $database
      * @param  string  $grant
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function setDatabaseAccessLevel(string $username, string $database, string $grant): array
+    public function setDatabaseAccessLevel(string $username, string $database, string $grant): stdClass
     {
         $uri = '/_api/user/' . $username . '/database/' . $database;
 
