@@ -43,9 +43,7 @@ class ArangoClient
         $config['endpoint'] = $this->generateEndpoint($config);
         $this->config = new HttpClientConfig($config);
 
-        $this->httpClient = isset($httpClient)
-            ? $httpClient
-            : new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
+        $this->httpClient = $httpClient ?? new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
     }
 
     /**
@@ -156,10 +154,10 @@ class ArangoClient
         }
 
         throw(
-        new ArangoException(
-            $message,
-            (int) $code
-        )
+            new ArangoException(
+                $code . ' - ' .  $message,
+                (int) $code
+            )
         );
     }
 
