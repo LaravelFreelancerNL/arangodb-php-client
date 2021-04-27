@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -37,4 +39,5 @@ jobs:
       - name: Test coverage
         run: |
           vendor/bin/phpunit --coverage-clover clover.xml --whitelist src
+          echo "Upload results to Scrutinizer-ci"
           vendor/bin/ocular code-coverage:upload --format=php-clover clover.xml
