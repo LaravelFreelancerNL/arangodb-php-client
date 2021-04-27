@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         php: [8.0]
-        arangodb: [3.6.0, 3.6, 3.7.0, latest]
+        arangodb: [3.6, 3.7, latest]
     name:  Quality checks PHP ${{ matrix.php }} / ArangoDB ${{ matrix.arangodb }}
 
     services:
