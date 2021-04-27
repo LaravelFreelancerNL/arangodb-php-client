@@ -14,6 +14,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
+use stdClass;
 
 class ArangoClientTest extends TestCase
 {
@@ -226,6 +227,35 @@ class ArangoClientTest extends TestCase
         $data[] = "\xB1\x31";
         $this->expectExceptionCode(JSON_ERROR_UTF8);
         $this->arangoClient->jsonEncode($data);
+    }
+
+    public function testResponseDataMatchesRequestData()
+    {
+        $collection = 'users';
+        if (! $this->schemaManager->hasCollection($collection)) {
+            $this->schemaManager->createCollection($collection);
+        }
+        $location = new stdClass();
+        $location->address = 'Voughtstreet 10';
+        $location->city = 'New York';
+
+        $user = new stdClass();
+        $user->name = 'Soldier Boy';
+        $user->location = $location;
+
+        $insertQuery = 'INSERT ' . json_encode($user) . ' INTO ' . $collection . ' RETURN NEW';
+        $insertStatement = $this->arangoClient->prepare($insertQuery);
+        $insertStatement->execute();
+        $insertResult = $insertStatement->fetchAll();
+
+        $query = 'FOR doc IN ' . $collection . ' RETURN doc';
+        $statement = $this->arangoClient->prepare($query);
+        $statement->execute();
+        $users = $statement->fetchAll();
+
+        $this->assertEquals($insertResult[0], $users[0]);
+
+        $this->schemaManager->deleteCollection($collection);
     }
 
     protected function checkHttp2Support()
