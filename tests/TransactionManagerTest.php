@@ -21,7 +21,7 @@ class TransactionManagerTest extends TestCase
     {
         $transactionId = $this->transactionManager->begin();
         $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
-        $this->assertSame($transactionId, $runningTransactions[0]['id']);
+        $this->assertSame($transactionId, $runningTransactions[0]->id);
 
         $this->transactionManager->abort();
     }
@@ -58,8 +58,6 @@ class TransactionManagerTest extends TestCase
         $this->expectExceptionCode(404);
         $this->transactionManager->getTransaction();
     }
-
-
 
     public function testBeginMultipleTransactions()
     {
@@ -164,7 +162,5 @@ class TransactionManagerTest extends TestCase
 
         $this->arangoClient->schema()->deleteCollection('Users');
         $this->arangoClient->schema()->deleteCollection('Customers');
-
     }
-
 }

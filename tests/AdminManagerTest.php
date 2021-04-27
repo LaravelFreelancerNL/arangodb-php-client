@@ -21,9 +21,9 @@ class AdminManagerTest extends TestCase
     {
         $result = $this->adminManager->getVersion();
 
-        $this->assertSame('arango', $result['server']);
-        $this->assertSame('community', $result['license']);
-        $this->assertIsString($result['version']);
+        $this->assertSame('arango', $result->server);
+        $this->assertSame('community', $result->license);
+        $this->assertIsString($result->version);
 
     }
 
@@ -31,12 +31,9 @@ class AdminManagerTest extends TestCase
     {
         $result = $this->adminManager->getVersion(true);
 
-        $this->assertSame('arango', $result['server']);
-        $this->assertSame('community', $result['license']);
-        $this->assertIsString($result['version']);
-        $this->assertArrayHasKey('details', $result);
-        $this->assertNotEmpty($result['details']);
-
+        $this->assertSame('arango', $result->server);
+        $this->assertSame('community', $result->license);
+        $this->assertIsString($result->version);
     }
 
     public function testGetRunningTransactions()

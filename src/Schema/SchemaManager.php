@@ -16,15 +16,8 @@ class SchemaManager extends Manager
     use ManagesUsers;
     use ManagesGraphs;
 
-    /**
-     * @var ArangoClient
-     */
     protected ArangoClient $arangoClient;
 
-    /**
-     * Documents constructor.
-     * @param  ArangoClient  $arangoClient
-     */
     public function __construct(ArangoClient $arangoClient)
     {
         $this->arangoClient = $arangoClient;

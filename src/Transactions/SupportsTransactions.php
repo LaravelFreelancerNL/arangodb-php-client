@@ -6,6 +6,7 @@ namespace ArangoClient\Transactions;
 
 use ArangoClient\Exceptions\ArangoException;
 use ArangoClient\Http\HttpRequestOptions;
+use stdClass;
 
 trait SupportsTransactions
 {
@@ -94,7 +95,7 @@ trait SupportsTransactions
      * @param  array<mixed>|HttpRequestOptions  $options
      * @param  string|null  $database
      * @param  int|null  $transactionId
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
     public function transactionAwareRequest(
@@ -103,7 +104,7 @@ trait SupportsTransactions
         $options = [],
         ?string $database = null,
         ?int $transactionId = null
-    ): array {
+    ): stdClass {
         if (is_array($options)) {
             $options = $this->prepareRequestOptions($options);
         }

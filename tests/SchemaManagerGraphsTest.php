@@ -9,7 +9,7 @@ class SchemaManagerGraphsTest extends TestCase
     public function testCreateAndDeleteGraph()
     {
         $result = $this->schemaManager->createGraph('locations', [], true);
-        $this->assertSame('_graphs/locations', $result['_id']);
+        $this->assertSame('_graphs/locations', $result->_id);
 
         $result = $this->schemaManager->deleteGraph('locations');
         $this->assertTrue($result);
@@ -35,8 +35,8 @@ class SchemaManagerGraphsTest extends TestCase
                 ],
             ],
             true);
-        $this->assertEquals(1, count($result['edgeDefinitions']));
-        $this->assertEquals( $result['_id'], '_graphs/relations');
+        $this->assertEquals(1, count($result->edgeDefinitions));
+        $this->assertEquals( $result->_id, '_graphs/relations');
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');
@@ -63,8 +63,8 @@ class SchemaManagerGraphsTest extends TestCase
         $result = $this->schemaManager->getGraphs();
 
         $this->assertEquals(2, count($result));
-        $this->assertEquals('characters', $result[0]['_key']);
-        $this->assertEquals('locations', $result[1]['_key']);
+        $this->assertEquals('characters', $result[0]->_key);
+        $this->assertEquals('locations', $result[1]->_key);
 
         $this->schemaManager->deleteGraph('characters');
         $this->schemaManager->deleteGraph('locations');
@@ -92,7 +92,7 @@ class SchemaManagerGraphsTest extends TestCase
 
         $result = $this->schemaManager->getGraph('locations');
 
-        $this->assertEquals('locations', $result['_key']);
+        $this->assertEquals('locations', $result->_key);
 
         $this->schemaManager->deleteGraph('locations');
     }
@@ -157,8 +157,8 @@ class SchemaManagerGraphsTest extends TestCase
 
         $result = $this->schemaManager->addGraphVertex('relations', $newVertex);
 
-        $this->assertContains('orphanVertices', $result['orphanCollections']);
-        $this->assertContains($newVertex, $result['orphanCollections']);
+        $this->assertContains('orphanVertices', $result->orphanCollections);
+        $this->assertContains($newVertex, $result->orphanCollections);
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');
@@ -190,7 +190,7 @@ class SchemaManagerGraphsTest extends TestCase
 
         $result = $this->schemaManager->removeGraphVertex('relations', 'orphanVertices', true);
 
-        $this->assertNotContains('orphanVertices', $result['orphanCollections']);
+        $this->assertNotContains('orphanVertices', $result->orphanCollections);
 
         $checkDropped = $this->schemaManager->hasCollection('orphanVertices');
         $this->assertFalse($checkDropped);
@@ -260,7 +260,7 @@ class SchemaManagerGraphsTest extends TestCase
 
         $result = $this->schemaManager->addGraphEdge('relations', $newEdge);
 
-        $this->assertEquals($newEdge, $result['edgeDefinitions'][1]);
+        $this->assertEquals($newEdge['collection'], $result->edgeDefinitions[1]->collection);
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');
@@ -300,7 +300,7 @@ class SchemaManagerGraphsTest extends TestCase
             true
         );
 
-        $this->assertEquals($newEdge, $result['edgeDefinitions'][0]);
+        $this->assertEquals($newEdge['collection'], $result->edgeDefinitions[0]->collection);
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');
@@ -337,8 +337,8 @@ class SchemaManagerGraphsTest extends TestCase
             true
         );
 
-        $this->assertEquals(1, count($result['edgeDefinitions']));
-        $this->assertEquals('vassals', $result['edgeDefinitions'][0]['collection']);
+        $this->assertEquals(1, count($result->edgeDefinitions));
+        $this->assertEquals('vassals', $result->edgeDefinitions[0]->collection);
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');

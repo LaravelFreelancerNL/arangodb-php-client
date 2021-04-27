@@ -36,15 +36,15 @@ class SchemaManagerUsersTest extends TestCase
     {
         $name = 'root';
         $user = $this->schemaManager->getUser($name);
-        $this->assertIsArray($user);
-        $this->assertSame($name, $user['user']);
+
+        $this->assertSame($name, $user->user);
     }
 
     public function testGetUsers()
     {
         $users = $this->schemaManager->getUsers();
         $this->assertIsArray($users);
-        $this->assertArrayHasKey('user', $users[0]);
+        $this->assertObjectHasAttribute('user', $users[0]);
     }
 
     public function testHasUser()
@@ -69,10 +69,16 @@ class SchemaManagerUsersTest extends TestCase
                 ]
             ]
         ];
+        if ($this->schemaManager->hasUser($user['user'])) {
+            $this->schemaManager->deleteUser($user['user']);
+        }
+
         $created = $this->schemaManager->createUser($user);
-        $this->assertSame($user['user'], $created['user']);
+        $this->assertSame($user['user'], $created->user);
 
         $this->schemaManager->deleteUser($user['user']);
+        $checkDeleted = $this->schemaManager->hasUser($user['user']);
+        $this->assertFalse($checkDeleted);
     }
 
     public function testUpdateUser()
@@ -83,7 +89,7 @@ class SchemaManagerUsersTest extends TestCase
         ];
         $updated = $this->schemaManager->updateUser($this->userName, $newUserData);
 
-        $this->assertSame($newUserData['user'], $updated['user']);
+        $this->assertSame($newUserData['user'], $updated->user);
     }
 
     public function testReplaceUser()
@@ -94,7 +100,7 @@ class SchemaManagerUsersTest extends TestCase
         ];
         $replaced = $this->schemaManager->replaceUser($this->userName, $newUserData);
 
-        $this->assertSame($this->userName, $replaced['user']);
+        $this->assertSame($this->userName, $replaced->user);
     }
 
     public function testGetDatabaseAccessLevel()
@@ -112,8 +118,8 @@ class SchemaManagerUsersTest extends TestCase
         $results = $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
         $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
-        $this->assertArrayHasKey( $this->accessDatabase, $results);
-        $this->assertSame($grant, $results[ $this->accessDatabase]);
+        $this->assertObjectHasAttribute( $this->accessDatabase, $results);
+        $this->assertSame($grant, $results->{$this->accessDatabase});
         $this->assertSame($grant, $accessLevel);
 
         $this->tearDownAccessTest();
@@ -139,7 +145,9 @@ class SchemaManagerUsersTest extends TestCase
 
     protected function setUpAccessTest()
     {
-        $this->schemaManager->createDatabase($this->accessDatabase);
+        if (! $this->schemaManager->hasDatabase($this->accessDatabase)) {
+            $this->schemaManager->createDatabase($this->accessDatabase);
+        }
     }
 
     protected function tearDownAccessTest()

@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace ArangoClient\Http;
 
 use GuzzleHttp\HandlerStack;
-use Spatie\DataTransferObject\FlexibleDataTransferObject;
+use Spatie\DataTransferObject\DataTransferObject;
 
 /**
  * Class HttpRequestOptions
  *
  * @package ArangoClient\Http
  */
-class HttpRequestOptions extends FlexibleDataTransferObject
+class HttpRequestOptions extends DataTransferObject
 {
+
     /**
      * @var array<mixed>|string|null
      */
-    public $query;
+    public string|array|null $query = null;
 
     /**
      * @var array<mixed>|null
@@ -28,11 +29,7 @@ class HttpRequestOptions extends FlexibleDataTransferObject
 
     public ?HandlerStack $handler = null;
 
-    /**
-     * @param  string  $key
-     * @param mixed $value
-     */
-    public function addHeader(string $key, $value): void
+    public function addHeader(string $key, mixed $value): void
     {
         $this->headers[$key] = $value;
     }

@@ -12,9 +12,9 @@ use ArangoClient\Transactions\SupportsTransactions;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\StreamWrapper;
-use JsonMachine\JsonMachine;
 use Psr\Http\Message\ResponseInterface;
+use Spatie\DataTransferObject\Exceptions\UnknownProperties;
+use stdClass;
 use Throwable;
 use Traversable;
 
@@ -25,6 +25,7 @@ use Traversable;
  */
 class ArangoClient
 {
+    use HandlesJson;
     use HasManagers;
     use SupportsTransactions;
 
@@ -37,6 +38,7 @@ class ArangoClient
      *
      * @param  array<string|numeric|null>  $config
      * @param  GuzzleClient|null  $httpClient
+     * @throws UnknownProperties
      */
     public function __construct(array $config = [], GuzzleClient $httpClient = null)
     {
@@ -73,10 +75,10 @@ class ArangoClient
      * @param  string  $uri
      * @param  array<mixed>|HttpRequestOptions  $options
      * @param  string|null  $database
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function request(string $method, string $uri, $options = [], ?string $database = null): array
+    public function request(string $method, string $uri, $options = [], ?string $database = null): stdClass
     {
         $uri = $this->prependDatabaseToUri($uri, $database);
 
@@ -95,7 +97,7 @@ class ArangoClient
     }
 
     /**
-     * @param array<mixed> $options
+     * @param  array<mixed>  $options
      * @return HttpRequestOptions
      * @throws ArangoException
      */
@@ -149,8 +151,8 @@ class ArangoClient
 
         if ($e instanceof RequestException && $e->hasResponse()) {
             $decodedResponse = $this->decodeResponse($e->getResponse());
-            $message = (string) $decodedResponse['errorMessage'];
-            $code = (int) $decodedResponse['code'];
+            $message = (string) $decodedResponse->errorMessage;
+            $code = (int) $decodedResponse->code;
         }
 
         throw(
@@ -166,59 +168,13 @@ class ArangoClient
      * @SuppressWarnings(PHPMD.StaticAccess)
      *
      * @param  ResponseInterface|null  $response
-     * @return array<mixed>
+     * @return stdClass
      */
-    protected function cleanupResponse(?ResponseInterface $response): array
+    protected function cleanupResponse(?ResponseInterface $response): stdClass
     {
         $response =  $this->decodeResponse($response);
-        unset($response['error']);
-        unset($response['code']);
-
-        return $response;
-    }
-
-    /**
-     * @psalm-suppress MixedAssignment, MixedArrayOffset
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     *
-     * @param  ResponseInterface|null  $response
-     * @return array<mixed>
-     */
-    protected function decodeResponse(?ResponseInterface $response): array
-    {
-        if (! isset($response)) {
-            return [];
-        }
-
-        $decodedResponse = [];
-
-        $phpStream = StreamWrapper::getResource($response->getBody());
-        $decodedStream = JsonMachine::fromStream($phpStream);
-
-        foreach ($decodedStream as $key => $value) {
-            $decodedResponse[$key] = $value;
-        }
-
-        return $decodedResponse;
-    }
-
-    /**
-     * @param  mixed  $data
-     * @return string
-     * @throws ArangoException
-     */
-    public function jsonEncode($data): string
-    {
-        $options = 0;
-        if (empty($data)) {
-            $options = JSON_FORCE_OBJECT;
-        }
-
-        $response = json_encode($data, $options);
-
-        if ($response === false) {
-            throw new ArangoException('JSON encoding failed with error: ' . json_last_error_msg(), json_last_error());
-        }
+        unset($response->error);
+        unset($response->code);
 
         return $response;
     }

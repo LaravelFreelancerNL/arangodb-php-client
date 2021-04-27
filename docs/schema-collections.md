@@ -10,19 +10,19 @@ Get a list of collections within the database
 $arangoClient->schema()->getCollections();
 ```
 
-### getCollection(string $name): array
+### getCollection(string $name): stdClass
 Get the requested collection.
 ```
 $arangoClient->schema()->getCollection('_fishbowl');
 ```
 
-### getCollectionProperties(string $name): array
+### getCollectionProperties(string $name): stdClass
 Get the properties of the requested collection.
 ```
 $arangoClient->schema()->getCollectionProperties('_fishbowl');
 ```
 
-### getCollectionWithDocumentCount(string $name): array
+### getCollectionWithDocumentCount(string $name): stdClass
 Get the properties of the requested collection.
 ```
 $arangoClient->schema()->getCollectionWithDocumentCount('_fishbowl');
@@ -46,25 +46,25 @@ Check if a collection exists.
 $arangoClient->schema()->hasCollection('_fishbowl');
 ```
 
-### createCollection(string $name, array $config = [], $waitForSyncReplication = null, $enforceReplicationFactor = null): bool
+### createCollection(string $name, array $config = [], $waitForSyncReplication = null, $enforceReplicationFactor = null): stdClass
 Create a collection
 ```
 $arangoClient->schema()->createCollection('users');
 ```
 
-### updateCollection(string $name, array $config = []): array
+### updateCollection(string $name, array $config = []): stdClass
 Update a collection
 ```
 $arangoClient->schema()->updateCollection('users', ['waitForSync' => true]);
 ```
 
-### renameCollection(string $old, string $new): array
+### renameCollection(string $old, string $new): stdClass
 Rename a collection
 ```
 $arangoClient->schema()->renameCollection('users', 'characters');
 ```
 
-### truncateCollection(string $name): bool
+### truncateCollection(string $name): stdClass
 Truncate a collection.
 ```
 $arangoClient->schema()->truncateCollection('teams');

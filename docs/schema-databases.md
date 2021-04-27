@@ -3,7 +3,7 @@ You can use the schema manager to perform CRUD actions on databases within Arang
 
 ## Database functions
 
-### getCurrentDatabase(): array
+### getCurrentDatabase(): stdClass
 Get information on the current database
 ```
 $arangoClient->schema()->getCurrentDatabase();

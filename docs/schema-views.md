@@ -4,7 +4,7 @@ You can use the schema manager to perform CRUD actions on ArangoSearch views.
 ## View functions
 The schema manager supports the following index functions:
 
-###  createView(array $view): array
+###  createView(array $view): stdClass
 ```
 $arangoClient->schema()->createView([
         'name' => 'testViewBasics',
@@ -12,7 +12,7 @@ $arangoClient->schema()->createView([
     ]);
 ```
 
-###  getView(string $name): array
+###  getView(string $name): stdClass
 ```
 $arangoClient->schema()->getView('testViewBasics');
 ```
@@ -28,24 +28,24 @@ $arangoClient->schema()->hasView('testViewBasics');
 ```
 
 
-###  getViewProperties(string $name): array
+###  getViewProperties(string $name): stdClass
 ```
 $arangoClient->schema()->getViewProperties('testViewBasics');
 ```
 
-###  renameView(string $old, string $new): array
+###  renameView(string $old, string $new): stdClass
 ```
 $arangoClient->schema()->renameView('testViewBasics', 'pages');
 ```
 
-###  updateView(string $name, array $properties): array
+###  updateView(string $name, array $properties): stdClass
 ```
 $arangoClient->schema()->updateView('pages', [
         'cleanupIntervalStep' => 3
     ]);
 ```
 
-###  replaceView(string $name, array $newView)
+###  replaceView(string $name, array $newView): stdClass|false
 Use replaceView if you want to update the primarySort or primarySortCompression.
 This will delete the old view and create a new one. The new view will need to be build from the data so might
 not be available right away.

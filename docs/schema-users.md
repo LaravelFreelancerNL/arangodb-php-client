@@ -22,7 +22,7 @@ Check if a user exists.
 $arangoClient->schema()->hasUser('kimiko');
 ```
 
-### createUser(array $user): array
+### createUser(array $user): stdClass
 Create a user.
 ```
 $arangoClient->schema()->createUser([
@@ -31,7 +31,7 @@ $arangoClient->schema()->createUser([
 ]);
 ```
 
-### updateUser(string $username, array $properties): array
+### updateUser(string $username, array $properties): stdClass
 Update a user's properties
 ```
 $arangoClient->schema()->updateUser([
@@ -40,7 +40,7 @@ $arangoClient->schema()->updateUser([
 ]);
 ```
 
-### replaceUser(string $username, array $user): array
+### replaceUser(string $username, array $user): stdClass
 Replace a user. Used to change the username.
 ```
 $arangoClient->schema()->replaceUser([
@@ -64,7 +64,7 @@ Get the access level a user has on a specific database.
 $this->schemaManager->getDatabaseAccessLevel('root', '_system');
 ```
 
-### setDatabaseAccessLevel(string $username, string $database, string $grant): array
+### setDatabaseAccessLevel(string $username, string $database, string $grant): stdClass
 Set the access level a user has for a specific database.
 ```
 $this->schemaManager->getDatabaseAccessLevel('kimiko', 'the_boys', 'rw');

@@ -4,7 +4,7 @@ You can use the schema manager to perform CRUD actions on indexes within a colle
 ## Index  functions
 The schema manager supports the following index functions:
 
-### createIndex(string $collection, array $index): bool
+### createIndex(string $collection, array $index): stdClass
 Create an index on the given collection
 ```
 $arangoClient->schema()->createIndex(
@@ -25,13 +25,13 @@ Delete an index by its ID.
 $arangoClient->schema()->deleteIndex($id);
 ```
 
-### getIndex(string $id): array
+### getIndex(string $id): stdClass
 Get an index by its ID.
 ```
 $arangoClient->schema()->getIndex($id);
 ```
 
-### getIndexByName(string $collection, string $name)
+### getIndexByName(string $collection, string $name): stdClass|false
 Get an index by its name.
 ```
 $arangoClient->schema()->getIndexByName('email_persistent_unique');

@@ -21,19 +21,19 @@ foreach ($statement as $document) {
 
 ## Statement functions
 
-### explain(): array
+### explain(): stdClass
 Get information on the current database
 ```
 $statement->explain();
 ```
 
-### parse(): array
+### parse(): stdClass
 Parses the query and throws an ArangoException if the AQL is invalid.
 ```
 $statement->parse();
 ```
 
-### profile(): array
+### profile(): stdClass|null
 Execute the query and return the results and query performance information. 
 ```
 $statement->profile();

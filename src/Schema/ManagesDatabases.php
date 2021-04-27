@@ -4,6 +4,7 @@ namespace ArangoClient\Schema;
 
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
+use stdClass;
 
 /*
  * @see https://www.arangodb.com/docs/stable/http/database.html
@@ -13,14 +14,14 @@ trait ManagesDatabases
     protected ArangoClient $arangoClient;
 
     /**
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function getCurrentDatabase(): array
+    public function getCurrentDatabase(): stdClass
     {
         $results = $this->arangoClient->request('get', '/_api/database/current');
 
-        return (array) $results['result'];
+        return (object) $results->result;
     }
 
     /**
@@ -36,7 +37,7 @@ trait ManagesDatabases
 
         $results = $this->arangoClient->request('get', $uri, []);
 
-        return array_keys((array) $results['result']);
+        return array_keys((array) $results->result);
     }
 
     /**

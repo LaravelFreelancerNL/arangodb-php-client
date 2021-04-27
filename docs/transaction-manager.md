@@ -36,7 +36,7 @@ Optionally you may supply a transaction id to commit a specific transaction.
 $arangoClient->abort()
 ```
 
-### transactionAwareRequest(string $method, string $uri, array $options = [], ?string $database = null, ?int $transactionId = null): array
+### transactionAwareRequest(string $method, string $uri, array $options = [], ?string $database = null, ?int $transactionId = null): stdClass
 To send a request to the server that has to use a transaction you can use this request wrapper method.
 By default, the latest transaction will be used, or you can supply a specific transaction id.
 

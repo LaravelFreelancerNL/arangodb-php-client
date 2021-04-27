@@ -11,16 +11,14 @@ class SchemaManagerCollectionsTest extends TestCase
     {
         $result = $this->schemaManager->getCollections();
 
-        $this->assertIsArray($result);
         $this->assertLessThanOrEqual(count($result), 10);
-        $this->assertIsArray($result[0]);
+        $this->assertIsObject($result[0]);
     }
 
     public function testGetCollectionsWithoutSystem()
     {
         $result = $this->schemaManager->getCollections(true);
 
-        $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
@@ -28,11 +26,11 @@ class SchemaManagerCollectionsTest extends TestCase
     {
         $collections = $this->schemaManager->getCollections();
 
-        $result = $this->schemaManager->getCollection($collections[0]['name']);
+        $result = $this->schemaManager->getCollection($collections[0]->name);
 
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('name', $result);
-        $this->assertArrayHasKey('isSystem', $result);
+        $this->assertIsObject($result);
+        $this->assertObjectHasAttribute('name', $result);
+        $this->assertObjectHasAttribute('isSystem', $result);
     }
 
     public function testHasCollection()
@@ -49,34 +47,34 @@ class SchemaManagerCollectionsTest extends TestCase
     {
         $collections = $this->schemaManager->getCollections();
 
-        $result = $this->schemaManager->getCollectionProperties($collections[0]['name']);
+        $result = $this->schemaManager->getCollectionProperties($collections[0]->name);
 
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('name', $result);
-        $this->assertArrayHasKey('isSystem', $result);
-        $this->assertArrayHasKey('statusString', $result);
-        $this->assertArrayHasKey('keyOptions', $result);
+        $this->assertIsObject($result);
+        $this->assertObjectHasAttribute('name', $result);
+        $this->assertObjectHasAttribute('isSystem', $result);
+        $this->assertObjectHasAttribute('statusString', $result);
+        $this->assertObjectHasAttribute('keyOptions', $result);
     }
 
     public function testGetCollectionWithDocumentCount()
     {
         $collections = $this->schemaManager->getCollections();
 
-        $result = $this->schemaManager->getCollectionWithDocumentCount($collections[0]['name']);
+        $result = $this->schemaManager->getCollectionWithDocumentCount($collections[0]->name);
 
-        $this->assertArrayHasKey('name', $result);
-        $this->assertArrayHasKey('isSystem', $result);
-        $this->assertArrayHasKey('statusString', $result);
-        $this->assertArrayHasKey('keyOptions', $result);
-        $this->assertArrayHasKey('count', $result);
-        $this->assertIsNumeric($result['count']);
+        $this->assertObjectHasAttribute('name', $result);
+        $this->assertObjectHasAttribute('isSystem', $result);
+        $this->assertObjectHasAttribute('statusString', $result);
+        $this->assertObjectHasAttribute('keyOptions', $result);
+        $this->assertObjectHasAttribute('count', $result);
+        $this->assertIsNumeric($result->count);
     }
 
     public function testGetCollectionDocumentCount()
     {
         $collections = $this->schemaManager->getCollections();
 
-        $result = $this->schemaManager->getCollectionDocumentCount($collections[0]['name']);
+        $result = $this->schemaManager->getCollectionDocumentCount($collections[0]->name);
 
         $this->assertIsNumeric($result);
     }
@@ -85,20 +83,18 @@ class SchemaManagerCollectionsTest extends TestCase
     {
         $collections = $this->schemaManager->getCollections();
 
-        $result = $this->schemaManager->getCollectionStatistics($collections[0]['name']);
+        $result = $this->schemaManager->getCollectionStatistics($collections[0]->name);
 
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('figures', $result);
+        $this->assertObjectHasAttribute('figures', $result);
     }
 
     public function testGetCollectionStatisticsWithDetails()
     {
         $collections = $this->schemaManager->getCollections();
 
-        $result = $this->schemaManager->getCollectionStatistics($collections[0]['name'], true);
+        $result = $this->schemaManager->getCollectionStatistics($collections[0]->name, true);
 
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('figures', $result);
+        $this->assertObjectHasAttribute('figures', $result);
     }
 
     public function testUpdateCollection()
@@ -112,7 +108,7 @@ class SchemaManagerCollectionsTest extends TestCase
 
         $newConfig = ['waitForSync' => true];
         $result = $this->schemaManager->updateCollection($collection, $newConfig);
-        $this->assertTrue($result['waitForSync']);
+        $this->assertTrue($result->waitForSync);
 
         $this->schemaManager->deleteCollection($collection);
     }
@@ -120,15 +116,18 @@ class SchemaManagerCollectionsTest extends TestCase
     public function testRenameCollection()
     {
         $collection = 'users';
+        $newName = 'characters';
         $config = [];
 
         if (! $this->schemaManager->hasCollection($collection)) {
             $this->schemaManager->createCollection($collection, $config);
         }
+        if ($this->schemaManager->hasCollection($newName)) {
+            $this->schemaManager->deleteCollection($newName);
+        }
 
-        $newName = 'characters';
         $result = $this->schemaManager->renameCollection($collection, $newName);
-        $this->assertSame($newName, $result['name']);
+        $this->assertSame($newName, $result->name);
 
         $this->schemaManager->deleteCollection($newName);
     }
@@ -139,7 +138,7 @@ class SchemaManagerCollectionsTest extends TestCase
         if (! $this->schemaManager->hasCollection($collection)) {
             $this->schemaManager->createCollection($collection);
         }
-        $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)['count']);
+        $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)->count);
         $query = 'FOR i IN 1..10
           INSERT {
                 _key: CONCAT("test", i),
@@ -153,7 +152,7 @@ class SchemaManagerCollectionsTest extends TestCase
 
         $this->schemaManager->truncateCollection($collection);
 
-        $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)['count']);
+        $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)->count);
         $this->schemaManager->deleteCollection($collection);
     }
 
@@ -164,7 +163,7 @@ class SchemaManagerCollectionsTest extends TestCase
 
         if (! $this->schemaManager->hasCollection($collection)) {
             $result = $this->schemaManager->createCollection($collection, $options);
-            $this->assertTrue($result);
+            $this->assertEquals($collection, $result->name);
         }
 
         $result = $this->schemaManager->deleteCollection($collection);
@@ -179,11 +178,10 @@ class SchemaManagerCollectionsTest extends TestCase
 
         if (! $this->schemaManager->hasCollection($collection)) {
             $result = $this->schemaManager->createCollection($collection, $options, 1, 1);
-            $this->assertTrue($result);
         }
 
         $collectionProperties = $this->schemaManager->getCollectionProperties('users');
-        $this->assertTrue($collectionProperties['waitForSync']);
+        $this->assertTrue($collectionProperties->waitForSync);
 
         // $waitForSyncReplication & $enforceReplicationFactor are not listed in the properties, so the lack of
         // of an exception somewhat tests these options...

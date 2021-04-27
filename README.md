@@ -1,6 +1,6 @@
 # ArangoClient - ArangoDB PHP client
 
-Low level PHP client for ArangoDB. Supports PHP versions 7.4 & ^8.0
+Low level PHP client for ArangoDB. Supports PHP ^8.0.
 
 ![Github CI tests](https://github.com/LaravelFreelancerNL/arangodb-php-client/workflows/CI%20tests/badge.svg)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LaravelFreelancerNL/arangodb-php-client/badges/quality-score.png?b=next)](https://scrutinizer-ci.com/g/LaravelFreelancerNL/arangodb-php-client/?branch=next)
@@ -9,8 +9,10 @@ Low level PHP client for ArangoDB. Supports PHP versions 7.4 & ^8.0
 <a href="https://packagist.org/packages/laravel-freelancer-nl/arangodb-php-client"><img src="https://poser.pugx.org/laravel-freelancer-nl/arangodb-php-client/downloads" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/laravel-freelancer-nl/arangodb-php-client"><img src="https://poser.pugx.org/laravel-freelancer-nl/arangodb-php-client/license" alt="License"></a>
 
-## Install
+This client is a conduit to ArangoDB and back, so it doesn't make any presumptions on the returned data itself. 
+JSON objects are decoded to POPO's. You can cast those to what you need in your ODM or project. 
 
+## Install
 ```
 composer require laravel-freelancer-nl/arangodb-php-client
 ```

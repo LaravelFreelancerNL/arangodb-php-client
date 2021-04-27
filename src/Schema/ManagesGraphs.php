@@ -6,6 +6,7 @@ namespace ArangoClient\Schema;
 
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
+use stdClass;
 
 /**
  * @see https://www.arangodb.com/docs/stable/http/gharial-management.html
@@ -21,15 +22,15 @@ trait ManagesGraphs
      *
      * @param  string  $name
      * @param  array<mixed>  $config
-     * @param  bool|null  $waitForSync
-     * @return mixed
+     * @param  bool  $waitForSync
+     * @return stdClass
      * @throws ArangoException
      */
     public function createGraph(
         string $name,
         array $config = [],
-        $waitForSync = false
-    ) {
+        bool $waitForSync = false
+    ): stdClass {
         $options = [];
         $options['query']['waitForSync'] = (int) $waitForSync;
         $options['body'] = $config;
@@ -37,7 +38,7 @@ trait ManagesGraphs
 
         $result = $this->arangoClient->request('post', '/_api/gharial', $options);
 
-        return $result['graph'];
+        return (object) $result->graph;
     }
 
     /**
@@ -53,14 +54,12 @@ trait ManagesGraphs
             '/_api/gharial'
         );
 
-        return (array) $results['graphs'];
+        return (array) $results->graphs;
     }
 
     /**
      * Check for graph existence in current DB.
      *
-     * @param  string  $name
-     * @return bool
      * @throws ArangoException
      */
     public function hasGraph(string $name): bool
@@ -73,22 +72,18 @@ trait ManagesGraphs
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#get-a-graph
      *
-     * @param  string  $name
-     * @return array<mixed>
      * @throws ArangoException
      */
-    public function getGraph(string $name): array
+    public function getGraph(string $name): stdClass
     {
         $uri = '/_api/gharial/' . $name;
 
-        return (array) $this->arangoClient->request('get', $uri)['graph'];
+        return (object) $this->arangoClient->request('get', $uri)->graph;
     }
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#drop-a-graph
      *
-     * @param  string  $name
-     * @return bool
      * @throws ArangoException
      */
     public function deleteGraph(string $name): bool
@@ -98,10 +93,10 @@ trait ManagesGraphs
         return (bool) $this->arangoClient->request('delete', $uri);
     }
 
+
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#list-vertex-collections
      *
-     * @param  string  $name
      * @return array<mixed>
      * @throws ArangoException
      */
@@ -109,18 +104,15 @@ trait ManagesGraphs
     {
         $uri = '/_api/gharial/' . $name . '/vertex';
 
-        return (array) $this->arangoClient->request('get', $uri)['collections'];
+        return (array) $this->arangoClient->request('get', $uri)->collections;
     }
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#add-vertex-collection
      *
-     * @param  string  $name
-     * @param  string  $vertex
-     * @return array<mixed>
      * @throws ArangoException
      */
-    public function addGraphVertex(string $name, string $vertex): array
+    public function addGraphVertex(string $name, string $vertex): stdClass
     {
         $uri = '/_api/gharial/' . $name . '/vertex';
 
@@ -129,7 +121,7 @@ trait ManagesGraphs
                 'collection' => $vertex
             ]
         ];
-        return (array) $this->arangoClient->request('post', $uri, $options)['graph'];
+        return (object) $this->arangoClient->request('post', $uri, $options)->graph;
     }
 
 
@@ -138,20 +130,16 @@ trait ManagesGraphs
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     * @param  string  $name
-     * @param  string  $vertex
-     * @param  bool  $dropCollection
-     * @return array<mixed>
      * @throws ArangoException
      */
-    public function removeGraphVertex(string $name, string $vertex, bool $dropCollection = false): array
+    public function removeGraphVertex(string $name, string $vertex, bool $dropCollection = false): stdClass
     {
         $uri = '/_api/gharial/' . $name . '/vertex/' . $vertex;
 
         $options = [];
         $options['query']['dropCollection'] = $dropCollection;
 
-        return (array) $this->arangoClient->request('delete', $uri, $options)['graph'];
+        return (object) $this->arangoClient->request('delete', $uri, $options)->graph;
     }
 
     /**
@@ -165,7 +153,7 @@ trait ManagesGraphs
     {
         $uri = '/_api/gharial/' . $name . '/edge';
 
-        return (array) $this->arangoClient->request('get', $uri)['collections'];
+        return (array) $this->arangoClient->request('get', $uri)->collections;
     }
 
     /**
@@ -173,18 +161,19 @@ trait ManagesGraphs
      *
      * @param  string  $name
      * @param  array<mixed>  $edgeDefinition
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
-    public function addGraphEdge(string $name, array $edgeDefinition): array
+    public function addGraphEdge(string $name, array $edgeDefinition): stdClass
     {
         $uri = '/_api/gharial/' . $name . '/edge';
 
         $options = [
             'body' => $edgeDefinition
         ];
-        return (array) $this->arangoClient->request('post', $uri, $options)['graph'];
+        return (object) $this->arangoClient->request('post', $uri, $options)->graph;
     }
+
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#replace-an-edge-definition
@@ -196,7 +185,7 @@ trait ManagesGraphs
      * @param  array<mixed>  $edgeDefinition
      * @param  bool  $dropCollection
      * @param  bool  $waitForSync
-     * @return array<mixed>
+     * @return stdClass
      * @throws ArangoException
      */
     public function replaceGraphEdge(
@@ -205,7 +194,7 @@ trait ManagesGraphs
         array $edgeDefinition,
         bool $dropCollection = false,
         bool $waitForSync = false
-    ): array {
+    ): stdClass {
         $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
 
         $options = [];
@@ -213,7 +202,7 @@ trait ManagesGraphs
         $options['query']['dropCollection'] = $dropCollection;
         $options['body'] = $edgeDefinition;
 
-        return (array) $this->arangoClient->request('put', $uri, $options)['graph'];
+        return (object) $this->arangoClient->request('put', $uri, $options)->graph;
     }
 
     /**
@@ -221,11 +210,6 @@ trait ManagesGraphs
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     * @param  string  $name
-     * @param  string  $edge
-     * @param  bool  $dropCollection
-     * @param  bool  $waitForSync
-     * @return array<mixed>
      * @throws ArangoException
      */
     public function removeGraphEdge(
@@ -233,13 +217,13 @@ trait ManagesGraphs
         string $edge,
         bool $dropCollection = true,
         bool $waitForSync = false
-    ): array {
+    ): stdClass {
         $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
 
         $options = [];
         $options['query']['waitForSync'] = $waitForSync;
         $options['query']['dropCollection'] = $dropCollection;
 
-        return (array) $this->arangoClient->request('delete', $uri, $options)['graph'];
+        return (object) $this->arangoClient->request('delete', $uri, $options)->graph;
     }
 }

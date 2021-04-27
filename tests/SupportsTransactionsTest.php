@@ -23,7 +23,7 @@ class SupportsTransactionsTest extends TestCase
     {
         $transactionId = $this->arangoClient->beginTransaction();
         $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
-        $this->assertSame($transactionId, $runningTransactions[0]['id']);
+        $this->assertSame($transactionId, $runningTransactions[0]->id);
 
         $this->arangoClient->abort();
     }
@@ -32,7 +32,7 @@ class SupportsTransactionsTest extends TestCase
     {
         $transactionId = $this->arangoClient->begin();
         $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
-        $this->assertSame($transactionId, $runningTransactions[0]['id']);
+        $this->assertSame($transactionId, $runningTransactions[0]->id);
 
         $this->arangoClient->abort();
     }
