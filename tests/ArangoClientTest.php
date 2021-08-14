@@ -265,6 +265,6 @@ class ArangoClientTest extends TestCase
             $this->markTestSkipped('The installed version of CURL does not support the HTTP2 protocol.');
         }
         // HTTP/2 is only supported by ArangoDB 3.7 and up.
-        $this->skipTestOnArangoVersionsBefore('3.7');
+        $this->skipTestOnArangoVersions('3.7');
     }
 }

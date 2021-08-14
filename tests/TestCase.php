@@ -41,9 +41,9 @@ abstract class TestCase extends PhpUnitTestCase
         }
     }
 
-    protected function skipTestOnArangoVersionsBefore(string $version)
+    protected function skipTestOnArangoVersions(string $version, string $operator = '<')
     {
-        if (version_compare( getenv('ARANGODB_VERSION'), $version, '<' )) {
+        if (version_compare( getenv('ARANGODB_VERSION'), $version, $operator )) {
             $this->markTestSkipped('This test does not support ArangoDB versions before ' . $version);
         }
     }

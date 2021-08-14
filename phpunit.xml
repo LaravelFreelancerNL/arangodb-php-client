@@ -16,6 +16,6 @@
         </include>
     </coverage>
     <php>
-        <env name="ARANGODB_VERSION" value="3.7"/>
+        <env name="ARANGODB_VERSION" value="3.8"/>
     </php>
 </phpunit>

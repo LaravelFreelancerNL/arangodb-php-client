@@ -7,11 +7,21 @@ namespace Tests;
 class SchemaManagerCollectionsTest extends TestCase
 {
 
-    public function testGetCollections()
+    public function testGetCollectionsBeforeVersion38()
     {
+        $this->skipTestOnArangoVersions('3.8', '>=');
         $result = $this->schemaManager->getCollections();
 
         $this->assertLessThanOrEqual(count($result), 10);
+        $this->assertIsObject($result[0]);
+    }
+
+    public function testGetCollections()
+    {
+        $this->skipTestOnArangoVersions('3.8', '<');
+        $result = $this->schemaManager->getCollections();
+
+        $this->assertLessThanOrEqual(count($result), 8);
         $this->assertIsObject($result[0]);
     }
 
@@ -35,7 +45,7 @@ class SchemaManagerCollectionsTest extends TestCase
 
     public function testHasCollection()
     {
-        $result = $this->schemaManager->hasCollection('_fishbowl');
+        $result = $this->schemaManager->hasCollection('_graphs');
         $this->assertTrue($result);
 
         $result = $this->schemaManager->hasCollection('someNoneExistingCollection');
