@@ -19,4 +19,11 @@ class ExceptionsTest extends TestCase
 
         $this->schemaManager->deleteDatabase($database);
     }
+
+    public function testCallsToNoneExistingDbThrow()
+    {
+        $this->arangoClient->setDatabase('NoneExistingDb');
+        $this->expectExceptionCode(404);
+        $this->schemaManager->hasCollection('dummy');
+    }
 }
