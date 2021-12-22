@@ -13,8 +13,6 @@ use stdClass;
 
 trait HandlesJson
 {
-
-
     /**
      * @param  mixed  $data
      * @return string

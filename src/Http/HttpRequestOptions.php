@@ -14,7 +14,6 @@ use Spatie\DataTransferObject\DataTransferObject;
  */
 class HttpRequestOptions extends DataTransferObject
 {
-
     /**
      * @var array<mixed>|string|null
      */

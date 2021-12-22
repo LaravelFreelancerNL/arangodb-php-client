@@ -9,7 +9,6 @@ use ArangoClient\Schema\SchemaManager;
 
 trait HasManagers
 {
-
     protected ?AdminManager $adminManager = null;
 
     protected ?SchemaManager $schemaManager = null;

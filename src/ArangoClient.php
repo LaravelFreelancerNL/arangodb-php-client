@@ -158,7 +158,7 @@ class ArangoClient
         throw(
             new ArangoException(
                 $code . ' - ' .  $message,
-                (int) $code
+                $code
             )
         );
     }
@@ -183,7 +183,7 @@ class ArangoClient
      * @param  string  $query
      * @param  array<scalar>  $bindVars
      * @param  array<mixed>  $options
-     * @return Traversable<mixed>
+     * @return Statement
      */
     public function prepare(
         string $query,
