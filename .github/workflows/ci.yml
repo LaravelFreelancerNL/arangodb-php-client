@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [8.0]
-        arangodb: [3.6, 3.7, 3.8]
+        php: [8.0, 8.1]
+        arangodb: [3.7, 3.8]
     name:  Quality checks PHP ${{ matrix.php }} / ArangoDB ${{ matrix.arangodb }}
 
     services:
