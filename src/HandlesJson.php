@@ -6,8 +6,8 @@ namespace ArangoClient;
 
 use ArangoClient\Exceptions\ArangoException;
 use GuzzleHttp\Psr7\StreamWrapper;
+use JsonMachine\Items;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
-use JsonMachine\JsonMachine;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
 
@@ -51,7 +51,7 @@ trait HandlesJson
 
         $phpStream = StreamWrapper::getResource($response->getBody());
         $decoder = new ExtJsonDecoder(false);
-        $decodedStream = JsonMachine::fromStream($phpStream, '', $decoder);
+        $decodedStream = Items::fromStream($phpStream, ['decoder' => $decoder]);
 
         foreach ($decodedStream as $key => $value) {
             $decodedResponse->$key = $value;
