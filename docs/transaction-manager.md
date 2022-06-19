@@ -62,7 +62,7 @@ $arangoClient->transactions()->getTransactions();
 
 
 ## Coming from PHP's PDO extension
-The client has three quality of life shortcut methods named after PDO. (beginTransaction, rollBack & commit).
+The client has two quality of life shortcut methods named after PDO. (beginTransaction & rollBack).
 These are meant to make integration with existing packages easier.<br> 
 _However unlike PDO_, you must provide the collections to which you will write in either write or exclusive mode.
 
