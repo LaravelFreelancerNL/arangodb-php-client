@@ -1,4 +1,4 @@
-name: CI tests
+name: Quality Assurance
 
 on: [workflow_dispatch, push, pull_request]
 
