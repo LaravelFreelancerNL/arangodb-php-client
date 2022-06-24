@@ -38,5 +38,3 @@ jobs:
         run: |
           chmod +x "${GITHUB_WORKSPACE}/bin/qa.sh"
           "${GITHUB_WORKSPACE}/bin/qa.sh"
-        env:
-          ARANGODB_VERSION: ${{ matrix.arangodb }}
