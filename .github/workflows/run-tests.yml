@@ -2,9 +2,12 @@ name: run-tests
 
 on:
   push:
-    branches: [next]
+    branches: [main]
   pull_request:
-    branches: [next]
+    branches: [main]
+
+env:
+  DB_ENDPOINT: 'tcp://127.0.0.1:8529'
 
 jobs:
   test:
@@ -13,10 +16,19 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.0, 8.1]
+        arangodb: [3.8, 3.9]
+        php: ["8.0", "8.1"]
         stability: [prefer-stable]
 
-    name: P${{ matrix.php }}
+    name: P${{ matrix.php }} - A${{ matrix.arangodb }} - ${{ matrix.stability }}
+
+    services:
+      arangodb:
+        image: arangodb:${{ matrix.arangodb }}
+        ports:
+          - 8529:8529
+        env:
+          ARANGO_NO_AUTH: 1
 
     steps:
       - name: Checkout code

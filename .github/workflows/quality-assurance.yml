@@ -1,11 +1,26 @@
-name: Quality Assurance
+name: CI tests
 
 on: [workflow_dispatch, push, pull_request]
+
+env:
+  DB_ENDPOINT: 'tcp://127.0.0.1:8529'
 
 jobs:
   run:
     runs-on: ubuntu-latest
-    name:  Code Quality Assurance
+    strategy:
+      matrix:
+        php: [8.0, 8.1]
+        arangodb: [3.7, 3.8]
+    name:  Quality checks PHP ${{ matrix.php }} / ArangoDB ${{ matrix.arangodb }}
+
+    services:
+      arangodb:
+        image: arangodb:${{ matrix.arangodb }}
+        ports:
+          - 8529:8529
+        env:
+          ARANGO_NO_AUTH: 1
 
     steps:
       - name: Checkout
@@ -15,12 +30,12 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.composer/cache/files
-          key: dependencies-composer-${{ hashFiles('composer.json') }}
+          key: dependencies-composer-${{ hashFiles('composer.json') }}-php-${{ matrix.php }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ matrix.php }}
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           coverage: none
@@ -30,8 +45,10 @@ jobs:
         run: |
           composer update --prefer-dist --no-interaction
 
-      - name: Run all QA checks
+      - name: Run all QA tests
         if: ${{ always() }}
         run: |
           chmod +x "${GITHUB_WORKSPACE}/bin/qa.sh"
           "${GITHUB_WORKSPACE}/bin/qa.sh"
+        env:
+          ARANGODB_VERSION: ${{ matrix.arangodb }}
