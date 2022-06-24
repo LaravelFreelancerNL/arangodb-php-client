@@ -1,10 +1,10 @@
-name: run-tests
+name: Run Tests
 
 on:
   push:
-    branches: [main]
+    branches: [next]
   pull_request:
-    branches: [main]
+    branches: [next]
 
 env:
   DB_ENDPOINT: 'tcp://127.0.0.1:8529'
