@@ -22,16 +22,18 @@ trait ManagesIndexes
      *
      * @param  string  $collection
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getIndexes(string $collection): array
     {
         $options = [
             'query' => [
-                'collection' => $collection
-            ]
+                'collection' => $collection,
+            ],
         ];
         $results = $this->arangoClient->request('get', '/_api/index', $options);
+
         return (array) $results->indexes;
     }
 
@@ -40,11 +42,12 @@ trait ManagesIndexes
      *
      * @param  string  $id
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getIndex(string $id): stdClass
     {
-        $uri = '/_api/index/' . $id;
+        $uri = '/_api/index/'.$id;
 
         return $this->arangoClient->request('get', $uri);
     }
@@ -59,9 +62,10 @@ trait ManagesIndexes
         $indexes = $this->getIndexes($collection);
         $searchResult = array_search($name, array_column($indexes, 'name'));
 
-        if (is_integer($searchResult)) {
+        if (is_int($searchResult)) {
             return (object) $indexes[$searchResult];
         }
+
         return false;
     }
 
@@ -71,6 +75,7 @@ trait ManagesIndexes
      * @param  string  $collection
      * @param  array<mixed>  $index
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function createIndex(string $collection, array $index): stdClass
@@ -80,7 +85,7 @@ trait ManagesIndexes
         if (isset($index['type'])) {
             $indexType = (string) $index['type'];
         }
-        $uri = '/_api/index#' . $indexType;
+        $uri = '/_api/index#'.$indexType;
 
         $options = ['body' => $index];
         $options['query']['collection'] = $collection;
@@ -93,11 +98,12 @@ trait ManagesIndexes
      *
      * @param  string  $id
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function deleteIndex(string $id): stdClass
     {
-        $uri = '/_api/index/' . $id;
+        $uri = '/_api/index/'.$id;
 
         return $this->arangoClient->request('delete', $uri);
     }

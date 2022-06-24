@@ -24,7 +24,6 @@ class AdminManagerTest extends TestCase
         $this->assertSame('arango', $result->server);
         $this->assertSame('community', $result->license);
         $this->assertIsString($result->version);
-
     }
 
     public function testGetVersionWithDetails()
@@ -41,5 +40,4 @@ class AdminManagerTest extends TestCase
         $transactions = $this->adminManager->getRunningTransactions();
         $this->assertEmpty($transactions);
     }
-
 }

@@ -16,11 +16,11 @@ trait ManagesCollections
     protected ArangoClient $arangoClient;
 
     /**
-     *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
      * @param  bool  $excludeSystemCollections
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getCollections(bool $excludeSystemCollections = false): array
@@ -30,8 +30,8 @@ trait ManagesCollections
             '/_api/collection',
             [
                 'query' => [
-                    'excludeSystem' => $excludeSystemCollections
-                ]
+                    'excludeSystem' => $excludeSystemCollections,
+                ],
             ]
         );
 
@@ -43,11 +43,13 @@ trait ManagesCollections
      *
      * @param  string  $name
      * @return bool
+     *
      * @throws ArangoException
      */
     public function hasCollection(string $name): bool
     {
         $results = $this->getCollections();
+
         return array_search($name, array_column($results, 'name'), true) !== false;
     }
 
@@ -58,7 +60,8 @@ trait ManagesCollections
      */
     public function getCollection(string $name): stdClass
     {
-        $uri = '/_api/collection/' . $name;
+        $uri = '/_api/collection/'.$name;
+
         return $this->arangoClient->request('get', $uri);
     }
 
@@ -67,11 +70,13 @@ trait ManagesCollections
      *
      * @param  string  $name
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getCollectionProperties(string $name): stdClass
     {
-        $uri = '/_api/collection/' . $name . '/properties';
+        $uri = '/_api/collection/'.$name.'/properties';
+
         return $this->arangoClient->request('get', $uri);
     }
 
@@ -80,11 +85,13 @@ trait ManagesCollections
      *
      * @param  string  $name
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getCollectionWithDocumentCount(string $name): stdClass
     {
-        $uri = '/_api/collection/' . $name . '/count';
+        $uri = '/_api/collection/'.$name.'/count';
+
         return $this->arangoClient->transactionAwareRequest('get', $uri);
     }
 
@@ -93,6 +100,7 @@ trait ManagesCollections
      *
      * @param  string  $name
      * @return int
+     *
      * @throws ArangoException
      */
     public function getCollectionDocumentCount(string $name): int
@@ -110,18 +118,20 @@ trait ManagesCollections
      * @param  string  $name
      * @param  bool  $details
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getCollectionStatistics(string $name, bool $details = false): stdClass
     {
-        $uri = '/_api/collection/' . $name . '/figures';
+        $uri = '/_api/collection/'.$name.'/figures';
+
         return $this->arangoClient->request(
             'get',
             $uri,
             [
                 'query' => [
-                    'details' => $details
-                ]
+                    'details' => $details,
+                ],
             ]
         );
     }
@@ -132,6 +142,7 @@ trait ManagesCollections
      * @param  int|bool|null  $waitForSyncReplication
      * @param  int|bool|null  $enforceReplicationFactor
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function createCollection(
@@ -158,11 +169,12 @@ trait ManagesCollections
      * @param  string  $name
      * @param  array<mixed>  $config
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function updateCollection(string $name, array $config = []): stdClass
     {
-        $uri = '/_api/collection/' . $name . '/properties';
+        $uri = '/_api/collection/'.$name.'/properties';
 
         $options = ['body' => $config];
 
@@ -173,16 +185,17 @@ trait ManagesCollections
      * @param  string  $old
      * @param  string  $new
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function renameCollection(string $old, string $new): stdClass
     {
-        $uri = '/_api/collection/' . $old . '/rename';
+        $uri = '/_api/collection/'.$old.'/rename';
 
         $options = [
             'body' => [
-                'name' => $new
-            ]
+                'name' => $new,
+            ],
         ];
 
         return $this->arangoClient->request('put', $uri, $options);
@@ -191,11 +204,12 @@ trait ManagesCollections
     /**
      * @param  string  $name
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function truncateCollection(string $name): stdClass
     {
-        $uri = '/_api/collection/' . $name . '/truncate';
+        $uri = '/_api/collection/'.$name.'/truncate';
 
         return $this->arangoClient->request('put', $uri);
     }
@@ -203,11 +217,12 @@ trait ManagesCollections
     /**
      * @param  string  $name
      * @return bool
+     *
      * @throws ArangoException
      */
     public function deleteCollection(string $name): bool
     {
-        $uri = '/_api/collection/' . $name;
+        $uri = '/_api/collection/'.$name;
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }

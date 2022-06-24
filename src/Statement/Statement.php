@@ -14,7 +14,6 @@ use stdClass;
  *
  * @see https://www.arangodb.com/docs/stable/http/aql-query-cursor.html
  *
- * @package ArangoClient
  *
  * @template-implements \IteratorAggregate<mixed>
  */
@@ -56,6 +55,7 @@ class Statement extends Manager implements IteratorAggregate
 
     /**
      * Statement constructor.
+     *
      * @param  ArangoClient  $arangoClient
      * @param  string  $query
      * @param  array<scalar>  $bindVars
@@ -93,7 +93,7 @@ class Statement extends Manager implements IteratorAggregate
         $bodyContent = $this->prepareQueryBodyContent();
 
         $options = [
-            'body' => $bodyContent
+            'body' => $bodyContent,
         ];
         $results = $this->arangoClient->transactionAwareRequest('post', '/_api/cursor', $options);
 
@@ -131,20 +131,21 @@ class Statement extends Manager implements IteratorAggregate
         }
 
         $this->cursorHasMoreResults = (bool) $results->hasMore;
-        $this->cursorId = $results->hasMore ?  (int) $results->id : null;
+        $this->cursorId = $results->hasMore ? (int) $results->id : null;
     }
 
     /**
      * @param  array<mixed>  $body
+     *
      * @throws ArangoException
      */
     protected function requestOutstandingResults(array $body): void
     {
         while ($this->cursorHasMoreResults) {
-            $uri = '/_api/cursor/' . (string) $this->cursorId;
+            $uri = '/_api/cursor/'.(string) $this->cursorId;
 
             $options = [
-                'body' => $body
+                'body' => $body,
             ];
 
             $results = $this->arangoClient->request('put', $uri, $options);
@@ -160,7 +161,7 @@ class Statement extends Manager implements IteratorAggregate
     {
         $body = $this->prepareQueryBodyContent();
         $options = [
-            'body' => $body
+            'body' => $body,
         ];
 
         return $this->arangoClient->request('post', '/_api/explain', $options);
@@ -175,7 +176,7 @@ class Statement extends Manager implements IteratorAggregate
     {
         $body = $this->prepareQueryBodyContent();
         $options = [
-            'body' => $body
+            'body' => $body,
         ];
 
         return $this->arangoClient->request('post', '/_api/query', $options);
@@ -183,6 +184,7 @@ class Statement extends Manager implements IteratorAggregate
 
     /**
      * Execute the query and return performance information on the query.
+     *
      * @see https://www.arangodb.com/docs/3.7/aql/execution-and-performance-query-profiler.html
      *
      * @throws ArangoException
@@ -197,7 +199,7 @@ class Statement extends Manager implements IteratorAggregate
         $bodyContent['options']['profile'] = $mode;
 
         $options = [
-            'body' => $bodyContent
+            'body' => $bodyContent,
         ];
 
         $results = $this->arangoClient->request('post', '/_api/cursor', $options);

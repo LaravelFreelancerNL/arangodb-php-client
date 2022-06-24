@@ -30,7 +30,7 @@ class ArangoClientTest extends TestCase
             'connect_timeout' => 0.0,
             'username' => 'root',
             'password' => null,
-            'database' => $this->testDatabaseName
+            'database' => $this->testDatabaseName,
         ];
 
         $config = $this->arangoClient->getConfig();
@@ -47,7 +47,6 @@ class ArangoClientTest extends TestCase
         $returnedConfig = $this->arangoClient->getConfig();
         $this->assertSame($config['endpoint'], $returnedConfig['endpoint']);
     }
-
 
     public function testClientWithHostPortConfig()
     {
@@ -129,8 +128,8 @@ class ArangoClientTest extends TestCase
         $container = [];
         $history = Middleware::history($container);
         $mock = new MockHandler([
-                                    new Response(200, ['X-Foo' => 'Bar'], '{}')
-                                ]);
+            new Response(200, ['X-Foo' => 'Bar'], '{}'),
+        ]);
         $handlerStack = HandlerStack::create($mock);
         $handlerStack->push($history);
 
@@ -138,7 +137,7 @@ class ArangoClientTest extends TestCase
         $this->arangoClient->request('get', $uri, ['handler' => $handlerStack]);
 
         foreach ($container as $transaction) {
-            $this->assertSame('/_db/' . $database . $uri, $transaction['request']->getUri()->getPath());
+            $this->assertSame('/_db/'.$database.$uri, $transaction['request']->getUri()->getPath());
         }
 
         $this->arangoClient->schema()->deleteDatabase($database);
@@ -199,7 +198,6 @@ class ArangoClientTest extends TestCase
         $this->assertEquals(2, $response->getProtocolVersion());
     }
 
-
     public function testJsonEncode()
     {
         $results = $this->arangoClient->jsonEncode([]);
@@ -243,12 +241,12 @@ class ArangoClientTest extends TestCase
         $user->name = 'Soldier Boy';
         $user->location = $location;
 
-        $insertQuery = 'INSERT ' . json_encode($user) . ' INTO ' . $collection . ' RETURN NEW';
+        $insertQuery = 'INSERT '.json_encode($user).' INTO '.$collection.' RETURN NEW';
         $insertStatement = $this->arangoClient->prepare($insertQuery);
         $insertStatement->execute();
         $insertResult = $insertStatement->fetchAll();
 
-        $query = 'FOR doc IN ' . $collection . ' RETURN doc';
+        $query = 'FOR doc IN '.$collection.' RETURN doc';
         $statement = $this->arangoClient->prepare($query);
         $statement->execute();
         $users = $statement->fetchAll();
@@ -261,7 +259,7 @@ class ArangoClientTest extends TestCase
     protected function checkHttp2Support()
     {
         // First assert that CURL supports http2!
-        if(! curl_version()["features"] || CURL_VERSION_HTTP2 === 0) {
+        if (! curl_version()['features'] || CURL_VERSION_HTTP2 === 0) {
             $this->markTestSkipped('The installed version of CURL does not support the HTTP2 protocol.');
         }
         // HTTP/2 is only supported by ArangoDB 3.7 and up.

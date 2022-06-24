@@ -23,6 +23,7 @@ trait SupportsTransactions
         if (! isset($this->transactionManager)) {
             $this->transactionManager = new TransactionManager($this);
         }
+
         return $this->transactionManager;
     }
 
@@ -32,6 +33,7 @@ trait SupportsTransactions
      * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
      * @return string
+     *
      * @throws ArangoException
      */
     public function begin(array $collections = [], array $options = []): string
@@ -45,6 +47,7 @@ trait SupportsTransactions
      * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
      * @return string
+     *
      * @throws ArangoException
      */
     public function beginTransaction(array $collections = [], array $options = []): string
@@ -57,6 +60,7 @@ trait SupportsTransactions
      *
      * @param  string|null  $id
      * @return bool
+     *
      * @throws ArangoException
      */
     public function abort(string $id = null): bool
@@ -69,6 +73,7 @@ trait SupportsTransactions
      *
      * @param  string|null  $id
      * @return bool
+     *
      * @throws ArangoException
      */
     public function rollBack(string $id = null): bool
@@ -78,8 +83,10 @@ trait SupportsTransactions
 
     /**
      * Shortcut to commit() on the transactionManager
+     *
      * @param  string|null  $id
      * @return bool
+     *
      * @throws ArangoException
      */
     public function commit(string $id = null): bool
@@ -96,6 +103,7 @@ trait SupportsTransactions
      * @param  string|null  $database
      * @param  int|null  $transactionId
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function transactionAwareRequest(

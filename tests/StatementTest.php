@@ -19,7 +19,7 @@ class StatementTest extends TestCase
         if (! $this->schemaManager->hasCollection($this->collection)) {
             $this->schemaManager->createCollection($this->collection);
         }
-        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
+        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
 
         $this->statement = $this->arangoClient->prepare($query);
     }
@@ -49,7 +49,7 @@ class StatementTest extends TestCase
 
     public function testSetAndGetQuery()
     {
-        $query = 'FOR doc IN ' . $this->collection . ' LIMIT 1 RETURN doc';
+        $query = 'FOR doc IN '.$this->collection.' LIMIT 1 RETURN doc';
 
         $statement = $this->statement->setQuery($query);
 
@@ -94,7 +94,7 @@ class StatementTest extends TestCase
 
     public function testGetCount()
     {
-        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
+        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
         $options = ['count' => true];
         $statement = $this->arangoClient->prepare($query, [], $options);
         $statement->execute();
@@ -113,7 +113,7 @@ class StatementTest extends TestCase
     {
         $this->generateTestDocuments();
 
-        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
+        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
         $this->statement->setQuery($query);
         $executed = $this->statement->execute();
         $this->assertTrue($executed);
@@ -123,18 +123,17 @@ class StatementTest extends TestCase
         $this->assertSame('test1', $results[0]->_key);
     }
 
-
     public function testResultsGreaterThanBatchSize()
     {
         $this->generateTestDocuments();
 
         // Retrieve data in batches of 2
-        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
+        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
         $options = ['batchSize' => 2];
         $statement = $this->arangoClient->prepare($query, [], $options);
         $executed = $statement->execute();
         $this->assertTrue($executed);
-        $results =$statement->fetchAll();
+        $results = $statement->fetchAll();
 
         $this->assertEquals(10, count($results));
         $this->assertSame('test1', $results[0]->_key);

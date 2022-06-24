@@ -9,8 +9,6 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 /**
  * Class HttpRequestOptions
- *
- * @package ArangoClient\Http
  */
 class HttpRequestOptions extends DataTransferObject
 {

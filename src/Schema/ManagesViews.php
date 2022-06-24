@@ -20,16 +20,17 @@ trait ManagesViews
      *
      * @param  array<mixed>  $view
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function createView(array $view): stdClass
     {
         $view['type'] = isset($view['type']) ? (string) $view['type'] : 'arangosearch';
 
-        $uri = '/_api/view#' . $view['type'];
+        $uri = '/_api/view#'.$view['type'];
 
         $options = [
-            'body' => $view
+            'body' => $view,
         ];
 
         return  $this->arangoClient->request('post', $uri, $options);
@@ -40,11 +41,12 @@ trait ManagesViews
      *
      * @param  string  $name
      * @return bool
+     *
      * @throws ArangoException
      */
     public function deleteView(string $name): bool
     {
-        $uri = '/_api/view/' . $name;
+        $uri = '/_api/view/'.$name;
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }
@@ -53,6 +55,7 @@ trait ManagesViews
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#list-all-views
      *
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getViews(): array
@@ -67,6 +70,7 @@ trait ManagesViews
      *
      * @param  string  $name
      * @return bool
+     *
      * @throws ArangoException
      */
     public function hasView(string $name): bool
@@ -81,6 +85,7 @@ trait ManagesViews
      *
      * @param  string  $name
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getView(string $name): stdClass
@@ -93,11 +98,12 @@ trait ManagesViews
      *
      * @param  string  $name
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getViewProperties(string $name): stdClass
     {
-        $uri = '/_api/view/' . $name . '/properties';
+        $uri = '/_api/view/'.$name.'/properties';
 
         return $this->arangoClient->request('get', $uri);
     }
@@ -106,16 +112,17 @@ trait ManagesViews
      * @param  string  $old
      * @param  string  $new
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function renameView(string $old, string $new): stdClass
     {
-        $uri = '/_api/view/' . $old . '/rename';
+        $uri = '/_api/view/'.$old.'/rename';
 
         $options = [
             'body' => [
-                'name' => $new
-            ]
+                'name' => $new,
+            ],
         ];
 
         return $this->arangoClient->request('put', $uri, $options);
@@ -127,6 +134,7 @@ trait ManagesViews
      * @param  string  $name
      * @param  array<mixed>  $properties
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function updateView(string $name, array $properties): stdClass
@@ -138,10 +146,10 @@ trait ManagesViews
 
         $properties['type'] = isset($properties['type']) ? (string) $properties['type'] : 'arangosearch';
 
-        $uri = '/_api/view/' . $name . '/properties#' . $properties['type'];
+        $uri = '/_api/view/'.$name.'/properties#'.$properties['type'];
 
         $options = [
-            'body' => $properties
+            'body' => $properties,
         ];
 
         return $this->arangoClient->request('patch', $uri, $options);
@@ -153,9 +161,10 @@ trait ManagesViews
      *
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#create-an-arangosearch-view
      *
-     * @param string $name
-     * @param array<mixed> $newView
+     * @param  string  $name
+     * @param  array<mixed>  $newView
      * @return stdClass|false
+     *
      * @throws ArangoException
      */
     public function replaceView(string $name, array $newView): stdClass|false

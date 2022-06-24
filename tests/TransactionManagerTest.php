@@ -31,7 +31,6 @@ class TransactionManagerTest extends TestCase
         $begunTransactions = $this->transactionManager->getTransactions();
         $this->assertEmpty($begunTransactions);
 
-
         $id = $this->transactionManager->begin();
         $transactions[$id] = $id;
         $id = $this->transactionManager->begin();
@@ -131,8 +130,8 @@ class TransactionManagerTest extends TestCase
         $collections = [
             'write' => [
                 'Users',
-                'Customers'
-            ]
+                'Customers',
+            ],
         ];
 
         $this->transactionManager->begin($collections);

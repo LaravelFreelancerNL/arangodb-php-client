@@ -24,6 +24,7 @@ trait ManagesGraphs
      * @param  array<mixed>  $config
      * @param  bool  $waitForSync
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function createGraph(
@@ -45,6 +46,7 @@ trait ManagesGraphs
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#list-all-graphs
      *
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getGraphs(): array
@@ -76,7 +78,7 @@ trait ManagesGraphs
      */
     public function getGraph(string $name): stdClass
     {
-        $uri = '/_api/gharial/' . $name;
+        $uri = '/_api/gharial/'.$name;
 
         return (object) $this->arangoClient->request('get', $uri)->graph;
     }
@@ -88,21 +90,21 @@ trait ManagesGraphs
      */
     public function deleteGraph(string $name): bool
     {
-        $uri = '/_api/gharial/' . $name;
+        $uri = '/_api/gharial/'.$name;
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }
-
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#list-vertex-collections
      *
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getGraphVertices(string $name): array
     {
-        $uri = '/_api/gharial/' . $name . '/vertex';
+        $uri = '/_api/gharial/'.$name.'/vertex';
 
         return (array) $this->arangoClient->request('get', $uri)->collections;
     }
@@ -114,16 +116,16 @@ trait ManagesGraphs
      */
     public function addGraphVertex(string $name, string $vertex): stdClass
     {
-        $uri = '/_api/gharial/' . $name . '/vertex';
+        $uri = '/_api/gharial/'.$name.'/vertex';
 
         $options = [
             'body' => [
-                'collection' => $vertex
-            ]
+                'collection' => $vertex,
+            ],
         ];
+
         return (object) $this->arangoClient->request('post', $uri, $options)->graph;
     }
-
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#add-vertex-collection
@@ -134,7 +136,7 @@ trait ManagesGraphs
      */
     public function removeGraphVertex(string $name, string $vertex, bool $dropCollection = false): stdClass
     {
-        $uri = '/_api/gharial/' . $name . '/vertex/' . $vertex;
+        $uri = '/_api/gharial/'.$name.'/vertex/'.$vertex;
 
         $options = [];
         $options['query']['dropCollection'] = $dropCollection;
@@ -147,11 +149,12 @@ trait ManagesGraphs
      *
      * @param  string  $name
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getGraphEdges(string $name): array
     {
-        $uri = '/_api/gharial/' . $name . '/edge';
+        $uri = '/_api/gharial/'.$name.'/edge';
 
         return (array) $this->arangoClient->request('get', $uri)->collections;
     }
@@ -162,18 +165,19 @@ trait ManagesGraphs
      * @param  string  $name
      * @param  array<mixed>  $edgeDefinition
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function addGraphEdge(string $name, array $edgeDefinition): stdClass
     {
-        $uri = '/_api/gharial/' . $name . '/edge';
+        $uri = '/_api/gharial/'.$name.'/edge';
 
         $options = [
-            'body' => $edgeDefinition
+            'body' => $edgeDefinition,
         ];
+
         return (object) $this->arangoClient->request('post', $uri, $options)->graph;
     }
-
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#replace-an-edge-definition
@@ -186,6 +190,7 @@ trait ManagesGraphs
      * @param  bool  $dropCollection
      * @param  bool  $waitForSync
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function replaceGraphEdge(
@@ -195,7 +200,7 @@ trait ManagesGraphs
         bool $dropCollection = false,
         bool $waitForSync = false
     ): stdClass {
-        $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
+        $uri = '/_api/gharial/'.$name.'/edge/'.$edge.'#definition';
 
         $options = [];
         $options['query']['waitForSync'] = $waitForSync;
@@ -218,7 +223,7 @@ trait ManagesGraphs
         bool $dropCollection = true,
         bool $waitForSync = false
     ): stdClass {
-        $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
+        $uri = '/_api/gharial/'.$name.'/edge/'.$edge.'#definition';
 
         $options = [];
         $options['query']['waitForSync'] = $waitForSync;

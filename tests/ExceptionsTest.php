@@ -6,7 +6,6 @@ namespace Tests;
 
 class ExceptionsTest extends TestCase
 {
-
     public function test409ConflictException()
     {
         $database = 'test_arangodb_php_existing_database';
@@ -14,7 +13,7 @@ class ExceptionsTest extends TestCase
             $this->schemaManager->createDatabase($database);
         }
 
-       $this->expectExceptionCode(409);
+        $this->expectExceptionCode(409);
         $this->schemaManager->createDatabase($database);
 
         $this->schemaManager->deleteDatabase($database);

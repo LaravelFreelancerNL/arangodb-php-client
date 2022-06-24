@@ -15,6 +15,7 @@ trait ManagesDatabases
 
     /**
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getCurrentDatabase(): stdClass
@@ -33,7 +34,7 @@ trait ManagesDatabases
     {
         $user = $this->arangoClient->getUser();
 
-        $uri = '/_api/user/' . $user . '/database';
+        $uri = '/_api/user/'.$user.'/database';
 
         $results = $this->arangoClient->request('get', $uri, []);
 
@@ -41,8 +42,9 @@ trait ManagesDatabases
     }
 
     /**
-     * @param string    $name
+     * @param  string  $name
      * @return bool
+     *
      * @throws ArangoException
      */
     public function hasDatabase(string $name): bool
@@ -57,6 +59,7 @@ trait ManagesDatabases
      * @param  null  $options
      * @param  null  $users
      * @return bool
+     *
      * @throws ArangoException
      */
     public function createDatabase(string $name, $options = null, $users = null): bool
@@ -64,7 +67,7 @@ trait ManagesDatabases
         $body = ['name' => $name, 'options' => $options, 'users' => $users];
 
         $options = [
-            'body' => $body
+            'body' => $body,
         ];
 
         return (bool) $this->arangoClient->request('post', '/_api/database', $options, '_system');
@@ -73,11 +76,12 @@ trait ManagesDatabases
     /**
      * @param  string  $name
      * @return bool
+     *
      * @throws ArangoException
      */
     public function deleteDatabase(string $name): bool
     {
-        $uri = '/_api/database/' . $name;
+        $uri = '/_api/database/'.$name;
 
         return (bool) $this->arangoClient->request('delete', $uri, [], '_system');
     }

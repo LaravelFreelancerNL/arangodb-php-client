@@ -16,6 +16,7 @@ trait HandlesJson
     /**
      * @param  mixed  $data
      * @return string
+     *
      * @throws ArangoException
      */
     public function jsonEncode(mixed $data): string
@@ -28,12 +29,11 @@ trait HandlesJson
         $response = json_encode($data, $options);
 
         if ($response === false) {
-            throw new ArangoException('JSON encoding failed with error: ' . json_last_error_msg(), json_last_error());
+            throw new ArangoException('JSON encoding failed with error: '.json_last_error_msg(), json_last_error());
         }
 
         return $response;
     }
-
 
     /**
      * @psalm-suppress MixedAssignment, MixedArrayOffset

@@ -75,8 +75,8 @@ class SupportsTransactionsTest extends TestCase
         $collections = [
             'write' => [
                 'Users',
-                'Customers'
-            ]
+                'Customers',
+            ],
         ];
 
         $this->arangoClient->beginTransaction($collections);
@@ -117,6 +117,5 @@ class SupportsTransactionsTest extends TestCase
 
         $this->assertNull($oldTransactionManager);
         $this->assertEquals(spl_object_id($newTransactionManager), spl_object_id($retrievedNewTransactionManager));
-
     }
 }

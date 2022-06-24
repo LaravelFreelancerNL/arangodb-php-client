@@ -18,6 +18,7 @@ trait HasManagers
         if (! isset($this->adminManager)) {
             $this->adminManager = new AdminManager($this);
         }
+
         return $this->adminManager;
     }
 
@@ -26,6 +27,7 @@ trait HasManagers
         if (! isset($this->schemaManager)) {
             $this->schemaManager = new SchemaManager($this);
         }
+
         return $this->schemaManager;
     }
 }

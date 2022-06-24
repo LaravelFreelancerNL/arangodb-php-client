@@ -27,16 +27,16 @@ class SchemaManagerGraphsTest extends TestCase
                     [
                         'collection' => 'children',
                         'from' => ['characters'],
-                        'to' => ['characters']
-                    ]
+                        'to' => ['characters'],
+                    ],
                 ],
                 'orphanCollections' => [
-                    'orphanVertices'
+                    'orphanVertices',
                 ],
             ],
             true);
         $this->assertEquals(1, count($result->edgeDefinitions));
-        $this->assertEquals( $result->_id, '_graphs/relations');
+        $this->assertEquals($result->_id, '_graphs/relations');
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');
@@ -78,7 +78,6 @@ class SchemaManagerGraphsTest extends TestCase
         $result = $this->schemaManager->hasGraph('locations');
         $this->assertTrue($result);
 
-
         $this->schemaManager->deleteGraph('locations');
         $result = $this->schemaManager->hasGraph('locations');
         $this->assertFalse($result);
@@ -110,11 +109,11 @@ class SchemaManagerGraphsTest extends TestCase
                         [
                             'collection' => 'children',
                             'from' => ['characters'],
-                            'to' => ['characters']
-                        ]
+                            'to' => ['characters'],
+                        ],
                     ],
                     'orphanCollections' => [
-                        'orphanVertices'
+                        'orphanVertices',
                     ],
                 ],
                 true
@@ -124,8 +123,8 @@ class SchemaManagerGraphsTest extends TestCase
         $results = $this->schemaManager->getGraphVertices('relations');
 
         $this->assertEquals(2, count($results));
-        $this->assertEquals( $results[0], 'characters');
-        $this->assertEquals( $results[1], 'orphanVertices');
+        $this->assertEquals($results[0], 'characters');
+        $this->assertEquals($results[1], 'orphanVertices');
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');
@@ -143,11 +142,11 @@ class SchemaManagerGraphsTest extends TestCase
                         [
                             'collection' => 'children',
                             'from' => ['characters'],
-                            'to' => ['characters']
-                        ]
+                            'to' => ['characters'],
+                        ],
                     ],
                     'orphanCollections' => [
-                        'orphanVertices'
+                        'orphanVertices',
                     ],
                 ],
                 false
@@ -177,11 +176,11 @@ class SchemaManagerGraphsTest extends TestCase
                         [
                             'collection' => 'children',
                             'from' => ['characters'],
-                            'to' => ['characters']
-                        ]
+                            'to' => ['characters'],
+                        ],
                     ],
                     'orphanCollections' => [
-                        'orphanVertices'
+                        'orphanVertices',
                     ],
                 ],
                 false
@@ -213,11 +212,11 @@ class SchemaManagerGraphsTest extends TestCase
                         [
                             'collection' => 'children',
                             'from' => ['characters'],
-                            'to' => ['characters']
-                        ]
+                            'to' => ['characters'],
+                        ],
                     ],
                     'orphanCollections' => [
-                        'orphanVertices'
+                        'orphanVertices',
                     ],
                 ],
                 true
@@ -227,7 +226,7 @@ class SchemaManagerGraphsTest extends TestCase
         $results = $this->schemaManager->getGraphEdges('relations');
 
         $this->assertEquals(1, count($results));
-        $this->assertEquals( $results[0], 'children');
+        $this->assertEquals($results[0], 'children');
 
         $this->schemaManager->deleteGraph('relations');
         $this->schemaManager->deleteCollection('children');
@@ -245,9 +244,9 @@ class SchemaManagerGraphsTest extends TestCase
                         [
                             'collection' => 'children',
                             'from' => ['characters'],
-                            'to' => ['characters']
-                        ]
-                    ]
+                            'to' => ['characters'],
+                        ],
+                    ],
                 ],
                 false
             );
@@ -255,7 +254,7 @@ class SchemaManagerGraphsTest extends TestCase
         $newEdge = [
             'collection' => 'vassals',
             'from' => ['characters'],
-            'to' => ['houses']
+            'to' => ['houses'],
         ];
 
         $result = $this->schemaManager->addGraphEdge('relations', $newEdge);
@@ -279,9 +278,9 @@ class SchemaManagerGraphsTest extends TestCase
                         [
                             'collection' => 'children',
                             'from' => ['characters'],
-                            'to' => ['characters']
-                        ]
-                    ]
+                            'to' => ['characters'],
+                        ],
+                    ],
                 ]
             );
         }
@@ -289,7 +288,7 @@ class SchemaManagerGraphsTest extends TestCase
         $newEdge = [
             'collection' => 'children',
             'from' => ['houses'],
-            'to' => ['houses']
+            'to' => ['houses'],
         ];
 
         $result = $this->schemaManager->replaceGraphEdge(
@@ -318,14 +317,14 @@ class SchemaManagerGraphsTest extends TestCase
                         [
                             'collection' => 'children',
                             'from' => ['characters'],
-                            'to' => ['characters']
+                            'to' => ['characters'],
                         ],
                         [
                             'collection' => 'vassals',
                             'from' => ['houses'],
-                            'to' => ['houses']
-                        ]
-                    ]
+                            'to' => ['houses'],
+                        ],
+                    ],
                 ]
             );
         }
@@ -346,7 +345,4 @@ class SchemaManagerGraphsTest extends TestCase
         $this->schemaManager->deleteCollection('characters');
         $this->schemaManager->deleteCollection('vassals');
     }
-
-
-
 }

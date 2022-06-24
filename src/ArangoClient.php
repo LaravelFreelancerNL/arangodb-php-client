@@ -38,6 +38,7 @@ class ArangoClient
      *
      * @param  array<string|numeric|null>  $config
      * @param  GuzzleClient|null  $httpClient
+     *
      * @throws UnknownProperties
      */
     public function __construct(array $config = [], GuzzleClient $httpClient = null)
@@ -62,7 +63,7 @@ class ArangoClient
             $endpoint = (string) $config['host'];
         }
         if (isset($config['port'])) {
-            $endpoint .= ':' . (string) $config['port'];
+            $endpoint .= ':'.(string) $config['port'];
         }
 
         return $endpoint;
@@ -76,6 +77,7 @@ class ArangoClient
      * @param  array<mixed>|HttpRequestOptions  $options
      * @param  string|null  $database
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function request(string $method, string $uri, $options = [], ?string $database = null): stdClass
@@ -99,6 +101,7 @@ class ArangoClient
     /**
      * @param  array<mixed>  $options
      * @return HttpRequestOptions
+     *
      * @throws ArangoException
      */
     protected function prepareRequestOptions(array $options): HttpRequestOptions
@@ -118,6 +121,7 @@ class ArangoClient
      * @param  array<mixed>  $options
      * @param  string|null  $database
      * @return ResponseInterface
+     *
      * @throws GuzzleException
      */
     public function debugRequest(
@@ -137,11 +141,13 @@ class ArangoClient
         if (! isset($database)) {
             $database = $this->config->database;
         }
-        return '/_db/' . urlencode($database) . $uri;
+
+        return '/_db/'.urlencode($database).$uri;
     }
 
     /**
      * @param  Throwable  $e
+     *
      * @throws ArangoException
      */
     protected function handleGuzzleException(Throwable $e): void
@@ -157,7 +163,7 @@ class ArangoClient
 
         throw(
             new ArangoException(
-                $code . ' - ' .  $message,
+                $code.' - '.$message,
                 $code
             )
         );
@@ -172,7 +178,7 @@ class ArangoClient
      */
     protected function cleanupResponse(?ResponseInterface $response): stdClass
     {
-        $response =  $this->decodeResponse($response);
+        $response = $this->decodeResponse($response);
         unset($response->error);
         unset($response->code);
 
@@ -202,7 +208,7 @@ class ArangoClient
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return void
      */
     public function setDatabase(string $name): void

@@ -7,15 +7,12 @@ namespace ArangoClient\Transactions;
 use ArangoClient\ArangoClient;
 use ArangoClient\Exceptions\ArangoException;
 use ArangoClient\Manager;
-use stdClass;
 
 /**
  * Class TransactionManager
  * Begins transactions and manages those transactions.
  *
  * @see https://www.arangodb.com/docs/stable/http/transaction-stream-transaction.html
- *
- * @package ArangoClient\Transactions
  */
 class TransactionManager extends Manager
 {
@@ -30,7 +27,7 @@ class TransactionManager extends Manager
     {
         $this->arangoClient = $arangoClient;
 
-        register_shutdown_function(array($this, 'abortRunningTransactions'));
+        register_shutdown_function([$this, 'abortRunningTransactions']);
     }
 
     /**
@@ -57,9 +54,11 @@ class TransactionManager extends Manager
 
     /**
      * Begin a transactions and return its id.
+     *
      * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
      * @return string
+     *
      * @throws ArangoException
      */
     public function begin(array $collections = [], array $options = []): string
@@ -82,7 +81,7 @@ class TransactionManager extends Manager
     {
         $id = $this->getTransaction($id);
 
-        $uri =  '/_api/transaction/' . $id;
+        $uri = '/_api/transaction/'.$id;
 
         $this->arangoClient->request('put', $uri);
         unset($this->transactions[$id]);
@@ -97,7 +96,7 @@ class TransactionManager extends Manager
     {
         $id = $this->getTransaction($id);
 
-        $uri =  '/_api/transaction/' . $id;
+        $uri = '/_api/transaction/'.$id;
 
         $this->arangoClient->request('delete', $uri);
         unset($this->transactions[$id]);
@@ -132,7 +131,7 @@ class TransactionManager extends Manager
         $collectionTemplate = [
             'read' => [],
             'write' => [],
-            'exclusive' => []
+            'exclusive' => [],
         ];
 
         return array_intersect_key(array_merge($collectionTemplate, $collections), $collectionTemplate);

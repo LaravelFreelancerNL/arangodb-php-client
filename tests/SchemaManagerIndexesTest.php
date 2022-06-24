@@ -64,7 +64,7 @@ class SchemaManagerIndexesTest extends TestCase
             'type' => 'persistent',
             'fields' => ['profile.email'],
             'unique' => true,
-            'sparse' => false
+            'sparse' => false,
         ];
         $created = $this->schemaManager->createIndex($this->collection, $index);
         $result = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
@@ -82,14 +82,14 @@ class SchemaManagerIndexesTest extends TestCase
             'type' => 'persistent',
             'fields' => ['profile.email'],
             'unique' => true,
-            'sparse' => false
+            'sparse' => false,
         ];
         $created = $this->schemaManager->createIndex($this->collection, $index);
         $found = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
 
         $deleted = $this->schemaManager->deleteIndex($found->id);
         $this->assertEquals($created->id, $deleted->id);
-        $searchForDeleted =  $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
+        $searchForDeleted = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
         $this->assertFalse($searchForDeleted);
     }
 }

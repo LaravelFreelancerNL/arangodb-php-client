@@ -8,7 +8,7 @@ class SchemaManagerViewsTest extends TestCase
 {
     protected array $view = [
         'name' => 'testViewBasics',
-        'type' => 'arangosearch'
+        'type' => 'arangosearch',
     ];
 
     protected function setUp(): void
@@ -76,7 +76,7 @@ class SchemaManagerViewsTest extends TestCase
     {
         $newViewProps = [
             'cleanupIntervalStep' => 3,
-            'primarySort' => 'email'
+            'primarySort' => 'email',
         ];
         $result = $this->schemaManager->updateView($this->view['name'], $newViewProps);
 
@@ -88,8 +88,8 @@ class SchemaManagerViewsTest extends TestCase
         $newViewProps = [
             'primarySort' => [[
                 'field' => 'email',
-                'direction' => 'desc'
-            ]]
+                'direction' => 'desc',
+            ]],
         ];
         $newView = $this->schemaManager->replaceView($this->view['name'], $newViewProps);
 
@@ -100,7 +100,7 @@ class SchemaManagerViewsTest extends TestCase
     public function testCreateAndDeleteView()
     {
         $view = [
-            'name' => 'coolnewview'
+            'name' => 'coolnewview',
         ];
         $created = $this->schemaManager->createView($view);
         $this->assertObjectHasAttribute('name', $created);

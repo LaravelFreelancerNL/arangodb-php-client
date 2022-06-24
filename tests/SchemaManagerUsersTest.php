@@ -7,6 +7,7 @@ namespace Tests;
 class SchemaManagerUsersTest extends TestCase
 {
     protected string $userName = 'kimiko';
+
     protected string $accessDatabase = 'arangodb_php_client_access__test';
 
     protected function setUp(): void
@@ -15,7 +16,7 @@ class SchemaManagerUsersTest extends TestCase
 
         $user = [
             'user' => $this->userName,
-            'password' => 'yee random pw'
+            'password' => 'yee random pw',
         ];
 
         if (! $this->schemaManager->hasUser($this->userName)) {
@@ -54,7 +55,6 @@ class SchemaManagerUsersTest extends TestCase
 
         $result = $this->schemaManager->hasUser('nonExistingUser');
         $this->assertFalse($result);
-
     }
 
     public function testCreateAndDeleteUser()
@@ -65,9 +65,9 @@ class SchemaManagerUsersTest extends TestCase
             'active' => true,
             'extra' => [
                 'profile' => [
-                    'name' => 'Billy Butcher'
-                ]
-            ]
+                    'name' => 'Billy Butcher',
+                ],
+            ],
         ];
         if ($this->schemaManager->hasUser($user['user'])) {
             $this->schemaManager->deleteUser($user['user']);
@@ -85,7 +85,7 @@ class SchemaManagerUsersTest extends TestCase
     {
         $newUserData = [
             'user' => $this->userName,
-            'active' => false
+            'active' => false,
         ];
         $updated = $this->schemaManager->updateUser($this->userName, $newUserData);
 
@@ -96,7 +96,7 @@ class SchemaManagerUsersTest extends TestCase
     {
         $newUserData = [
             'user' => 'newUserName',
-            'active' => false
+            'active' => false,
         ];
         $replaced = $this->schemaManager->replaceUser($this->userName, $newUserData);
 
@@ -118,7 +118,7 @@ class SchemaManagerUsersTest extends TestCase
         $results = $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
         $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
-        $this->assertObjectHasAttribute( $this->accessDatabase, $results);
+        $this->assertObjectHasAttribute($this->accessDatabase, $results);
         $this->assertSame($grant, $results->{$this->accessDatabase});
         $this->assertSame($grant, $accessLevel);
 

@@ -18,17 +18,19 @@ trait ManagesUsers
     /**
      * @param  string  $username
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function getUser(string $username): stdClass
     {
-        $uri = '/_api/user/' . $username;
+        $uri = '/_api/user/'.$username;
 
         return $this->arangoClient->request('get', $uri);
     }
 
     /**
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getUsers(): array
@@ -41,6 +43,7 @@ trait ManagesUsers
     /**
      * @param  string  $username
      * @return bool
+     *
      * @throws ArangoException
      */
     public function hasUser(string $username): bool
@@ -53,12 +56,13 @@ trait ManagesUsers
     /**
      * @param  array<mixed>  $user
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function createUser(array $user): stdClass
     {
         $options = [
-            'body' => $user
+            'body' => $user,
         ];
 
         return $this->arangoClient->request('post', '/_api/user', $options);
@@ -66,13 +70,14 @@ trait ManagesUsers
 
     /**
      * @param  string  $username
-     * @param array<mixed> $properties
+     * @param  array<mixed>  $properties
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function updateUser(string $username, array $properties): stdClass
     {
-        $uri = '/_api/user/' . $username;
+        $uri = '/_api/user/'.$username;
 
         $options = ['body' => $properties];
 
@@ -83,11 +88,12 @@ trait ManagesUsers
      * @param  string  $username
      * @param  array<mixed>  $user
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function replaceUser(string $username, array $user): stdClass
     {
-        $uri = '/_api/user/' . $username;
+        $uri = '/_api/user/'.$username;
 
         $options = ['body' => $user];
 
@@ -97,11 +103,12 @@ trait ManagesUsers
     /**
      * @param  string  $username
      * @return bool
+     *
      * @throws ArangoException
      */
     public function deleteUser(string $username): bool
     {
-        $uri = '/_api/user/' . $username;
+        $uri = '/_api/user/'.$username;
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }
@@ -110,11 +117,12 @@ trait ManagesUsers
      * @param  string  $username
      * @param  string  $database
      * @return string
+     *
      * @throws ArangoException
      */
     public function getDatabaseAccessLevel(string $username, string $database): string
     {
-        $uri = '/_api/user/' . $username . '/database/' . $database;
+        $uri = '/_api/user/'.$username.'/database/'.$database;
 
         $results = $this->arangoClient->request('get', $uri);
 
@@ -126,16 +134,17 @@ trait ManagesUsers
      * @param  string  $database
      * @param  string  $grant
      * @return stdClass
+     *
      * @throws ArangoException
      */
     public function setDatabaseAccessLevel(string $username, string $database, string $grant): stdClass
     {
-        $uri = '/_api/user/' . $username . '/database/' . $database;
+        $uri = '/_api/user/'.$username.'/database/'.$database;
 
         $options = [
             'body' => [
-                'grant' => $grant
-            ]
+                'grant' => $grant,
+            ],
         ];
 
         return $this->arangoClient->request('put', $uri, $options);
@@ -145,11 +154,12 @@ trait ManagesUsers
      * @param  string  $username
      * @param  string  $database
      * @return bool
+     *
      * @throws ArangoException
      */
     public function clearDatabaseAccessLevel(string $username, string $database): bool
     {
-        $uri = '/_api/user/' . $username . '/database/' . $database;
+        $uri = '/_api/user/'.$username.'/database/'.$database;
 
         $this->arangoClient->request('delete', $uri);
 

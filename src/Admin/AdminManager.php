@@ -19,7 +19,6 @@ class AdminManager extends Manager
     }
 
     /**
-     *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
      * @param  bool  $details
@@ -29,20 +28,20 @@ class AdminManager extends Manager
      */
     public function getVersion(bool $details = false): stdClass
     {
-
         return $this->arangoClient->request(
             'get',
             '/_api/version',
             [
                 'query' => [
-                    'details' => $details
-                ]
+                    'details' => $details,
+                ],
             ]
         );
     }
 
     /**
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getRunningTransactions(): array

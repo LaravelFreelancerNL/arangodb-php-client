@@ -6,7 +6,6 @@ namespace Tests;
 
 class SchemaManagerCollectionsTest extends TestCase
 {
-
     public function testGetCollectionsBeforeVersion38()
     {
         $this->skipTestOnArangoVersions('3.8', '>=');
@@ -50,7 +49,6 @@ class SchemaManagerCollectionsTest extends TestCase
 
         $result = $this->schemaManager->hasCollection('someNoneExistingCollection');
         $this->assertFalse($result);
-
     }
 
     public function testGetCollectionProperties()
@@ -154,7 +152,7 @@ class SchemaManagerCollectionsTest extends TestCase
                 _key: CONCAT("test", i),
             name: "test",
             foobar: true
-          } INTO ' . $collection . ' OPTIONS { ignoreErrors: true }';
+          } INTO '.$collection.' OPTIONS { ignoreErrors: true }';
         $statement = $this->arangoClient->prepare($query);
         $statement->execute();
 

@@ -11,8 +11,6 @@ use Spatie\DataTransferObject\DataTransferObject;
  *
  * @SuppressWarnings(PHPMD.CamelCasePropertyName)
  * (Guzzle uses snake_case for its configuration options)
- *
- * @package ArangoClient\Http
  */
 class HttpClientConfig extends DataTransferObject
 {
@@ -55,8 +53,9 @@ class HttpClientConfig extends DataTransferObject
             $this->password,
         ];
         $config['headers'] = [
-            'Connection' => $this->connection
+            'Connection' => $this->connection,
         ];
+
         return $config;
     }
 }
