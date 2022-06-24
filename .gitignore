@@ -5,6 +5,7 @@
 .vscode
 .env
 .env.backup
+composer.lock
 /build
 /coverage
 /vendor
