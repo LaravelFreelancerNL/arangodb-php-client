@@ -52,6 +52,12 @@ Create a collection
 $arangoClient->schema()->createCollection('users');
 ```
 
+### createEdgeCollection(string $name, array $config = [], $waitForSyncReplication = null, $enforceReplicationFactor = null): stdClass
+Create an Edge collection
+```
+$arangoClient->schema()->createEdgeCollection('relationships');
+```
+
 ### updateCollection(string $name, array $config = []): stdClass
 Update a collection
 ```
