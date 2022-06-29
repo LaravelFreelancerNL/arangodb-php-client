@@ -165,7 +165,6 @@ trait ManagesCollections
         return $this->arangoClient->request('post', '/_api/collection', $options);
     }
 
-
     /**
      * @param  string  $name
      * @param  array<mixed>  $config

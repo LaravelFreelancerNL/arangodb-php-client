@@ -199,7 +199,6 @@ class SchemaManagerCollectionsTest extends TestCase
         $this->assertFalse($this->schemaManager->hasCollection($collection));
     }
 
-
     public function testCreateEdgeCollection()
     {
         $collection = 'relationships';
