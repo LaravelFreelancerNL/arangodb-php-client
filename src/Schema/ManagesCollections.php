@@ -165,6 +165,27 @@ trait ManagesCollections
         return $this->arangoClient->request('post', '/_api/collection', $options);
     }
 
+
+    /**
+     * @param  string  $name
+     * @param  array<mixed>  $config
+     * @param  int|bool|null  $waitForSyncReplication
+     * @param  int|bool|null  $enforceReplicationFactor
+     * @return stdClass
+     *
+     * @throws ArangoException
+     */
+    public function createEdgeCollection(
+        string $name,
+        array $config = [],
+        $waitForSyncReplication = null,
+        $enforceReplicationFactor = null
+    ): stdClass {
+        $config['type'] = 3;
+
+        return $this->createCollection($name, $config, $waitForSyncReplication, $enforceReplicationFactor);
+    }
+
     /**
      * @param  string  $name
      * @param  array<mixed>  $config

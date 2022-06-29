@@ -198,4 +198,21 @@ class SchemaManagerCollectionsTest extends TestCase
         $this->assertTrue($result);
         $this->assertFalse($this->schemaManager->hasCollection($collection));
     }
+
+
+    public function testCreateEdgeCollection()
+    {
+        $collection = 'relationships';
+
+        if ($this->schemaManager->hasCollection($collection)) {
+            $this->schemaManager->deleteCollection($collection);
+        }
+
+        $result = $this->schemaManager->createEdgeCollection($collection);
+
+        $this->assertEquals($collection, $result->name);
+        $this->assertSame(3, $result->type);
+
+        $this->schemaManager->deleteCollection($collection);
+    }
 }
