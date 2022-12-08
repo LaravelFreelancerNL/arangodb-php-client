@@ -73,7 +73,7 @@ class ArangoClient
      *
      * @throws ArangoException
      */
-    public function request(string $method, string $uri, array|\ArangoClient\Http\HttpRequestOptions $options = [], ?string $database = null): stdClass
+    public function request(string $method, string $uri, array|HttpRequestOptions $options = [], ?string $database = null): stdClass
     {
         $uri = $this->prependDatabaseToUri($uri, $database);
 

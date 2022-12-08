@@ -40,7 +40,6 @@ trait ManagesDatabases
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function hasDatabase(string $name): bool
@@ -68,7 +67,6 @@ trait ManagesDatabases
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function deleteDatabase(string $name): bool

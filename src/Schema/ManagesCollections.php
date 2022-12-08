@@ -19,6 +19,7 @@ trait ManagesCollections
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getCollections(bool $excludeSystemCollections = false): array
@@ -64,7 +65,6 @@ trait ManagesCollections
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#read-properties-of-a-collection
      *
-     *
      * @throws ArangoException
      */
     public function getCollectionProperties(string $name): stdClass
@@ -77,7 +77,6 @@ trait ManagesCollections
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-number-of-documents-in-a-collection
      *
-     *
      * @throws ArangoException
      */
     public function getCollectionWithDocumentCount(string $name): stdClass
@@ -89,7 +88,6 @@ trait ManagesCollections
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-number-of-documents-in-a-collection
-     *
      *
      * @throws ArangoException
      */
@@ -104,7 +102,6 @@ trait ManagesCollections
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-statistics-for-a-collection
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     *
      *
      * @throws ArangoException
      */
@@ -183,7 +180,6 @@ trait ManagesCollections
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function renameCollection(string $old, string $new): stdClass
@@ -200,7 +196,6 @@ trait ManagesCollections
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function truncateCollection(string $name): stdClass
@@ -211,7 +206,6 @@ trait ManagesCollections
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function deleteCollection(string $name): bool

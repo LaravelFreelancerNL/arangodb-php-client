@@ -94,7 +94,7 @@ trait SupportsTransactions
     public function transactionAwareRequest(
         string $method,
         string $uri,
-        array|\ArangoClient\Http\HttpRequestOptions $options = [],
+        array|HttpRequestOptions $options = [],
         ?string $database = null,
         ?int $transactionId = null
     ): stdClass {
