@@ -15,7 +15,7 @@ trait HasManagers
 
     public function admin(): AdminManager
     {
-        if (! isset($this->adminManager)) {
+        if (! (property_exists($this, 'adminManager') && $this->adminManager !== null)) {
             $this->adminManager = new AdminManager($this);
         }
 
@@ -24,7 +24,7 @@ trait HasManagers
 
     public function schema(): SchemaManager
     {
-        if (! isset($this->schemaManager)) {
+        if (! (property_exists($this, 'schemaManager') && $this->schemaManager !== null)) {
             $this->schemaManager = new SchemaManager($this);
         }
 

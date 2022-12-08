@@ -16,9 +16,6 @@ trait ManagesUsers
     protected ArangoClient $arangoClient;
 
     /**
-     * @param  string  $username
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function getUser(string $username): stdClass
@@ -41,21 +38,17 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @return bool
-     *
      * @throws ArangoException
      */
     public function hasUser(string $username): bool
     {
         $users = $this->getUsers();
 
-        return array_search($username, array_column($users, 'user'), true) !== false;
+        return in_array($username, array_column($users, 'user'), true);
     }
 
     /**
      * @param  array<mixed>  $user
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -69,9 +62,7 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
      * @param  array<mixed>  $properties
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -85,9 +76,7 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
      * @param  array<mixed>  $user
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -101,9 +90,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @return bool
-     *
      * @throws ArangoException
      */
     public function deleteUser(string $username): bool
@@ -114,10 +100,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @param  string  $database
-     * @return string
-     *
      * @throws ArangoException
      */
     public function getDatabaseAccessLevel(string $username, string $database): string
@@ -130,11 +112,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @param  string  $database
-     * @param  string  $grant
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function setDatabaseAccessLevel(string $username, string $database, string $grant): stdClass
@@ -151,10 +128,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @param  string  $database
-     * @return bool
-     *
      * @throws ArangoException
      */
     public function clearDatabaseAccessLevel(string $username, string $database): bool

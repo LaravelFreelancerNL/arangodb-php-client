@@ -119,7 +119,7 @@ class StatementTest extends TestCase
         $this->assertTrue($executed);
 
         $results = $this->statement->fetchAll();
-        $this->assertEquals(10, count($results));
+        $this->assertEquals(10, is_countable($results) ? count($results) : 0);
         $this->assertSame('test1', $results[0]->_key);
     }
 

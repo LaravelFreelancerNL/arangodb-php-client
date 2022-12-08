@@ -28,6 +28,7 @@ class TransactionManagerTest extends TestCase
 
     public function testGetTransactions()
     {
+        $transactions = [];
         $begunTransactions = $this->transactionManager->getTransactions();
         $this->assertEmpty($begunTransactions);
 

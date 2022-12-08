@@ -14,8 +14,6 @@ trait ManagesDatabases
     protected ArangoClient $arangoClient;
 
     /**
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function getCurrentDatabase(): stdClass
@@ -42,9 +40,6 @@ trait ManagesDatabases
     }
 
     /**
-     * @param  string  $name
-     * @return bool
-     *
      * @throws ArangoException
      */
     public function hasDatabase(string $name): bool
@@ -55,10 +50,8 @@ trait ManagesDatabases
     }
 
     /**
-     * @param  string  $name
      * @param  null  $options
      * @param  null  $users
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -74,9 +67,6 @@ trait ManagesDatabases
     }
 
     /**
-     * @param  string  $name
-     * @return bool
-     *
      * @throws ArangoException
      */
     public function deleteDatabase(string $name): bool

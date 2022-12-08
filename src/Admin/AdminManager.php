@@ -11,18 +11,12 @@ use stdClass;
 
 class AdminManager extends Manager
 {
-    protected ArangoClient $arangoClient;
-
-    public function __construct(ArangoClient $arangoClient)
+    public function __construct(protected ArangoClient $arangoClient)
     {
-        $this->arangoClient = $arangoClient;
     }
 
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     *
-     * @param  bool  $details
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -48,6 +42,6 @@ class AdminManager extends Manager
     {
         $result = $this->arangoClient->request('get', '/_api/transaction');
 
-        return (isset($result->transactions)) ? (array) $result->transactions : [];
+        return (property_exists($result, 'transactions') && $result->transactions !== null) ? (array) $result->transactions : [];
     }
 }

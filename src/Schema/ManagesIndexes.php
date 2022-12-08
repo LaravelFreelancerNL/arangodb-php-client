@@ -20,7 +20,6 @@ trait ManagesIndexes
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#read-all-indexes-of-a-collection
      *
-     * @param  string  $collection
      * @return array<mixed>
      *
      * @throws ArangoException
@@ -39,9 +38,6 @@ trait ManagesIndexes
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#read-index
-     *
-     * @param  string  $id
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -72,9 +68,7 @@ trait ManagesIndexes
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#create-index
      *
-     * @param  string  $collection
      * @param  array<mixed>  $index
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -95,9 +89,6 @@ trait ManagesIndexes
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#delete-index
-     *
-     * @param  string  $id
-     * @return stdClass
      *
      * @throws ArangoException
      */

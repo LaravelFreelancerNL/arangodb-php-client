@@ -20,10 +20,7 @@ trait ManagesGraphs
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     * @param  string  $name
      * @param  array<mixed>  $config
-     * @param  bool  $waitForSync
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -68,7 +65,7 @@ trait ManagesGraphs
     {
         $results = $this->getGraphs();
 
-        return array_search($name, array_column($results, '_key'), true) !== false;
+        return in_array($name, array_column($results, '_key'), true);
     }
 
     /**
@@ -147,7 +144,6 @@ trait ManagesGraphs
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#list-edge-definitions
      *
-     * @param  string  $name
      * @return array<mixed>
      *
      * @throws ArangoException
@@ -162,9 +158,7 @@ trait ManagesGraphs
     /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#add-edge-definition
      *
-     * @param  string  $name
      * @param  array<mixed>  $edgeDefinition
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -184,12 +178,7 @@ trait ManagesGraphs
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     * @param  string  $name
-     * @param  string  $edge
      * @param  array<mixed>  $edgeDefinition
-     * @param  bool  $dropCollection
-     * @param  bool  $waitForSync
-     * @return stdClass
      *
      * @throws ArangoException
      */

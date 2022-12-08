@@ -19,7 +19,6 @@ trait ManagesViews
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#create-an-arangosearch-view
      *
      * @param  array<mixed>  $view
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -38,9 +37,6 @@ trait ManagesViews
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#drops-a-view
-     *
-     * @param  string  $name
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -68,8 +64,6 @@ trait ManagesViews
     /**
      * Check for view existence
      *
-     * @param  string  $name
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -77,14 +71,11 @@ trait ManagesViews
     {
         $views = $this->getViews();
 
-        return array_search($name, array_column($views, 'name'), true) !== false;
+        return in_array($name, array_column($views, 'name'), true);
     }
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#return-information-about-a-view
-     *
-     * @param  string  $name
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -96,9 +87,6 @@ trait ManagesViews
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#read-properties-of-a-view
      *
-     * @param  string  $name
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function getViewProperties(string $name): stdClass
@@ -109,10 +97,6 @@ trait ManagesViews
     }
 
     /**
-     * @param  string  $old
-     * @param  string  $new
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function renameView(string $old, string $new): stdClass
@@ -131,9 +115,7 @@ trait ManagesViews
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#partially-changes-properties-of-an-arangosearch-view
      *
-     * @param  string  $name
      * @param  array<mixed>  $properties
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -161,9 +143,7 @@ trait ManagesViews
      *
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#create-an-arangosearch-view
      *
-     * @param  string  $name
      * @param  array<mixed>  $newView
-     * @return stdClass|false
      *
      * @throws ArangoException
      */

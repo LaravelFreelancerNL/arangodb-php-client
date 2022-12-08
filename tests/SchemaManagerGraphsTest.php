@@ -35,7 +35,7 @@ class SchemaManagerGraphsTest extends TestCase
                 ],
             ],
             true);
-        $this->assertEquals(1, count($result->edgeDefinitions));
+        $this->assertEquals(1, is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0);
         $this->assertEquals($result->_id, '_graphs/relations');
 
         $this->schemaManager->deleteGraph('relations');
@@ -336,7 +336,7 @@ class SchemaManagerGraphsTest extends TestCase
             true
         );
 
-        $this->assertEquals(1, count($result->edgeDefinitions));
+        $this->assertEquals(1, is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0);
         $this->assertEquals('vassals', $result->edgeDefinitions[0]->collection);
 
         $this->schemaManager->deleteGraph('relations');

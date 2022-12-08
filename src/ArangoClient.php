@@ -51,7 +51,6 @@ class ArangoClient
 
     /**
      * @param  array<mixed>  $config
-     * @return string
      */
     public function generateEndpoint(array $config): string
     {
@@ -70,17 +69,11 @@ class ArangoClient
     }
 
     /**
-     * @psalm-suppress MixedReturnStatement
-     *
-     * @param  string  $method
-     * @param  string  $uri
      * @param  array<mixed>|HttpRequestOptions  $options
-     * @param  string|null  $database
-     * @return stdClass
      *
      * @throws ArangoException
      */
-    public function request(string $method, string $uri, $options = [], ?string $database = null): stdClass
+    public function request(string $method, string $uri, array|HttpRequestOptions $options = [], ?string $database = null): stdClass
     {
         $uri = $this->prependDatabaseToUri($uri, $database);
 
@@ -100,7 +93,6 @@ class ArangoClient
 
     /**
      * @param  array<mixed>  $options
-     * @return HttpRequestOptions
      *
      * @throws ArangoException
      */
@@ -116,11 +108,7 @@ class ArangoClient
     /**
      * Return the response with debug information (for internal testing purposes).
      *
-     * @param  string  $method
-     * @param  string  $uri
      * @param  array<mixed>  $options
-     * @param  string|null  $database
-     * @return ResponseInterface
      *
      * @throws GuzzleException
      */
@@ -146,8 +134,6 @@ class ArangoClient
     }
 
     /**
-     * @param  Throwable  $e
-     *
      * @throws ArangoException
      */
     protected function handleGuzzleException(Throwable $e): void
@@ -170,11 +156,7 @@ class ArangoClient
     }
 
     /**
-     * @psalm-suppress MixedAssignment, MixedArrayOffset
      * @SuppressWarnings(PHPMD.StaticAccess)
-     *
-     * @param  ResponseInterface|null  $response
-     * @return stdClass
      */
     protected function cleanupResponse(?ResponseInterface $response): stdClass
     {
@@ -186,7 +168,6 @@ class ArangoClient
     }
 
     /**
-     * @param  string  $query
      * @param  array<scalar>  $bindVars
      * @param  array<mixed>  $options
      * @return Statement
@@ -207,18 +188,11 @@ class ArangoClient
         return $this->config->toArray();
     }
 
-    /**
-     * @param  string  $name
-     * @return void
-     */
     public function setDatabase(string $name): void
     {
         $this->config->database = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getDatabase(): string
     {
         return $this->config->database;

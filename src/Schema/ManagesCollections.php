@@ -18,7 +18,6 @@ trait ManagesCollections
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     * @param  bool  $excludeSystemCollections
      * @return array<mixed>
      *
      * @throws ArangoException
@@ -41,8 +40,6 @@ trait ManagesCollections
     /**
      * Check for collection existence in current DB.
      *
-     * @param  string  $name
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -50,7 +47,7 @@ trait ManagesCollections
     {
         $results = $this->getCollections();
 
-        return array_search($name, array_column($results, 'name'), true) !== false;
+        return in_array($name, array_column($results, 'name'), true);
     }
 
     /**
@@ -68,9 +65,6 @@ trait ManagesCollections
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#read-properties-of-a-collection
      *
-     * @param  string  $name
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function getCollectionProperties(string $name): stdClass
@@ -83,9 +77,6 @@ trait ManagesCollections
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-number-of-documents-in-a-collection
      *
-     * @param  string  $name
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function getCollectionWithDocumentCount(string $name): stdClass
@@ -97,9 +88,6 @@ trait ManagesCollections
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-number-of-documents-in-a-collection
-     *
-     * @param  string  $name
-     * @return int
      *
      * @throws ArangoException
      */
@@ -114,10 +102,6 @@ trait ManagesCollections
      * @see https://www.arangodb.com/docs/stable/http/collection-getting.html#return-statistics-for-a-collection
      *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     *
-     * @param  string  $name
-     * @param  bool  $details
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -137,11 +121,9 @@ trait ManagesCollections
     }
 
     /**
-     * @param  string  $name
      * @param  array<mixed>  $config
      * @param  int|bool|null  $waitForSyncReplication
      * @param  int|bool|null  $enforceReplicationFactor
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -166,11 +148,9 @@ trait ManagesCollections
     }
 
     /**
-     * @param  string  $name
      * @param  array<mixed>  $config
      * @param  int|bool|null  $waitForSyncReplication
      * @param  int|bool|null  $enforceReplicationFactor
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -186,9 +166,7 @@ trait ManagesCollections
     }
 
     /**
-     * @param  string  $name
      * @param  array<mixed>  $config
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -202,10 +180,6 @@ trait ManagesCollections
     }
 
     /**
-     * @param  string  $old
-     * @param  string  $new
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function renameCollection(string $old, string $new): stdClass
@@ -222,9 +196,6 @@ trait ManagesCollections
     }
 
     /**
-     * @param  string  $name
-     * @return stdClass
-     *
      * @throws ArangoException
      */
     public function truncateCollection(string $name): stdClass
@@ -235,9 +206,6 @@ trait ManagesCollections
     }
 
     /**
-     * @param  string  $name
-     * @return bool
-     *
      * @throws ArangoException
      */
     public function deleteCollection(string $name): bool

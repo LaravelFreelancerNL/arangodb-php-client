@@ -16,17 +16,13 @@ use ArangoClient\Manager;
  */
 class TransactionManager extends Manager
 {
-    protected ArangoClient $arangoClient;
-
     /**
      * @var array<string>
      */
     protected array $transactions = [];
 
-    public function __construct(ArangoClient $arangoClient)
+    public function __construct(protected ArangoClient $arangoClient)
     {
-        $this->arangoClient = $arangoClient;
-
         register_shutdown_function([$this, 'abortRunningTransactions']);
     }
 
@@ -57,7 +53,6 @@ class TransactionManager extends Manager
      *
      * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
-     * @return string
      *
      * @throws ArangoException
      */

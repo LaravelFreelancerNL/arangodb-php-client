@@ -14,9 +14,6 @@ use stdClass;
 trait HandlesJson
 {
     /**
-     * @param  mixed  $data
-     * @return string
-     *
      * @throws ArangoException
      */
     public function jsonEncode(mixed $data): string
@@ -36,11 +33,7 @@ trait HandlesJson
     }
 
     /**
-     * @psalm-suppress MixedAssignment, MixedArrayOffset
      * @SuppressWarnings(PHPMD.StaticAccess)
-     *
-     * @param  ResponseInterface|null  $response
-     * @return stdClass
      */
     protected function decodeResponse(?ResponseInterface $response): stdClass
     {
