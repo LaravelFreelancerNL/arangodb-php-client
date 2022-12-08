@@ -19,20 +19,6 @@ use stdClass;
  */
 class Statement extends Manager implements IteratorAggregate
 {
-    protected ArangoClient $arangoClient;
-
-    protected string $query;
-
-    /**
-     * @var array<scalar>|null
-     */
-    protected ?array $bindVars;
-
-    /**
-     * @var array<mixed>
-     */
-    protected array $options = [];
-
     /**
      * @var array<mixed>
      */
@@ -56,21 +42,11 @@ class Statement extends Manager implements IteratorAggregate
     /**
      * Statement constructor.
      *
-     * @param  ArangoClient  $arangoClient
-     * @param  string  $query
-     * @param  array<scalar>  $bindVars
+     * @param  ?array<mixed>  $bindVars
      * @param  array<mixed>  $options
      */
-    public function __construct(
-        ArangoClient $arangoClient,
-        string $query,
-        array $bindVars = null,
-        array $options = []
-    ) {
-        $this->arangoClient = $arangoClient;
-        $this->query = $query;
-        $this->bindVars = $bindVars;
-        $this->options = $options;
+    public function __construct(protected ArangoClient $arangoClient, protected string $query, protected array|null $bindVars, protected array $options = [])
+    {
     }
 
     /**
@@ -122,11 +98,11 @@ class Statement extends Manager implements IteratorAggregate
     {
         $this->results = array_merge($this->results, (array) $results->result);
 
-        if (isset($results->extra)) {
+        if (property_exists($results, 'extra') && $results->extra !== null) {
             $this->extra = (object) $results->extra;
         }
 
-        if (isset($results->count)) {
+        if (property_exists($results, 'count') && $results->count !== null) {
             $this->count = (int) $results->count;
         }
 
@@ -244,10 +220,6 @@ class Statement extends Manager implements IteratorAggregate
 
     public function getWritesExecuted(): int
     {
-        if (! isset($this->extra->stats) || ! is_object($this->extra->stats)) {
-            return 0;
-        }
-
-        return (isset($this->extra->stats->writesExecuted)) ? (int) $this->extra->stats->writesExecuted : 0;
+        return (int) $this->extra?->stats?->writesExecuted;
     }
 }

@@ -16,8 +16,6 @@ trait ManagesUsers
     protected ArangoClient $arangoClient;
 
     /**
-     * @param  string  $username
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -41,8 +39,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -50,12 +46,11 @@ trait ManagesUsers
     {
         $users = $this->getUsers();
 
-        return array_search($username, array_column($users, 'user'), true) !== false;
+        return in_array($username, array_column($users, 'user'), true);
     }
 
     /**
      * @param  array<mixed>  $user
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -69,9 +64,7 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
      * @param  array<mixed>  $properties
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -85,9 +78,7 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
      * @param  array<mixed>  $user
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -101,8 +92,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -114,9 +103,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @param  string  $database
-     * @return string
      *
      * @throws ArangoException
      */
@@ -130,10 +116,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @param  string  $database
-     * @param  string  $grant
-     * @return stdClass
      *
      * @throws ArangoException
      */
@@ -151,9 +133,6 @@ trait ManagesUsers
     }
 
     /**
-     * @param  string  $username
-     * @param  string  $database
-     * @return bool
      *
      * @throws ArangoException
      */

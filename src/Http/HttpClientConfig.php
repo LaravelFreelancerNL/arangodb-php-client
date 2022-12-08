@@ -42,20 +42,11 @@ class HttpClientConfig extends DataTransferObject
      */
     public function mapGuzzleHttpClientConfig(): array
     {
-        $config = [];
-        $config['base_uri'] = $this->endpoint;
-        $config['version'] = $this->version;
-        $config['allow_redirects'] = $this->allow_redirects;
-        $config['connect_timeout'] = $this->connect_timeout;
-
-        $config['auth'] = [
+        return ['base_uri' => $this->endpoint, 'version' => $this->version, 'allow_redirects' => $this->allow_redirects, 'connect_timeout' => $this->connect_timeout, 'auth' => [
             $this->username,
             $this->password,
-        ];
-        $config['headers'] = [
+        ], 'headers' => [
             'Connection' => $this->connection,
-        ];
-
-        return $config;
+        ]];
     }
 }

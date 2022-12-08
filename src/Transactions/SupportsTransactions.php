@@ -15,12 +15,9 @@ trait SupportsTransactions
      */
     protected ?TransactionManager $transactionManager = null;
 
-    /**
-     * @return TransactionManager
-     */
     public function transactions(): TransactionManager
     {
-        if (! isset($this->transactionManager)) {
+        if (! (property_exists($this, 'transactionManager') && $this->transactionManager !== null)) {
             $this->transactionManager = new TransactionManager($this);
         }
 
@@ -32,7 +29,6 @@ trait SupportsTransactions
      *
      * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
-     * @return string
      *
      * @throws ArangoException
      */
@@ -46,7 +42,6 @@ trait SupportsTransactions
      *
      * @param  array<string, array<string>>  $collections
      * @param  array<mixed>  $options
-     * @return string
      *
      * @throws ArangoException
      */
@@ -59,7 +54,6 @@ trait SupportsTransactions
      * Shortcut to abort() on the transactionManager
      *
      * @param  string|null  $id
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -72,7 +66,6 @@ trait SupportsTransactions
      * Shortcut to abort() on the transactionManager
      *
      * @param  string|null  $id
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -85,7 +78,6 @@ trait SupportsTransactions
      * Shortcut to commit() on the transactionManager
      *
      * @param  string|null  $id
-     * @return bool
      *
      * @throws ArangoException
      */
@@ -95,21 +87,14 @@ trait SupportsTransactions
     }
 
     /**
-     * @psalm-suppress MixedReturnStatement
-     *
-     * @param  string  $method
-     * @param  string  $uri
      * @param  array<mixed>|HttpRequestOptions  $options
-     * @param  string|null  $database
-     * @param  int|null  $transactionId
-     * @return stdClass
      *
      * @throws ArangoException
      */
     public function transactionAwareRequest(
         string $method,
         string $uri,
-        $options = [],
+        array|\ArangoClient\Http\HttpRequestOptions $options = [],
         ?string $database = null,
         ?int $transactionId = null
     ): stdClass {
@@ -131,9 +116,6 @@ trait SupportsTransactions
         $this->transactionManager = $transactionManager;
     }
 
-    /**
-     * @return TransactionManager|null
-     */
     public function getTransactionManager(): ?TransactionManager
     {
         return $this->transactionManager;

@@ -86,7 +86,7 @@ class ArangoClientTest extends TestCase
         $retrievedClient = $this->arangoClient->getHttpClient();
 
         $this->assertInstanceOf(Client::class, $oldClient);
-        $this->assertEquals(get_class($newClient), get_class($retrievedClient));
+        $this->assertEquals($newClient::class, $retrievedClient::class);
     }
 
     public function testRequest()
@@ -241,7 +241,7 @@ class ArangoClientTest extends TestCase
         $user->name = 'Soldier Boy';
         $user->location = $location;
 
-        $insertQuery = 'INSERT '.json_encode($user).' INTO '.$collection.' RETURN NEW';
+        $insertQuery = 'INSERT '.json_encode($user, JSON_THROW_ON_ERROR).' INTO '.$collection.' RETURN NEW';
         $insertStatement = $this->arangoClient->prepare($insertQuery);
         $insertStatement->execute();
         $insertResult = $insertStatement->fetchAll();
