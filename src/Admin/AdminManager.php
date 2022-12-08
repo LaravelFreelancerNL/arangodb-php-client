@@ -18,7 +18,6 @@ class AdminManager extends Manager
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     *
      * @throws ArangoException
      */
     public function getVersion(bool $details = false): stdClass

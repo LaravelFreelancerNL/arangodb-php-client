@@ -21,6 +21,7 @@ trait ManagesIndexes
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#read-all-indexes-of-a-collection
      *
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getIndexes(string $collection): array
@@ -37,7 +38,6 @@ trait ManagesIndexes
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#read-index
-     *
      *
      * @throws ArangoException
      */
@@ -89,7 +89,6 @@ trait ManagesIndexes
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/indexes-working-with.html#delete-index
-     *
      *
      * @throws ArangoException
      */

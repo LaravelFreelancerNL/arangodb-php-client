@@ -38,7 +38,6 @@ trait ManagesViews
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#drops-a-view
      *
-     *
      * @throws ArangoException
      */
     public function deleteView(string $name): bool
@@ -78,7 +77,6 @@ trait ManagesViews
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#return-information-about-a-view
      *
-     *
      * @throws ArangoException
      */
     public function getView(string $name): stdClass
@@ -88,7 +86,6 @@ trait ManagesViews
 
     /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#read-properties-of-a-view
-     *
      *
      * @throws ArangoException
      */
@@ -100,7 +97,6 @@ trait ManagesViews
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function renameView(string $old, string $new): stdClass

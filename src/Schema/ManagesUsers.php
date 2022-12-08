@@ -16,7 +16,6 @@ trait ManagesUsers
     protected ArangoClient $arangoClient;
 
     /**
-     *
      * @throws ArangoException
      */
     public function getUser(string $username): stdClass
@@ -39,7 +38,6 @@ trait ManagesUsers
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function hasUser(string $username): bool
@@ -92,7 +90,6 @@ trait ManagesUsers
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function deleteUser(string $username): bool
@@ -103,7 +100,6 @@ trait ManagesUsers
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function getDatabaseAccessLevel(string $username, string $database): string
@@ -116,7 +112,6 @@ trait ManagesUsers
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function setDatabaseAccessLevel(string $username, string $database, string $grant): stdClass
@@ -133,7 +128,6 @@ trait ManagesUsers
     }
 
     /**
-     *
      * @throws ArangoException
      */
     public function clearDatabaseAccessLevel(string $username, string $database): bool

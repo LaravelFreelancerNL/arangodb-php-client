@@ -145,6 +145,7 @@ trait ManagesGraphs
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#list-edge-definitions
      *
      * @return array<mixed>
+     *
      * @throws ArangoException
      */
     public function getGraphEdges(string $name): array

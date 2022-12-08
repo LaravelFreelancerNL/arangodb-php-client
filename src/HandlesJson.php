@@ -14,7 +14,6 @@ use stdClass;
 trait HandlesJson
 {
     /**
-     *
      * @throws ArangoException
      */
     public function jsonEncode(mixed $data): string
