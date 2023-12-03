@@ -16,7 +16,7 @@
     "minimum-stability": "dev",
     "prefer-stable" : true,
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-curl": "*",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.3",
@@ -30,8 +30,7 @@
         "phpstan/phpstan": "^1.0",
         "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.14.8",
-        "scrutinizer/ocular": "^1.8",
-        "sebastian/phpcpd": "^6.0"
+        "scrutinizer/ocular": "^1.8"
     },
     "autoload": {
         "psr-4": {
