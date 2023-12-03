@@ -41,6 +41,7 @@ class Statement extends Manager implements IteratorAggregate
     /**
      * Statement constructor.
      *
+     * @param  array<mixed>|null  $bindVars
      * @param  array<mixed>  $options
      */
     public function __construct(protected ArangoClient $arangoClient, protected string $query, protected ?array $bindVars, protected array $options = []) {}
