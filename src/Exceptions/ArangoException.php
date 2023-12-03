@@ -2,6 +2,4 @@
 
 namespace ArangoClient\Exceptions;
 
-class ArangoException extends \Exception
-{
-}
+class ArangoException extends \Exception {}

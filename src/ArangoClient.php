@@ -13,7 +13,6 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
-use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 use stdClass;
 use Throwable;
 use Traversable;
@@ -37,14 +36,11 @@ class ArangoClient
      * ArangoClient constructor.
      *
      * @param  array<string|numeric|null>  $config
-     * @param  GuzzleClient|null  $httpClient
-     *
-     * @throws UnknownProperties
      */
     public function __construct(array $config = [], GuzzleClient $httpClient = null)
     {
         $config['endpoint'] = $this->generateEndpoint($config);
-        $this->config = new HttpClientConfig($config);
+        $this->config = HttpClientConfig::from($config);
 
         $this->httpClient = $httpClient ?? new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
     }
@@ -62,7 +58,7 @@ class ArangoClient
             $endpoint = (string) $config['host'];
         }
         if (isset($config['port'])) {
-            $endpoint .= ':'.(string) $config['port'];
+            $endpoint .= ':' . (string) $config['port'];
         }
 
         return $endpoint;
@@ -73,7 +69,7 @@ class ArangoClient
      *
      * @throws ArangoException
      */
-    public function request(string $method, string $uri, array|HttpRequestOptions $options = [], ?string $database = null): stdClass
+    public function request(string $method, string $uri, array|HttpRequestOptions $options = [], string $database = null): stdClass
     {
         $uri = $this->prependDatabaseToUri($uri, $database);
 
@@ -102,7 +98,7 @@ class ArangoClient
             $options['body'] = $this->jsonEncode($options['body']);
         }
 
-        return new HttpRequestOptions($options);
+        return HttpRequestOptions::from($options);
     }
 
     /**
@@ -116,7 +112,7 @@ class ArangoClient
         string $method,
         string $uri,
         array $options = [],
-        ?string $database = null
+        string $database = null
     ): ResponseInterface {
         $uri = $this->prependDatabaseToUri($uri, $database);
         $options['debug'] = true;
@@ -124,13 +120,13 @@ class ArangoClient
         return $this->httpClient->request($method, $uri, $options);
     }
 
-    protected function prependDatabaseToUri(string $uri, ?string $database = null): string
+    protected function prependDatabaseToUri(string $uri, string $database = null): string
     {
-        if (! isset($database)) {
+        if (!isset($database)) {
             $database = $this->config->database;
         }
 
-        return '/_db/'.urlencode($database).$uri;
+        return '/_db/' . urlencode($database) . $uri;
     }
 
     /**
@@ -147,9 +143,9 @@ class ArangoClient
             $code = (int) $decodedResponse->code;
         }
 
-        throw(
+        throw (
             new ArangoException(
-                $code.' - '.$message,
+                $code . ' - ' . $message,
                 $code
             )
         );

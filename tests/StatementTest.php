@@ -16,10 +16,10 @@ class StatementTest extends TestCase
     {
         parent::setUp();
 
-        if (! $this->schemaManager->hasCollection($this->collection)) {
+        if (!$this->schemaManager->hasCollection($this->collection)) {
             $this->schemaManager->createCollection($this->collection);
         }
-        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
+        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
 
         $this->statement = $this->arangoClient->prepare($query);
     }
@@ -40,7 +40,7 @@ class StatementTest extends TestCase
                 _key: CONCAT("test", i),
             name: "test",
             foobar: true
-          } INTO '.$this->collection.' OPTIONS { ignoreErrors: true }';
+          } INTO ' . $this->collection . ' OPTIONS { ignoreErrors: true }';
 
         $statement = $this->arangoClient->prepare($query);
 
@@ -49,7 +49,7 @@ class StatementTest extends TestCase
 
     public function testSetAndGetQuery()
     {
-        $query = 'FOR doc IN '.$this->collection.' LIMIT 1 RETURN doc';
+        $query = 'FOR doc IN ' . $this->collection . ' LIMIT 1 RETURN doc';
 
         $statement = $this->statement->setQuery($query);
 
@@ -66,35 +66,35 @@ class StatementTest extends TestCase
     {
         $explanation = $this->statement->explain();
 
-        $this->assertObjectHasAttribute('plan', $explanation);
+        $this->assertObjectHasProperty('plan', $explanation);
     }
 
     public function testParse()
     {
         $parsed = $this->statement->parse();
 
-        $this->assertObjectHasAttribute('ast', $parsed);
+        $this->assertObjectHasProperty('ast', $parsed);
     }
 
     public function testProfile()
     {
         $profile = $this->statement->profile();
-        $this->assertObjectHasAttribute('stats', $profile);
-        $this->assertObjectHasAttribute('profile', $profile);
+        $this->assertObjectHasProperty('stats', $profile);
+        $this->assertObjectHasProperty('profile', $profile);
     }
 
     public function testProfileModeTwo()
     {
         $profile = $this->statement->profile(2);
 
-        $this->assertObjectHasAttribute('stats', $profile);
-        $this->assertObjectHasAttribute('profile', $profile);
-        $this->assertObjectHasAttribute('plan', $profile);
+        $this->assertObjectHasProperty('stats', $profile);
+        $this->assertObjectHasProperty('profile', $profile);
+        $this->assertObjectHasProperty('plan', $profile);
     }
 
     public function testGetCount()
     {
-        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
+        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
         $options = ['count' => true];
         $statement = $this->arangoClient->prepare($query, [], $options);
         $statement->execute();
@@ -113,7 +113,7 @@ class StatementTest extends TestCase
     {
         $this->generateTestDocuments();
 
-        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
+        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
         $this->statement->setQuery($query);
         $executed = $this->statement->execute();
         $this->assertTrue($executed);
@@ -128,7 +128,7 @@ class StatementTest extends TestCase
         $this->generateTestDocuments();
 
         // Retrieve data in batches of 2
-        $query = 'FOR doc IN '.$this->collection.' RETURN doc';
+        $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
         $options = ['batchSize' => 2];
         $statement = $this->arangoClient->prepare($query, [], $options);
         $executed = $statement->execute();
@@ -146,7 +146,7 @@ class StatementTest extends TestCase
 
         $count = 0;
         foreach ($this->statement as $document) {
-            $this->assertObjectHasAttribute('foobar', $document);
+            $this->assertObjectHasProperty('foobar', $document);
             $count++;
         }
         $this->assertEquals(10, $count);
@@ -159,7 +159,7 @@ class StatementTest extends TestCase
                 _key: CONCAT("test", i),
             name: "test",
             foobar: true
-          } INTO '.$this->collection.' OPTIONS { ignoreErrors: true }';
+          } INTO ' . $this->collection . ' OPTIONS { ignoreErrors: true }';
 
         $statement = $this->arangoClient->prepare($query);
         $statement->execute();
