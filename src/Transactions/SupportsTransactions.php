@@ -10,9 +10,6 @@ use stdClass;
 
 trait SupportsTransactions
 {
-    /**
-     * @var TransactionManager|null
-     */
     protected ?TransactionManager $transactionManager = null;
 
     public function transactions(): TransactionManager
@@ -53,7 +50,6 @@ trait SupportsTransactions
     /**
      * Shortcut to abort() on the transactionManager
      *
-     * @param  string|null  $id
      *
      * @throws ArangoException
      */
@@ -65,7 +61,6 @@ trait SupportsTransactions
     /**
      * Shortcut to abort() on the transactionManager
      *
-     * @param  string|null  $id
      *
      * @throws ArangoException
      */
@@ -77,7 +72,6 @@ trait SupportsTransactions
     /**
      * Shortcut to commit() on the transactionManager
      *
-     * @param  string|null  $id
      *
      * @throws ArangoException
      */
@@ -95,8 +89,8 @@ trait SupportsTransactions
         string $method,
         string $uri,
         array|HttpRequestOptions $options = [],
-        ?string $database = null,
-        ?int $transactionId = null
+        string $database = null,
+        int $transactionId = null
     ): stdClass {
         if (is_array($options)) {
             $options = $this->prepareRequestOptions($options);

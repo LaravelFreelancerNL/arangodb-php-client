@@ -32,7 +32,7 @@ trait ManagesViews
             'body' => $view,
         ];
 
-        return  $this->arangoClient->request('post', $uri, $options);
+        return $this->arangoClient->request('post', $uri, $options);
     }
 
     /**

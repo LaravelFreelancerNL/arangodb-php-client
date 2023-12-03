@@ -9,12 +9,12 @@ use ArangoClient\Manager;
 
 class SchemaManager extends Manager
 {
-    use ManagesDatabases;
     use ManagesCollections;
-    use ManagesIndexes;
-    use ManagesViews;
-    use ManagesUsers;
+    use ManagesDatabases;
     use ManagesGraphs;
+    use ManagesIndexes;
+    use ManagesUsers;
+    use ManagesViews;
 
     public function __construct(protected ArangoClient $arangoClient)
     {

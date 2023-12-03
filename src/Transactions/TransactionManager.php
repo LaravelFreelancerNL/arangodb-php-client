@@ -37,7 +37,7 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    public function getTransaction(?string $id = null): string
+    public function getTransaction(string $id = null): string
     {
         $this->validateId($id);
 
@@ -72,7 +72,7 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    public function commit(?string $id = null): bool
+    public function commit(string $id = null): bool
     {
         $id = $this->getTransaction($id);
 
@@ -87,7 +87,7 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    public function abort(?string $id = null): bool
+    public function abort(string $id = null): bool
     {
         $id = $this->getTransaction($id);
 
@@ -102,7 +102,7 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    protected function validateId(?string $id = null): bool
+    protected function validateId(string $id = null): bool
     {
         if (
             empty($this->transactions)

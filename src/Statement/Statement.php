@@ -14,7 +14,6 @@ use stdClass;
  *
  * @see https://www.arangodb.com/docs/stable/http/aql-query-cursor.html
  *
- *
  * @template-implements \IteratorAggregate<mixed>
  */
 class Statement extends Manager implements IteratorAggregate
@@ -45,7 +44,7 @@ class Statement extends Manager implements IteratorAggregate
      * @param  ?array<mixed>  $bindVars
      * @param  array<mixed>  $options
      */
-    public function __construct(protected ArangoClient $arangoClient, protected string $query, protected array|null $bindVars, protected array $options = [])
+    public function __construct(protected ArangoClient $arangoClient, protected string $query, protected ?array $bindVars, protected array $options = [])
     {
     }
 
@@ -165,7 +164,7 @@ class Statement extends Manager implements IteratorAggregate
      *
      * @throws ArangoException
      */
-    public function profile(int|bool $mode = 1): stdClass|null
+    public function profile(int|bool $mode = 1): ?stdClass
     {
         $bodyContent = $this->prepareQueryBodyContent();
 

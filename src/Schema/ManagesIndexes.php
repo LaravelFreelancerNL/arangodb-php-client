@@ -84,7 +84,7 @@ trait ManagesIndexes
         $options = ['body' => $index];
         $options['query']['collection'] = $collection;
 
-        return  $this->arangoClient->request('post', $uri, $options);
+        return $this->arangoClient->request('post', $uri, $options);
     }
 
     /**
