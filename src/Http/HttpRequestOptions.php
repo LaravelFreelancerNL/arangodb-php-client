@@ -5,25 +5,26 @@ declare(strict_types=1);
 namespace ArangoClient\Http;
 
 use GuzzleHttp\HandlerStack;
-use Spatie\LaravelData\Data;
+use Spatie\DataTransferObject\DataTransferObject;
 
 /**
  * Class HttpRequestOptions
  */
-class HttpRequestOptions extends Data
+class HttpRequestOptions extends DataTransferObject
 {
-    public function __construct(
-        /**
-         * @var array<mixed>|string|null
-         */
-        public string|array|null $query = null,
-        /**
-         * @var array<mixed>|null
-         */
-        public ?array $headers = null,
-        public ?string $body = null,
-        public ?HandlerStack $handler = null
-    ) {}
+    /**
+     * @var array<mixed>|string|null
+     */
+    public string|array|null $query = null;
+
+    /**
+     * @var array<mixed>|null
+     */
+    public ?array $headers = null;
+
+    public ?string $body = null;
+
+    public ?HandlerStack $handler = null;
 
     public function addHeader(string $key, mixed $value): void
     {
