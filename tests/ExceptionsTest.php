@@ -9,7 +9,7 @@ class ExceptionsTest extends TestCase
     public function test409ConflictException()
     {
         $database = 'test_arangodb_php_existing_database';
-        if (! $this->schemaManager->hasDatabase($database)) {
+        if (!$this->schemaManager->hasDatabase($database)) {
             $this->schemaManager->createDatabase($database);
         }
 

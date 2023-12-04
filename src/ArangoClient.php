@@ -62,7 +62,7 @@ class ArangoClient
             $endpoint = (string) $config['host'];
         }
         if (isset($config['port'])) {
-            $endpoint .= ':'.(string) $config['port'];
+            $endpoint .= ':' . (string) $config['port'];
         }
 
         return $endpoint;
@@ -126,11 +126,11 @@ class ArangoClient
 
     protected function prependDatabaseToUri(string $uri, ?string $database = null): string
     {
-        if (! isset($database)) {
+        if (!isset($database)) {
             $database = $this->config->database;
         }
 
-        return '/_db/'.urlencode($database).$uri;
+        return '/_db/' . urlencode($database) . $uri;
     }
 
     /**
@@ -148,10 +148,10 @@ class ArangoClient
         }
 
         throw(
-            new ArangoException(
-                $code.' - '.$message,
-                $code
-            )
+        new ArangoException(
+            $code . ' - ' . $message,
+            $code
+        )
         );
     }
 

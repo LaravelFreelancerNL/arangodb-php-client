@@ -37,7 +37,7 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    public function getTransaction(?string $id = null): string
+    public function getTransaction(string $id = null): string
     {
         $this->validateId($id);
 
@@ -72,11 +72,11 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    public function commit(?string $id = null): bool
+    public function commit(string $id = null): bool
     {
         $id = $this->getTransaction($id);
 
-        $uri = '/_api/transaction/'.$id;
+        $uri = '/_api/transaction/' . $id;
 
         $this->arangoClient->request('put', $uri);
         unset($this->transactions[$id]);
@@ -87,11 +87,11 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    public function abort(?string $id = null): bool
+    public function abort(string $id = null): bool
     {
         $id = $this->getTransaction($id);
 
-        $uri = '/_api/transaction/'.$id;
+        $uri = '/_api/transaction/' . $id;
 
         $this->arangoClient->request('delete', $uri);
         unset($this->transactions[$id]);
@@ -102,13 +102,13 @@ class TransactionManager extends Manager
     /**
      * @throws ArangoException
      */
-    protected function validateId(?string $id = null): bool
+    protected function validateId(string $id = null): bool
     {
         if (
             empty($this->transactions)
             || (
                 $id !== null
-                && ! isset($this->transactions[$id])
+                && !isset($this->transactions[$id])
             )
         ) {
             throw new ArangoException('Transaction not found.', 404);

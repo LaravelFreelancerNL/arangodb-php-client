@@ -75,7 +75,7 @@ trait ManagesGraphs
      */
     public function getGraph(string $name): stdClass
     {
-        $uri = '/_api/gharial/'.$name;
+        $uri = '/_api/gharial/' . $name;
 
         return (object) $this->arangoClient->request('get', $uri)->graph;
     }
@@ -87,7 +87,7 @@ trait ManagesGraphs
      */
     public function deleteGraph(string $name): bool
     {
-        $uri = '/_api/gharial/'.$name;
+        $uri = '/_api/gharial/' . $name;
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }
@@ -101,7 +101,7 @@ trait ManagesGraphs
      */
     public function getGraphVertices(string $name): array
     {
-        $uri = '/_api/gharial/'.$name.'/vertex';
+        $uri = '/_api/gharial/' . $name . '/vertex';
 
         return (array) $this->arangoClient->request('get', $uri)->collections;
     }
@@ -113,7 +113,7 @@ trait ManagesGraphs
      */
     public function addGraphVertex(string $name, string $vertex): stdClass
     {
-        $uri = '/_api/gharial/'.$name.'/vertex';
+        $uri = '/_api/gharial/' . $name . '/vertex';
 
         $options = [
             'body' => [
@@ -133,7 +133,7 @@ trait ManagesGraphs
      */
     public function removeGraphVertex(string $name, string $vertex, bool $dropCollection = false): stdClass
     {
-        $uri = '/_api/gharial/'.$name.'/vertex/'.$vertex;
+        $uri = '/_api/gharial/' . $name . '/vertex/' . $vertex;
 
         $options = [];
         $options['query']['dropCollection'] = $dropCollection;
@@ -150,7 +150,7 @@ trait ManagesGraphs
      */
     public function getGraphEdges(string $name): array
     {
-        $uri = '/_api/gharial/'.$name.'/edge';
+        $uri = '/_api/gharial/' . $name . '/edge';
 
         return (array) $this->arangoClient->request('get', $uri)->collections;
     }
@@ -164,7 +164,7 @@ trait ManagesGraphs
      */
     public function addGraphEdge(string $name, array $edgeDefinition): stdClass
     {
-        $uri = '/_api/gharial/'.$name.'/edge';
+        $uri = '/_api/gharial/' . $name . '/edge';
 
         $options = [
             'body' => $edgeDefinition,
@@ -189,7 +189,7 @@ trait ManagesGraphs
         bool $dropCollection = false,
         bool $waitForSync = false
     ): stdClass {
-        $uri = '/_api/gharial/'.$name.'/edge/'.$edge.'#definition';
+        $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
 
         $options = [];
         $options['query']['waitForSync'] = $waitForSync;
@@ -212,7 +212,7 @@ trait ManagesGraphs
         bool $dropCollection = true,
         bool $waitForSync = false
     ): stdClass {
-        $uri = '/_api/gharial/'.$name.'/edge/'.$edge.'#definition';
+        $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
 
         $options = [];
         $options['query']['waitForSync'] = $waitForSync;

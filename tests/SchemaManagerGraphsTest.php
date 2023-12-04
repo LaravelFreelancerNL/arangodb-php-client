@@ -17,7 +17,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testCreateGraphWithEdges()
     {
-        if (! $this->schemaManager->hasCollection('characters')) {
+        if (!$this->schemaManager->hasCollection('characters')) {
             $this->schemaManager->createCollection('characters');
         }
         $result = $this->schemaManager->createGraph(
@@ -34,7 +34,8 @@ class SchemaManagerGraphsTest extends TestCase
                     'orphanVertices',
                 ],
             ],
-            true);
+            true
+        );
         $this->assertEquals(1, is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0);
         $this->assertEquals($result->_id, '_graphs/relations');
 
@@ -53,10 +54,10 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testGetGraphsWithResults()
     {
-        if (! $this->schemaManager->hasGraph('characters')) {
+        if (!$this->schemaManager->hasGraph('characters')) {
             $this->schemaManager->createGraph('characters');
         }
-        if (! $this->schemaManager->hasGraph('locations')) {
+        if (!$this->schemaManager->hasGraph('locations')) {
             $this->schemaManager->createGraph('locations');
         }
 
@@ -72,7 +73,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testHasGraph()
     {
-        if (! $this->schemaManager->hasGraph('locations')) {
+        if (!$this->schemaManager->hasGraph('locations')) {
             $this->schemaManager->createGraph('locations');
         }
         $result = $this->schemaManager->hasGraph('locations');
@@ -85,7 +86,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testGetGraph()
     {
-        if (! $this->schemaManager->hasGraph('locations')) {
+        if (!$this->schemaManager->hasGraph('locations')) {
             $this->schemaManager->createGraph('locations');
         }
 
@@ -98,10 +99,10 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testGetGraphVertices()
     {
-        if (! $this->schemaManager->hasCollection('characters')) {
+        if (!$this->schemaManager->hasCollection('characters')) {
             $this->schemaManager->createCollection('characters');
         }
-        if (! $this->schemaManager->hasGraph('relations')) {
+        if (!$this->schemaManager->hasGraph('relations')) {
             $result = $this->schemaManager->createGraph(
                 'relations',
                 [
@@ -134,7 +135,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testAddGraphVertex()
     {
-        if (! $this->schemaManager->hasGraph('relations')) {
+        if (!$this->schemaManager->hasGraph('relations')) {
             $this->schemaManager->createGraph(
                 'relations',
                 [
@@ -168,7 +169,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testRemoveGraphVertex()
     {
-        if (! $this->schemaManager->hasGraph('relations')) {
+        if (!$this->schemaManager->hasGraph('relations')) {
             $this->schemaManager->createGraph(
                 'relations',
                 [
@@ -201,10 +202,10 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testGetGraphEdges()
     {
-        if (! $this->schemaManager->hasCollection('characters')) {
+        if (!$this->schemaManager->hasCollection('characters')) {
             $this->schemaManager->createCollection('characters');
         }
-        if (! $this->schemaManager->hasGraph('relations')) {
+        if (!$this->schemaManager->hasGraph('relations')) {
             $result = $this->schemaManager->createGraph(
                 'relations',
                 [
@@ -236,7 +237,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testAddGraphEdge()
     {
-        if (! $this->schemaManager->hasGraph('relations')) {
+        if (!$this->schemaManager->hasGraph('relations')) {
             $this->schemaManager->createGraph(
                 'relations',
                 [
@@ -270,7 +271,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testReplaceGraphEdge()
     {
-        if (! $this->schemaManager->hasGraph('relations')) {
+        if (!$this->schemaManager->hasGraph('relations')) {
             $this->schemaManager->createGraph(
                 'relations',
                 [
@@ -309,7 +310,7 @@ class SchemaManagerGraphsTest extends TestCase
 
     public function testRemoveGraphEdge()
     {
-        if (! $this->schemaManager->hasGraph('relations')) {
+        if (!$this->schemaManager->hasGraph('relations')) {
             $this->schemaManager->createGraph(
                 'relations',
                 [

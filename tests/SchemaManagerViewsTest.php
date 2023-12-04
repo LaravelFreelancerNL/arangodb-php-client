@@ -15,7 +15,7 @@ class SchemaManagerViewsTest extends TestCase
     {
         parent::setUp();
 
-        if (! $this->schemaManager->hasView($this->view['name'])) {
+        if (!$this->schemaManager->hasView($this->view['name'])) {
             $this->schemaManager->createView($this->view);
         }
     }
@@ -41,8 +41,8 @@ class SchemaManagerViewsTest extends TestCase
         $view = $this->schemaManager->getView($this->view['name']);
 
         $this->assertSame($this->view['name'], $view->name);
-        $this->assertObjectHasAttribute('type', $view);
-        $this->assertObjectHasAttribute('links', $view);
+        $this->assertObjectHasProperty('type', $view);
+        $this->assertObjectHasProperty('links', $view);
     }
 
     public function testGetViewProperties()
@@ -50,8 +50,8 @@ class SchemaManagerViewsTest extends TestCase
         $view = $this->schemaManager->getViewProperties($this->view['name']);
 
         $this->assertSame($this->view['name'], $view->name);
-        $this->assertObjectHasAttribute('type', $view);
-        $this->assertObjectHasAttribute('links', $view);
+        $this->assertObjectHasProperty('type', $view);
+        $this->assertObjectHasProperty('links', $view);
     }
 
     public function testHasView()
@@ -103,7 +103,7 @@ class SchemaManagerViewsTest extends TestCase
             'name' => 'coolnewview',
         ];
         $created = $this->schemaManager->createView($view);
-        $this->assertObjectHasAttribute('name', $created);
+        $this->assertObjectHasProperty('name', $created);
         $this->assertSame($view['name'], $created->name);
 
         $deleted = $this->schemaManager->deleteView($view['name']);

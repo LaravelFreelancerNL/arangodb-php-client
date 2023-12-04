@@ -37,7 +37,7 @@ class SchemaManagerDatabasesTest extends TestCase
         $database = 'arangodb_php_client_database__test';
         $existingDatabases = $this->schemaManager->getDatabases();
 
-        if (! in_array($database, $existingDatabases)) {
+        if (!in_array($database, $existingDatabases)) {
             $result = $this->schemaManager->createDatabase($database);
             $this->assertTrue($result);
         }

@@ -20,7 +20,7 @@ trait ManagesUsers
      */
     public function getUser(string $username): stdClass
     {
-        $uri = '/_api/user/'.$username;
+        $uri = '/_api/user/' . $username;
 
         return $this->arangoClient->request('get', $uri);
     }
@@ -68,7 +68,7 @@ trait ManagesUsers
      */
     public function updateUser(string $username, array $properties): stdClass
     {
-        $uri = '/_api/user/'.$username;
+        $uri = '/_api/user/' . $username;
 
         $options = ['body' => $properties];
 
@@ -82,7 +82,7 @@ trait ManagesUsers
      */
     public function replaceUser(string $username, array $user): stdClass
     {
-        $uri = '/_api/user/'.$username;
+        $uri = '/_api/user/' . $username;
 
         $options = ['body' => $user];
 
@@ -94,7 +94,7 @@ trait ManagesUsers
      */
     public function deleteUser(string $username): bool
     {
-        $uri = '/_api/user/'.$username;
+        $uri = '/_api/user/' . $username;
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }
@@ -104,7 +104,7 @@ trait ManagesUsers
      */
     public function getDatabaseAccessLevel(string $username, string $database): string
     {
-        $uri = '/_api/user/'.$username.'/database/'.$database;
+        $uri = '/_api/user/' . $username . '/database/' . $database;
 
         $results = $this->arangoClient->request('get', $uri);
 
@@ -116,7 +116,7 @@ trait ManagesUsers
      */
     public function setDatabaseAccessLevel(string $username, string $database, string $grant): stdClass
     {
-        $uri = '/_api/user/'.$username.'/database/'.$database;
+        $uri = '/_api/user/' . $username . '/database/' . $database;
 
         $options = [
             'body' => [
@@ -132,7 +132,7 @@ trait ManagesUsers
      */
     public function clearDatabaseAccessLevel(string $username, string $database): bool
     {
-        $uri = '/_api/user/'.$username.'/database/'.$database;
+        $uri = '/_api/user/' . $username . '/database/' . $database;
 
         $this->arangoClient->request('delete', $uri);
 

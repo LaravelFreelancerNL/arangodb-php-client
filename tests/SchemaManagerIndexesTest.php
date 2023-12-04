@@ -12,7 +12,7 @@ class SchemaManagerIndexesTest extends TestCase
     {
         parent::setUp();
 
-        if (! $this->schemaManager->hasCollection($this->collection)) {
+        if (!$this->schemaManager->hasCollection($this->collection)) {
             $this->schemaManager->createCollection($this->collection);
         }
     }
@@ -31,7 +31,7 @@ class SchemaManagerIndexesTest extends TestCase
         $indexes = $this->schemaManager->getIndexes($this->collection);
 
         $this->assertIsObject($indexes[0]);
-        $this->assertObjectHasAttribute('name', $indexes[0]);
+        $this->assertObjectHasProperty('name', $indexes[0]);
         $this->assertSame('primary', $indexes[0]->name);
     }
 
@@ -42,9 +42,9 @@ class SchemaManagerIndexesTest extends TestCase
 
         $index = $this->schemaManager->getIndex($indexId);
 
-        $this->assertObjectHasAttribute('name', $index);
-        $this->assertObjectHasAttribute('id', $index);
-        $this->assertObjectHasAttribute('fields', $index);
+        $this->assertObjectHasProperty('name', $index);
+        $this->assertObjectHasProperty('id', $index);
+        $this->assertObjectHasProperty('fields', $index);
     }
 
     public function testGetIndexByName()

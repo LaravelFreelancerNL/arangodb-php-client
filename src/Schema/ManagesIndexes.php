@@ -43,7 +43,7 @@ trait ManagesIndexes
      */
     public function getIndex(string $id): stdClass
     {
-        $uri = '/_api/index/'.$id;
+        $uri = '/_api/index/' . $id;
 
         return $this->arangoClient->request('get', $uri);
     }
@@ -79,12 +79,12 @@ trait ManagesIndexes
         if (isset($index['type'])) {
             $indexType = (string) $index['type'];
         }
-        $uri = '/_api/index#'.$indexType;
+        $uri = '/_api/index#' . $indexType;
 
         $options = ['body' => $index];
         $options['query']['collection'] = $collection;
 
-        return  $this->arangoClient->request('post', $uri, $options);
+        return $this->arangoClient->request('post', $uri, $options);
     }
 
     /**
@@ -94,7 +94,7 @@ trait ManagesIndexes
      */
     public function deleteIndex(string $id): stdClass
     {
-        $uri = '/_api/index/'.$id;
+        $uri = '/_api/index/' . $id;
 
         return $this->arangoClient->request('delete', $uri);
     }

@@ -26,7 +26,7 @@ trait HandlesJson
         $response = json_encode($data, $options);
 
         if ($response === false) {
-            throw new ArangoException('JSON encoding failed with error: '.json_last_error_msg(), json_last_error());
+            throw new ArangoException('JSON encoding failed with error: ' . json_last_error_msg(), json_last_error());
         }
 
         return $response;
@@ -38,7 +38,7 @@ trait HandlesJson
     protected function decodeResponse(?ResponseInterface $response): stdClass
     {
         $decodedResponse = new stdClass();
-        if (! isset($response)) {
+        if (!isset($response)) {
             return $decodedResponse;
         }
 

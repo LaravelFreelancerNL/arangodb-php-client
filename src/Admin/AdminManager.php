@@ -11,9 +11,7 @@ use stdClass;
 
 class AdminManager extends Manager
 {
-    public function __construct(protected ArangoClient $arangoClient)
-    {
-    }
+    public function __construct(protected ArangoClient $arangoClient) {}
 
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)

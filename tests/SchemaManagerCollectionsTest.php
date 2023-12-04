@@ -38,8 +38,8 @@ class SchemaManagerCollectionsTest extends TestCase
         $result = $this->schemaManager->getCollection($collections[0]->name);
 
         $this->assertIsObject($result);
-        $this->assertObjectHasAttribute('name', $result);
-        $this->assertObjectHasAttribute('isSystem', $result);
+        $this->assertObjectHasProperty('name', $result);
+        $this->assertObjectHasProperty('isSystem', $result);
     }
 
     public function testHasCollection()
@@ -58,10 +58,10 @@ class SchemaManagerCollectionsTest extends TestCase
         $result = $this->schemaManager->getCollectionProperties($collections[0]->name);
 
         $this->assertIsObject($result);
-        $this->assertObjectHasAttribute('name', $result);
-        $this->assertObjectHasAttribute('isSystem', $result);
-        $this->assertObjectHasAttribute('statusString', $result);
-        $this->assertObjectHasAttribute('keyOptions', $result);
+        $this->assertObjectHasProperty('name', $result);
+        $this->assertObjectHasProperty('isSystem', $result);
+        $this->assertObjectHasProperty('statusString', $result);
+        $this->assertObjectHasProperty('keyOptions', $result);
     }
 
     public function testGetCollectionWithDocumentCount()
@@ -70,11 +70,11 @@ class SchemaManagerCollectionsTest extends TestCase
 
         $result = $this->schemaManager->getCollectionWithDocumentCount($collections[0]->name);
 
-        $this->assertObjectHasAttribute('name', $result);
-        $this->assertObjectHasAttribute('isSystem', $result);
-        $this->assertObjectHasAttribute('statusString', $result);
-        $this->assertObjectHasAttribute('keyOptions', $result);
-        $this->assertObjectHasAttribute('count', $result);
+        $this->assertObjectHasProperty('name', $result);
+        $this->assertObjectHasProperty('isSystem', $result);
+        $this->assertObjectHasProperty('statusString', $result);
+        $this->assertObjectHasProperty('keyOptions', $result);
+        $this->assertObjectHasProperty('count', $result);
         $this->assertIsNumeric($result->count);
     }
 
@@ -93,7 +93,7 @@ class SchemaManagerCollectionsTest extends TestCase
 
         $result = $this->schemaManager->getCollectionStatistics($collections[0]->name);
 
-        $this->assertObjectHasAttribute('figures', $result);
+        $this->assertObjectHasProperty('figures', $result);
     }
 
     public function testGetCollectionStatisticsWithDetails()
@@ -102,7 +102,7 @@ class SchemaManagerCollectionsTest extends TestCase
 
         $result = $this->schemaManager->getCollectionStatistics($collections[0]->name, true);
 
-        $this->assertObjectHasAttribute('figures', $result);
+        $this->assertObjectHasProperty('figures', $result);
     }
 
     public function testUpdateCollection()
@@ -110,7 +110,7 @@ class SchemaManagerCollectionsTest extends TestCase
         $collection = 'users';
         $config = [];
 
-        if (! $this->schemaManager->hasCollection($collection)) {
+        if (!$this->schemaManager->hasCollection($collection)) {
             $this->schemaManager->createCollection($collection, $config);
         }
 
@@ -127,7 +127,7 @@ class SchemaManagerCollectionsTest extends TestCase
         $newName = 'characters';
         $config = [];
 
-        if (! $this->schemaManager->hasCollection($collection)) {
+        if (!$this->schemaManager->hasCollection($collection)) {
             $this->schemaManager->createCollection($collection, $config);
         }
         if ($this->schemaManager->hasCollection($newName)) {
@@ -143,7 +143,7 @@ class SchemaManagerCollectionsTest extends TestCase
     public function testTruncateCollection()
     {
         $collection = 'users';
-        if (! $this->schemaManager->hasCollection($collection)) {
+        if (!$this->schemaManager->hasCollection($collection)) {
             $this->schemaManager->createCollection($collection);
         }
         $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)->count);
@@ -152,7 +152,7 @@ class SchemaManagerCollectionsTest extends TestCase
                 _key: CONCAT("test", i),
             name: "test",
             foobar: true
-          } INTO '.$collection.' OPTIONS { ignoreErrors: true }';
+          } INTO ' . $collection . ' OPTIONS { ignoreErrors: true }';
         $statement = $this->arangoClient->prepare($query);
         $statement->execute();
 
@@ -169,7 +169,7 @@ class SchemaManagerCollectionsTest extends TestCase
         $collection = 'users';
         $options = [];
 
-        if (! $this->schemaManager->hasCollection($collection)) {
+        if (!$this->schemaManager->hasCollection($collection)) {
             $result = $this->schemaManager->createCollection($collection, $options);
             $this->assertEquals($collection, $result->name);
         }
@@ -184,7 +184,7 @@ class SchemaManagerCollectionsTest extends TestCase
         $collection = 'users';
         $options = ['waitForSync' => true];
 
-        if (! $this->schemaManager->hasCollection($collection)) {
+        if (!$this->schemaManager->hasCollection($collection)) {
             $result = $this->schemaManager->createCollection($collection, $options, 1, 1);
         }
 
