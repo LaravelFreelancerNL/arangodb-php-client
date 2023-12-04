@@ -44,9 +44,7 @@ class Statement extends Manager implements IteratorAggregate
      * @param  ?array<mixed>  $bindVars
      * @param  array<mixed>  $options
      */
-    public function __construct(protected ArangoClient $arangoClient, protected string $query, protected ?array $bindVars, protected array $options = [])
-    {
-    }
+    public function __construct(protected ArangoClient $arangoClient, protected string $query, protected ?array $bindVars, protected array $options = []) {}
 
     /**
      * A statement can be used like an array to access the results.
@@ -86,7 +84,7 @@ class Statement extends Manager implements IteratorAggregate
     {
         $bodyContent = $this->options;
         $bodyContent['query'] = $this->query;
-        if (! empty($this->bindVars)) {
+        if (!empty($this->bindVars)) {
             $bodyContent['bindVars'] = $this->bindVars;
         }
 
@@ -117,7 +115,7 @@ class Statement extends Manager implements IteratorAggregate
     protected function requestOutstandingResults(array $body): void
     {
         while ($this->cursorHasMoreResults) {
-            $uri = '/_api/cursor/'.(string) $this->cursorId;
+            $uri = '/_api/cursor/' . (string) $this->cursorId;
 
             $options = [
                 'body' => $body,
@@ -168,7 +166,7 @@ class Statement extends Manager implements IteratorAggregate
     {
         $bodyContent = $this->prepareQueryBodyContent();
 
-        if (! isset($bodyContent['options']) || ! is_array($bodyContent['options'])) {
+        if (!isset($bodyContent['options']) || !is_array($bodyContent['options'])) {
             $bodyContent['options'] = [];
         }
         $bodyContent['options']['profile'] = $mode;
