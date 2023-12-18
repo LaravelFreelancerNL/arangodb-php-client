@@ -26,13 +26,13 @@ trait ManagesViews
     {
         $view['type'] = isset($view['type']) ? (string) $view['type'] : 'arangosearch';
 
-        $uri = '/_api/view#'.$view['type'];
+        $uri = '/_api/view#' . $view['type'];
 
         $options = [
             'body' => $view,
         ];
 
-        return  $this->arangoClient->request('post', $uri, $options);
+        return $this->arangoClient->request('post', $uri, $options);
     }
 
     /**
@@ -42,7 +42,7 @@ trait ManagesViews
      */
     public function deleteView(string $name): bool
     {
-        $uri = '/_api/view/'.$name;
+        $uri = '/_api/view/' . $name;
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }
@@ -91,7 +91,7 @@ trait ManagesViews
      */
     public function getViewProperties(string $name): stdClass
     {
-        $uri = '/_api/view/'.$name.'/properties';
+        $uri = '/_api/view/' . $name . '/properties';
 
         return $this->arangoClient->request('get', $uri);
     }
@@ -101,7 +101,7 @@ trait ManagesViews
      */
     public function renameView(string $old, string $new): stdClass
     {
-        $uri = '/_api/view/'.$old.'/rename';
+        $uri = '/_api/view/' . $old . '/rename';
 
         $options = [
             'body' => [
@@ -128,7 +128,7 @@ trait ManagesViews
 
         $properties['type'] = isset($properties['type']) ? (string) $properties['type'] : 'arangosearch';
 
-        $uri = '/_api/view/'.$name.'/properties#'.$properties['type'];
+        $uri = '/_api/view/' . $name . '/properties#' . $properties['type'];
 
         $options = [
             'body' => $properties,
@@ -149,7 +149,7 @@ trait ManagesViews
      */
     public function replaceView(string $name, array $newView): stdClass|false
     {
-        if (! $this->hasView($name)) {
+        if (!$this->hasView($name)) {
             return false;
         }
         $this->deleteView($name);

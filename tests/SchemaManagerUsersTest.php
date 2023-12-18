@@ -19,7 +19,7 @@ class SchemaManagerUsersTest extends TestCase
             'password' => 'yee random pw',
         ];
 
-        if (! $this->schemaManager->hasUser($this->userName)) {
+        if (!$this->schemaManager->hasUser($this->userName)) {
             $this->schemaManager->createUser($user);
         }
     }
@@ -45,7 +45,7 @@ class SchemaManagerUsersTest extends TestCase
     {
         $users = $this->schemaManager->getUsers();
         $this->assertIsArray($users);
-        $this->assertObjectHasAttribute('user', $users[0]);
+        $this->assertObjectHasProperty('user', $users[0]);
     }
 
     public function testHasUser()
@@ -118,7 +118,7 @@ class SchemaManagerUsersTest extends TestCase
         $results = $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
         $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
-        $this->assertObjectHasAttribute($this->accessDatabase, $results);
+        $this->assertObjectHasProperty($this->accessDatabase, $results);
         $this->assertSame($grant, $results->{$this->accessDatabase});
         $this->assertSame($grant, $accessLevel);
 
@@ -145,7 +145,7 @@ class SchemaManagerUsersTest extends TestCase
 
     protected function setUpAccessTest()
     {
-        if (! $this->schemaManager->hasDatabase($this->accessDatabase)) {
+        if (!$this->schemaManager->hasDatabase($this->accessDatabase)) {
             $this->schemaManager->createDatabase($this->accessDatabase);
         }
     }

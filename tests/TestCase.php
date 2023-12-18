@@ -35,7 +35,7 @@ abstract class TestCase extends PhpUnitTestCase
     protected function createTestDatabase()
     {
         $this->arangoClient->setDatabase('_system');
-        if (! $this->arangoClient->schema()->hasDatabase($this->testDatabaseName)) {
+        if (!$this->arangoClient->schema()->hasDatabase($this->testDatabaseName)) {
             $this->arangoClient->schema()->createDatabase($this->testDatabaseName);
         }
     }
@@ -43,7 +43,7 @@ abstract class TestCase extends PhpUnitTestCase
     protected function skipTestOnArangoVersions(string $version, string $operator = '<')
     {
         if (version_compare(getenv('ARANGODB_VERSION'), $version, $operator)) {
-            $this->markTestSkipped('This test does not support ArangoDB versions before '.$version);
+            $this->markTestSkipped('This test does not support ArangoDB versions before ' . $version);
         }
     }
 }

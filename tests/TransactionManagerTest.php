@@ -121,10 +121,10 @@ class TransactionManagerTest extends TestCase
 
     public function testCommit()
     {
-        if (! $this->arangoClient->schema()->hasCollection('Users')) {
+        if (!$this->arangoClient->schema()->hasCollection('Users')) {
             $this->arangoClient->schema()->createCollection('Users');
         }
-        if (! $this->arangoClient->schema()->hasCollection('Customers')) {
+        if (!$this->arangoClient->schema()->hasCollection('Customers')) {
             $this->arangoClient->schema()->createCollection('Customers');
         }
 

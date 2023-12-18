@@ -32,7 +32,7 @@ trait ManagesDatabases
     {
         $user = $this->arangoClient->getUser();
 
-        $uri = '/_api/user/'.$user.'/database';
+        $uri = '/_api/user/' . $user . '/database';
 
         $results = $this->arangoClient->request('get', $uri, []);
 
@@ -71,7 +71,7 @@ trait ManagesDatabases
      */
     public function deleteDatabase(string $name): bool
     {
-        $uri = '/_api/database/'.$name;
+        $uri = '/_api/database/' . $name;
 
         return (bool) $this->arangoClient->request('delete', $uri, [], '_system');
     }
