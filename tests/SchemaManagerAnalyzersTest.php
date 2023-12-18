@@ -34,22 +34,22 @@ class SchemaManagerAnalyzersTest extends \Tests\TestCase
 
         $customAnalyzer = end($analyzers);
 
-        $this->assertSame('arangodb_php_client__test::'.$this->analyzer['name'], $customAnalyzer->name);
+        $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $customAnalyzer->name);
     }
 
     public function testGetAnalyzer()
     {
         $analyzer = $this->schemaManager->getAnalyzer($this->analyzer['name']);
 
-        $this->assertSame('arangodb_php_client__test::'.$this->analyzer['name'], $analyzer->name);
+        $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $analyzer->name);
         $this->assertObjectHasProperty('type', $analyzer);
     }
 
     public function testGetAnalyzerWithFullName()
     {
-        $analyzer = $this->schemaManager->getAnalyzer('arangodb_php_client__test::'.$this->analyzer['name']);
+        $analyzer = $this->schemaManager->getAnalyzer('arangodb_php_client__test::' . $this->analyzer['name']);
 
-        $this->assertSame('arangodb_php_client__test::'.$this->analyzer['name'], $analyzer->name);
+        $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $analyzer->name);
         $this->assertObjectHasProperty('type', $analyzer);
     }
 
@@ -68,10 +68,11 @@ class SchemaManagerAnalyzersTest extends \Tests\TestCase
         $newAnalyzerProps = [
             'name' => 'newAnalyzer',
             'type' => 'identity',
-        ];;
+        ];
+        ;
         $newAnalyzer = $this->schemaManager->replaceAnalyzer($this->analyzer['name'], $newAnalyzerProps);
 
-        $this->assertSame('arangodb_php_client__test::'.$this->analyzer['name'], $newAnalyzer->name);
+        $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $newAnalyzer->name);
     }
 
     public function testCreateAndDeleteAnalyzer()
@@ -82,7 +83,7 @@ class SchemaManagerAnalyzersTest extends \Tests\TestCase
         ];
         $created = $this->schemaManager->createAnalyzer($analyzer);
         $this->assertObjectHasProperty('name', $created);
-        $this->assertSame('arangodb_php_client__test::'.$analyzer['name'], $created->name);
+        $this->assertSame('arangodb_php_client__test::' . $analyzer['name'], $created->name);
 
         $deleted = $this->schemaManager->deleteAnalyzer($analyzer['name']);
         $this->assertTrue($deleted);
@@ -96,7 +97,7 @@ class SchemaManagerAnalyzersTest extends \Tests\TestCase
         ];
         $created = $this->schemaManager->createAnalyzer($analyzer);
 
-        $fullName = 'arangodb_php_client__test::'.$analyzer['name'];
+        $fullName = 'arangodb_php_client__test::' . $analyzer['name'];
 
         $deleted = $this->schemaManager->deleteAnalyzer($fullName);
 

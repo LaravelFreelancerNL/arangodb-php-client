@@ -18,7 +18,7 @@ trait ManagesAnalyzers
     protected function getFullName(string $name): string
     {
         if (!str_contains($name, '::')) {
-            $name = $this->arangoClient->getDatabase().'::'.$name;
+            $name = $this->arangoClient->getDatabase() . '::' . $name;
         }
         return $name;
     }
@@ -87,7 +87,7 @@ trait ManagesAnalyzers
      *
      * @throws ArangoException
      */
-    public function getAnalyzer (string $name): stdClass
+    public function getAnalyzer(string $name): stdClass
     {
         $uri = '/_api/analyzer/' . $name;
 
