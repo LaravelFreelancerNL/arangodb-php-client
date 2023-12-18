@@ -9,6 +9,7 @@ use ArangoClient\Manager;
 
 class SchemaManager extends Manager
 {
+    use ManagesAnalyzers;
     use ManagesCollections;
     use ManagesDatabases;
     use ManagesGraphs;
