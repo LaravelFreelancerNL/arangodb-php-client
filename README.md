@@ -91,8 +91,9 @@ $client->transactions()->begin(['write' => ['users', 'teams']]);
     2) [User schema](docs/schema-users.md)
     3) [Collection schema](docs/schema-collections.md)
     4) [Index schema](docs/schema-indexes.md)
-    5) [View schema](docs/schema-views.md)
-    6) [Graph schema](docs/schema-graphs.md)
+    5) [Graph schema](docs/schema-graphs.md)
+    6) [View schema](docs/schema-views.md)
+    7) [Analyzer schema](docs/schema-analyzers.md)
 5) [Transaction manager](docs/transaction-manager.md)
 
 ## Related packages
