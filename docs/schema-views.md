@@ -2,7 +2,7 @@
 You can use the schema manager to perform CRUD actions on ArangoSearch views.
 
 ## View functions
-The schema manager supports the following index functions:
+The schema manager supports the following view functions:
 
 ###  createView(array $view): stdClass
 ```
