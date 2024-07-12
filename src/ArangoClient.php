@@ -116,7 +116,7 @@ class ArangoClient
         string $method,
         string $uri,
         array $options = [],
-        ?string $database = null
+        ?string $database = null,
     ): ResponseInterface {
         $uri = $this->prependDatabaseToUri($uri, $database);
         $options['debug'] = true;
@@ -150,7 +150,7 @@ class ArangoClient
         throw(
         new ArangoException(
             $code . ' - ' . $message,
-            $code
+            $code,
         )
         );
     }
@@ -175,7 +175,7 @@ class ArangoClient
     public function prepare(
         string $query,
         array $bindVars = [],
-        array $options = []
+        array $options = [],
     ): Traversable {
         return new Statement($this, $query, $bindVars, $options);
     }

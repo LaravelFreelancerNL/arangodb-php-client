@@ -27,7 +27,7 @@ class AdminManager extends Manager
                 'query' => [
                     'details' => $details,
                 ],
-            ]
+            ],
         );
     }
 

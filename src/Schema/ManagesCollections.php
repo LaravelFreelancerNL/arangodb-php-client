@@ -31,7 +31,7 @@ trait ManagesCollections
                 'query' => [
                     'excludeSystem' => $excludeSystemCollections,
                 ],
-            ]
+            ],
         );
 
         return (array) $results->result;
@@ -116,7 +116,7 @@ trait ManagesCollections
                 'query' => [
                     'details' => $details,
                 ],
-            ]
+            ],
         );
     }
 
@@ -131,7 +131,7 @@ trait ManagesCollections
         string $name,
         array $config = [],
         $waitForSyncReplication = null,
-        $enforceReplicationFactor = null
+        $enforceReplicationFactor = null,
     ): stdClass {
         $options = [];
         if (isset($waitForSyncReplication)) {
@@ -158,7 +158,7 @@ trait ManagesCollections
         string $name,
         array $config = [],
         $waitForSyncReplication = null,
-        $enforceReplicationFactor = null
+        $enforceReplicationFactor = null,
     ): stdClass {
         $config['type'] = 3;
 

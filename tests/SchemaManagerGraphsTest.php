@@ -34,7 +34,7 @@ class SchemaManagerGraphsTest extends TestCase
                     'orphanVertices',
                 ],
             ],
-            true
+            true,
         );
         $this->assertEquals(1, is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0);
         $this->assertEquals($result->_id, '_graphs/relations');
@@ -117,7 +117,7 @@ class SchemaManagerGraphsTest extends TestCase
                         'orphanVertices',
                     ],
                 ],
-                true
+                true,
             );
         }
 
@@ -150,7 +150,7 @@ class SchemaManagerGraphsTest extends TestCase
                         'orphanVertices',
                     ],
                 ],
-                false
+                false,
             );
         }
         $newVertex = 'houses';
@@ -184,7 +184,7 @@ class SchemaManagerGraphsTest extends TestCase
                         'orphanVertices',
                     ],
                 ],
-                false
+                false,
             );
         }
 
@@ -220,7 +220,7 @@ class SchemaManagerGraphsTest extends TestCase
                         'orphanVertices',
                     ],
                 ],
-                true
+                true,
             );
         }
 
@@ -249,7 +249,7 @@ class SchemaManagerGraphsTest extends TestCase
                         ],
                     ],
                 ],
-                false
+                false,
             );
         }
         $newEdge = [
@@ -282,7 +282,7 @@ class SchemaManagerGraphsTest extends TestCase
                             'to' => ['characters'],
                         ],
                     ],
-                ]
+                ],
             );
         }
 
@@ -297,7 +297,7 @@ class SchemaManagerGraphsTest extends TestCase
             'children',
             $newEdge,
             false,
-            true
+            true,
         );
 
         $this->assertEquals($newEdge['collection'], $result->edgeDefinitions[0]->collection);
@@ -326,7 +326,7 @@ class SchemaManagerGraphsTest extends TestCase
                             'to' => ['houses'],
                         ],
                     ],
-                ]
+                ],
             );
         }
 
@@ -334,7 +334,7 @@ class SchemaManagerGraphsTest extends TestCase
             'relations',
             'children',
             true,
-            true
+            true,
         );
 
         $this->assertEquals(1, is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0);
