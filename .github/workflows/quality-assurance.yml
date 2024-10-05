@@ -36,5 +36,4 @@ jobs:
       - name: Run all QA tests
         if: ${{ always() }}
         run: |
-          chmod +x "${GITHUB_WORKSPACE}/bin/qa.sh"
-          "${GITHUB_WORKSPACE}/bin/qa.sh"
+          composer analyse
