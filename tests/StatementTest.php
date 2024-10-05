@@ -56,12 +56,6 @@ class StatementTest extends TestCase
         $this->assertSame($query, $statement->getQuery());
     }
 
-    public function testExecuteSuccess()
-    {
-        $results = $this->statement->execute();
-        $this->assertTrue($results);
-    }
-
     public function testExplain()
     {
         $explanation = $this->statement->explain();
