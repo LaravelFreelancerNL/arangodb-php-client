@@ -38,7 +38,7 @@ jobs:
       - name: Fix style
         if: ${{ always() }}
         run: |
-          "${GITHUB_WORKSPACE}/vendor/bin/pint"
+          composer style
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5

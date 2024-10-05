@@ -31,6 +31,7 @@ class ArangoClientTest extends TestCase
             'username' => 'root',
             'password' => null,
             'database' => $this->testDatabaseName,
+            'responseSizeDecoderSwitch' => 1048576,
         ];
 
         $config = $this->arangoClient->getConfig();
@@ -134,6 +135,7 @@ class ArangoClientTest extends TestCase
         $handlerStack->push($history);
 
         $this->arangoClient->setDatabase($database);
+
         $this->arangoClient->request('get', $uri, ['handler' => $handlerStack]);
 
         foreach ($container as $transaction) {

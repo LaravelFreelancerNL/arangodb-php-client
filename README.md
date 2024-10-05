@@ -70,6 +70,12 @@ The admin manager manages administrative functions and information retrieval for
 $client->admin()->version();
 ```
 
+### Monitor manager
+The monitor manager manages monitoring functions the server/cluster.
+``` 
+$client->monitor()->getMetrics();
+```
+
 ### Schema manager
 The schema manager manages all schema related operations.
 ``` 
@@ -86,7 +92,8 @@ $client->transactions()->begin(['write' => ['users', 'teams']]);
 1) [ArangoDB PHP client](docs/arangodb-client.md)
 2) [AQL query statements](docs/statements.md)
 3) [Admin manager](docs/admin-manager.md)
-4) Schema manager
+4) [Monitor manager](docs/monitor-manager.md)
+5Schema manager
     1) [Database schema](docs/schema-databases.md)
     2) [User schema](docs/schema-users.md)
     3) [Collection schema](docs/schema-collections.md)
@@ -94,7 +101,7 @@ $client->transactions()->begin(['write' => ['users', 'teams']]);
     5) [Graph schema](docs/schema-graphs.md)
     6) [View schema](docs/schema-views.md)
     7) [Analyzer schema](docs/schema-analyzers.md)
-5) [Transaction manager](docs/transaction-manager.md)
+6[Transaction manager](docs/transaction-manager.md)
 
 ## Related packages
 * [AQL query builder](https://github.com/LaravelFreelancerNL/fluentaql)

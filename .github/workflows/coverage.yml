@@ -38,6 +38,6 @@ jobs:
 
       - name: Test coverage
         run: |
-          vendor/bin/phpunit --coverage-clover clover.xml --whitelist src
+          composer test:coverage
           echo "Upload results to Scrutinizer-ci"
           vendor/bin/ocular code-coverage:upload --format=php-clover clover.xml

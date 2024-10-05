@@ -13,6 +13,7 @@ Upon creation, you can alter the default configuration of the client. The follow
 * username = null
 * password = null
 * database = '_system'
+* responseSizeDecoderSwitch = 1 * 1024 * 1024
 
 ```
 $config = [
@@ -24,6 +25,15 @@ $config = [
 
 $arangoClient = new ArangoClient($config);
 ```
+
+### Speed vs response size
+JSON response decoding is normally done by the default json_decode method. This method
+is optimized for speed and can take a large amount of memory; up to ~ 20x of the JSON size.
+
+Therefor we use halaxa/json-machine to stream decode for responses larger than 1MB.
+You can alter this cutoff by setting the `responseSizeDecoderSwitch` to a different size in **Bytes**.
+
+This removed any memory issues at the cost of speed.
 
 ### Support Guzzle configuration
 In addition to the above mentioned options you can use the following Guzzle 7 specific options:

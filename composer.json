@@ -21,7 +21,8 @@
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.3",
         "halaxa/json-machine": "^1.0",
-        "spatie/data-transfer-object": "^3.9"
+        "spatie/data-transfer-object": "^3.9",
+        "spatie/ray": "^1.41"
     },
     "require-dev": {
         "laravel/pint": "^1.2.1",
@@ -45,7 +46,7 @@
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage",
+        "test:coverage": "vendor/bin/phpunit --coverage-clover clover.xml --whitelist src",
         "style": "vendor/bin/pint"
     },
     "config": {

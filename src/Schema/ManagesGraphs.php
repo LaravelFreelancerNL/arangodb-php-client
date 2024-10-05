@@ -27,7 +27,7 @@ trait ManagesGraphs
     public function createGraph(
         string $name,
         array $config = [],
-        bool $waitForSync = false
+        bool $waitForSync = false,
     ): stdClass {
         $options = [];
         $options['query']['waitForSync'] = (int) $waitForSync;
@@ -50,7 +50,7 @@ trait ManagesGraphs
     {
         $results = $this->arangoClient->request(
             'get',
-            '/_api/gharial'
+            '/_api/gharial',
         );
 
         return (array) $results->graphs;
@@ -187,7 +187,7 @@ trait ManagesGraphs
         string $edge,
         array $edgeDefinition,
         bool $dropCollection = false,
-        bool $waitForSync = false
+        bool $waitForSync = false,
     ): stdClass {
         $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
 
@@ -210,7 +210,7 @@ trait ManagesGraphs
         string $name,
         string $edge,
         bool $dropCollection = true,
-        bool $waitForSync = false
+        bool $waitForSync = false,
     ): stdClass {
         $uri = '/_api/gharial/' . $name . '/edge/' . $edge . '#definition';
 

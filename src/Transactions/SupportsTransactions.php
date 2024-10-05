@@ -90,7 +90,7 @@ trait SupportsTransactions
         string $uri,
         array|HttpRequestOptions $options = [],
         string $database = null,
-        int $transactionId = null
+        int $transactionId = null,
     ): stdClass {
         if (is_array($options)) {
             $options = $this->prepareRequestOptions($options);

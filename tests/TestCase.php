@@ -6,12 +6,15 @@ namespace Tests;
 
 use ArangoClient\Admin\AdminManager;
 use ArangoClient\ArangoClient;
+use ArangoClient\Monitor\MonitorManager;
 use ArangoClient\Schema\SchemaManager;
 use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 abstract class TestCase extends PhpUnitTestCase
 {
     protected ArangoClient $arangoClient;
+
+    protected MonitorManager $monitorManager;
 
     protected SchemaManager $schemaManager;
 
@@ -25,6 +28,7 @@ abstract class TestCase extends PhpUnitTestCase
             'username' => 'root',
         ]);
 
+        $this->monitorManager = new MonitorManager($this->arangoClient);
         $this->schemaManager = new SchemaManager($this->arangoClient);
         $this->administrationClient = new AdminManager($this->arangoClient);
 
