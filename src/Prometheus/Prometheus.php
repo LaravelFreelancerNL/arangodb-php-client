@@ -22,7 +22,7 @@ class Prometheus
         $stream = $from->getBody();
         $resource = StreamWrapper::getResource($stream);
 
-        while($line = stream_get_line($resource, 1000000, "\n")) {
+        while ($line = stream_get_line($resource, 1000000, "\n")) {
             $this->handleLine($line);
         }
         return $this->output;
@@ -68,7 +68,7 @@ class Prometheus
             preg_match(
                 "/^# TYPE (?'metricName'[a-zA-Z_:][a-zA-Z0-9_:]*) (?'type'counter|gauge|histogram|summary)$/",
                 $line,
-                $matches
+                $matches,
             )
         ) {
             $metricName = $matches['metricName'];
@@ -85,7 +85,7 @@ class Prometheus
             preg_match(
                 "/^# HELP (?'metricName'[a-zA-Z_:][a-zA-Z0-9_:]*) (?'helpText'[\W\w]*)/",
                 $line,
-                $matches
+                $matches,
             )
         ) {
             $metricName = $matches['metricName'];
@@ -103,7 +103,7 @@ class Prometheus
             preg_match(
                 "/^(?'rawMetricName'[a-zA-Z_:][a-zA-Z0-9_:]*)(?'rawLabels'{[\W\w]*})? (?'value'[-+.,eE\d]+) ?(?'timestamp'[0-9]+)?$/",
                 $line,
-                $matches
+                $matches,
             )
         ) {
             // The first group contains the metricName and the suffix
@@ -112,9 +112,9 @@ class Prometheus
             $this->createMetricIfNew($metricName);
 
             // Feed the remaining matches to the suffix dependent parser
-            match($suffix) {
+            match ($suffix) {
                 "bucket" => $this->setBucket($metricName, $matches),
-                default => $this->setMetricValues($metricName, $matches, $suffix)
+                default => $this->setMetricValues($metricName, $matches, $suffix),
             };
         }
     }
@@ -127,7 +127,7 @@ class Prometheus
         $nameParticles = explode("_", $value);
         $suffix = array_pop($nameParticles);
 
-        if(in_array($suffix, ["bucket", "count", "sum"])) {
+        if (in_array($suffix, ["bucket", "count", "sum"])) {
             $baseName = implode("_", $nameParticles);
             return [$baseName, $suffix];
         }
@@ -156,7 +156,7 @@ class Prometheus
         $bucket = new Bucket(
             $value,
             $labels,
-            $timestamp
+            $timestamp,
         );
 
         $this->output->$metricName->buckets[] = $bucket;
@@ -206,7 +206,7 @@ class Prometheus
             preg_match_all(
                 "/(?'label'[a-zA-Z0-9]*)=\"(?'value'[^\"]*)\"/",
                 $rawLabels,
-                $matches
+                $matches,
             )
         ) {
             foreach ($matches['label'] as $key => $label) {

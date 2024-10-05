@@ -23,7 +23,7 @@ trait HandlesResponses
             $contentType = $rawContentType[0];
         }
 
-        return match($contentType) {
+        return match ($contentType) {
             "application/json; charset=utf-8" => $this->decodeJsonResponse($response),
             "text/plain; charset=utf-8" => $this->decodeTextResponse($response),
             default => (object) $response->getBody()->getContents(),

@@ -31,7 +31,7 @@ class ArangoClientTest extends TestCase
             'username' => 'root',
             'password' => null,
             'database' => $this->testDatabaseName,
-            'responseSizeDecoderSwitch' => 1048576
+            'responseSizeDecoderSwitch' => 1048576,
         ];
 
         $config = $this->arangoClient->getConfig();
