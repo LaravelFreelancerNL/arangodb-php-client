@@ -196,7 +196,7 @@ class Prometheus
 
 
     /**
-     * @return string[]
+     * @return array<string, float|int|string>
      */
     protected function extractLabels(string $rawLabels): array
     {
@@ -212,7 +212,7 @@ class Prometheus
             foreach ($matches['label'] as $key => $label) {
                 $value = $matches['value'][$key];
 
-                $labels[$label] = is_numeric($value) ? +$value : $value;
+                $labels[(string) $label] = is_numeric($value) ? +$value : $value;
             }
         }
 
