@@ -12,6 +12,8 @@ class MonitorManagerTest extends TestCase
     {
         $result = $this->arangoClient->monitor()->getMetrics();
         $this->assertIsObject($result);
+        $this->assertEquals("gauge", $result->arangodb_agency_cache_callback_number->type);
+        $this->assertCount(1, $result->arangodb_agency_cache_callback_number->labels);
     }
 
     public function testSummaryMetric()
@@ -28,7 +30,6 @@ prometheus_rule_evaluation_duration_seconds_count 1.112293682e+09';
 
 
         $result = $prometheus->parseText($rawMetrics);
-        ray($result);
         $this->assertIsObject($result);
     }
 
@@ -63,8 +64,9 @@ arangodb_aql_query_time_sum{role="SINGLE"} 0.035180
 ';
 
         $result = $prometheus->parseText($rawMetrics);
-        ray($result);
-        $this->assertIsObject($result);
+        $this->assertCount(20, $result->arangodb_aql_query_time->buckets);
+        $this->assertEquals(177, $result->arangodb_aql_query_time->count);
+        $this->assertEquals(0.03518, $result->arangodb_aql_query_time->sum);
     }
 
     public function testTimestampParsing()
@@ -75,10 +77,8 @@ arangodb_aql_query_time_sum{role="SINGLE"} 0.035180
 # TYPE arangodb_aql_local_query_memory_limit_reached_total counter
 arangodb_aql_local_query_memory_limit_reached_total{role="SINGLE"} 0 2211753600';
 
-
         $result = $prometheus->parseText($rawMetrics);
-        ray($result);
         $this->assertIsObject($result);
+        $this->assertEquals(2211753600, $result->arangodb_aql_local_query_memory_limit_reached_total->timestamp);
     }
-
 }
