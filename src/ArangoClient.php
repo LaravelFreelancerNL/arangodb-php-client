@@ -25,6 +25,7 @@ use Traversable;
  */
 class ArangoClient
 {
+    use HandlesResponses;
     use HandlesJson;
     use HasManagers;
     use SupportsTransactions;
@@ -88,7 +89,11 @@ class ArangoClient
             $this->handleGuzzleException($e);
         }
 
-        return $this->cleanupResponse($response);
+        if ($response !== null) {
+            return $this->cleanupResponse($response);
+        }
+
+        return new stdClass();
     }
 
     /**
@@ -116,7 +121,7 @@ class ArangoClient
         string $method,
         string $uri,
         array $options = [],
-        ?string $database = null,
+        ?string $database = null
     ): ResponseInterface {
         $uri = $this->prependDatabaseToUri($uri, $database);
         $options['debug'] = true;
@@ -142,23 +147,31 @@ class ArangoClient
         $code = $e->getCode();
 
         if ($e instanceof RequestException && $e->hasResponse()) {
-            $decodedResponse = $this->decodeResponse($e->getResponse());
-            $message = (string) $decodedResponse->errorMessage;
-            $code = (int) $decodedResponse->code;
+            $response = $e->getResponse();
+            if ($response !== null) {
+                $decodedResponse = $this->decodeResponse($response);
+            }
+            if (isset($decodedResponse->errorMessage)) {
+                $message = (string) $decodedResponse->errorMessage;
+            }
+
+            if (isset($decodedResponse->code)) {
+                $code = (int) $decodedResponse->code;
+            }
         }
 
         throw(
-        new ArangoException(
-            $code . ' - ' . $message,
-            $code,
-        )
+            new ArangoException(
+                $code . ' - ' . $message,
+                $code
+            )
         );
     }
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function cleanupResponse(?ResponseInterface $response): stdClass
+    protected function cleanupResponse(ResponseInterface $response): stdClass
     {
         $response = $this->decodeResponse($response);
         unset($response->error);
@@ -175,16 +188,19 @@ class ArangoClient
     public function prepare(
         string $query,
         array $bindVars = [],
-        array $options = [],
+        array $options = []
     ): Traversable {
         return new Statement($this, $query, $bindVars, $options);
     }
 
     /**
-     * @return array<array-key, mixed>
+     * @return mixed
      */
-    public function getConfig(): array
+    public function getConfig(string $value = null): mixed
     {
+        if ($value) {
+            return $this->config->$value;
+        }
         return $this->config->toArray();
     }
 

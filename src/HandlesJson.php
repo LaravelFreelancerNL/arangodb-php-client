@@ -35,15 +35,18 @@ trait HandlesJson
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function decodeResponse(?ResponseInterface $response): stdClass
+    protected function decodeJsonResponse(ResponseInterface $response): stdClass
     {
-        $decodedResponse = new stdClass();
-        if (!isset($response)) {
-            return $decodedResponse;
+        $contentLength = $response->getHeaderLine('Content-Length');
+        $sizeSwitch = $this->getConfig('responseSizeDecoderSwitch');
+        if ($contentLength < $sizeSwitch) {
+            return json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
         }
 
+        $decodedResponse = new stdClass();
+
         $phpStream = StreamWrapper::getResource($response->getBody());
-        $decoder = new ExtJsonDecoder(false);
+        $decoder = new ExtJsonDecoder(true);
         $decodedStream = Items::fromStream($phpStream, ['decoder' => $decoder]);
 
         foreach ($decodedStream as $key => $value) {

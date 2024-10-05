@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace ArangoClient;
 
 use ArangoClient\Admin\AdminManager;
+use ArangoClient\Monitor\MonitorManager;
 use ArangoClient\Schema\SchemaManager;
 
 trait HasManagers
 {
     protected ?AdminManager $adminManager = null;
+
+    protected ?MonitorManager $monitorManager = null;
 
     protected ?SchemaManager $schemaManager = null;
 
@@ -20,6 +23,15 @@ trait HasManagers
         }
 
         return $this->adminManager;
+    }
+
+    public function monitor(): MonitorManager
+    {
+        if (!(property_exists($this, 'monitorManager') && $this->monitorManager !== null)) {
+            $this->monitorManager = new MonitorManager($this);
+        }
+
+        return $this->monitorManager;
     }
 
     public function schema(): SchemaManager
