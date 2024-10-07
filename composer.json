@@ -14,7 +14,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "prefer-stable" : true,
+    "prefer-stable": true,
     "require": {
         "php": "^8.1",
         "ext-curl": "*",
@@ -29,9 +29,9 @@
         "mockery/mockery": "^1.4",
         "phpmd/phpmd": "^2.9",
         "phpstan/phpstan": "^1.0",
-        "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.14.8",
-        "scrutinizer/ocular": "^1.8"
+        "scrutinizer/ocular": "^1.8",
+        "pestphp/pest": "^2.2"
     },
     "autoload": {
         "psr-4": {
