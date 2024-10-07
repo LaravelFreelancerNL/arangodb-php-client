@@ -40,11 +40,11 @@ class HttpClientConfig extends DataTransferObject
     /**
      * Small responses are decoded with json_decode. This is fast but memory intensive.
      * Large responses are decoded with Halaxa/json-machine stream decoder.
-     * $responseSizeDecoderSwitch is the response length cutoff in bytes which determines which decoder is used.
+     * $jsonStreamDecoderThreshold is the response length cutoff in bytes which determines which decoder is used.
      *
      * @var int
      */
-    public int $responseSizeDecoderSwitch = 1 * 1024 * 1024; // Default 1 MB
+    public int $jsonStreamDecoderThreshold = 1 * 1024 * 1024; // Default 1 MB
 
     /**
      * @return array<array<mixed>|string|numeric|bool|null>
