@@ -45,7 +45,7 @@
     },
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/phpunit",
+        "test": "vendor/bin/pest",
         "test:coverage": "vendor/bin/phpunit --coverage-clover clover.xml --whitelist src",
         "style": "vendor/bin/pint"
     },
