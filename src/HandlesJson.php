@@ -38,7 +38,7 @@ trait HandlesJson
     protected function decodeJsonResponse(ResponseInterface $response): stdClass
     {
         $contentLength = $response->getHeaderLine('Content-Length');
-        $sizeSwitch = $this->getConfig('responseSizeDecoderSwitch');
+        $sizeSwitch = $this->getConfig('jsonStreamDecoderThreshold');
         if ($contentLength < $sizeSwitch) {
             return json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
         }
