@@ -2,42 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Tests;
-
 use ArangoClient\Admin\AdminManager;
 
-class AdminManagerTest extends TestCase
-{
-    protected AdminManager $adminManager;
+uses(Tests\TestCase::class);
+beforeEach(function () {
+    $this->adminManager = new AdminManager($this->arangoClient);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
 
-        $this->adminManager = new AdminManager($this->arangoClient);
-    }
+test('get version', function () {
+    $result = $this->adminManager->getVersion();
 
-    public function testGetVersion()
-    {
-        $result = $this->adminManager->getVersion();
+    $this->assertSame('arango', $result->server);
+    $this->assertSame('community', $result->license);
+    $this->assertIsString($result->version);
+});
 
-        $this->assertSame('arango', $result->server);
-        $this->assertSame('community', $result->license);
-        $this->assertIsString($result->version);
-    }
+test('get version with details', function () {
+    $result = $this->adminManager->getVersion(true);
 
-    public function testGetVersionWithDetails()
-    {
-        $result = $this->adminManager->getVersion(true);
+    $this->assertSame('arango', $result->server);
+    $this->assertSame('community', $result->license);
+    $this->assertIsString($result->version);
+});
 
-        $this->assertSame('arango', $result->server);
-        $this->assertSame('community', $result->license);
-        $this->assertIsString($result->version);
-    }
-
-    public function testGetRunningTransactions()
-    {
-        $transactions = $this->adminManager->getRunningTransactions();
-        $this->assertEmpty($transactions);
-    }
-}
+test('get running transactions', function () {
+    $transactions = $this->adminManager->getRunningTransactions();
+    $this->assertEmpty($transactions);
+});
