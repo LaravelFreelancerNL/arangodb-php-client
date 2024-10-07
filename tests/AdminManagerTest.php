@@ -13,20 +13,20 @@ beforeEach(function () {
 test('get version', function () {
     $result = $this->adminManager->getVersion();
 
-    $this->assertSame('arango', $result->server);
-    $this->assertSame('community', $result->license);
-    $this->assertIsString($result->version);
+    expect($result->server)->toBe('arango');
+    expect($result->license)->toBe('community');
+    expect($result->version)->toBeString();
 });
 
 test('get version with details', function () {
     $result = $this->adminManager->getVersion(true);
 
-    $this->assertSame('arango', $result->server);
-    $this->assertSame('community', $result->license);
-    $this->assertIsString($result->version);
+    expect($result->server)->toBe('arango');
+    expect($result->license)->toBe('community');
+    expect($result->version)->toBeString();
 });
 
 test('get running transactions', function () {
     $transactions = $this->adminManager->getRunningTransactions();
-    $this->assertEmpty($transactions);
+    expect($transactions)->toBeEmpty();
 });

@@ -11,13 +11,13 @@ beforeEach(function () {
 
 test('transactions', function () {
     $transactionManager = $this->arangoClient->transactions();
-    $this->assertInstanceOf(TransactionManager::class, $transactionManager);
+    expect($transactionManager)->toBeInstanceOf(TransactionManager::class);
 });
 
 test('begin transaction', function () {
     $transactionId = $this->arangoClient->beginTransaction();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
-    $this->assertSame($transactionId, $runningTransactions[0]->id);
+    expect($runningTransactions[0]->id)->toBe($transactionId);
 
     $this->arangoClient->abort();
 });
@@ -25,7 +25,7 @@ test('begin transaction', function () {
 test('begin', function () {
     $transactionId = $this->arangoClient->begin();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
-    $this->assertSame($transactionId, $runningTransactions[0]->id);
+    expect($runningTransactions[0]->id)->toBe($transactionId);
 
     $this->arangoClient->abort();
 });
@@ -33,25 +33,25 @@ test('begin', function () {
 test('abort', function () {
     $transactionId = $this->arangoClient->beginTransaction();
     $aborted = $this->arangoClient->abort();
-    $this->assertTrue($aborted);
+    expect($aborted)->toBeTrue();
 
     $transactionsListedInManager = $this->arangoClient->transactions()->getTransactions();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
 
     $this->assertArrayNotHasKey($transactionId, $transactionsListedInManager);
-    $this->assertFalse(array_search($transactionId, array_column($runningTransactions, 'id')));
+    expect(array_search($transactionId, array_column($runningTransactions, 'id')))->toBeFalse();
 });
 
 test('roll back', function () {
     $transactionId = $this->arangoClient->beginTransaction();
     $aborted = $this->arangoClient->rollBack();
-    $this->assertTrue($aborted);
+    expect($aborted)->toBeTrue();
 
     $transactionsListedInManager = $this->arangoClient->transactions()->getTransactions();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
 
     $this->assertArrayNotHasKey($transactionId, $transactionsListedInManager);
-    $this->assertFalse(array_search($transactionId, array_column($runningTransactions, 'id')));
+    expect(array_search($transactionId, array_column($runningTransactions, 'id')))->toBeFalse();
 });
 
 test('commit', function () {
@@ -84,7 +84,7 @@ test('commit', function () {
     $getStatement = $this->arangoClient->prepare($getQuery);
     $getStatement->execute();
 
-    $this->assertEquals(10, count($getStatement->fetchAll()));
+    expect(count($getStatement->fetchAll()))->toEqual(10);
 
     $this->arangoClient->commit();
 
@@ -92,7 +92,7 @@ test('commit', function () {
     $getStatement = $this->arangoClient->prepare($getQuery);
     $getStatement->execute();
 
-    $this->assertEquals(10, count($getStatement->fetchAll()));
+    expect(count($getStatement->fetchAll()))->toEqual(10);
 
     $this->arangoClient->schema()->deleteCollection('Users');
     $this->arangoClient->schema()->deleteCollection('Customers');
@@ -104,6 +104,6 @@ test('transaction manager setter and getter', function () {
     $this->arangoClient->setTransactionManager($newTransactionManager);
     $retrievedNewTransactionManager = $this->arangoClient->getTransactionManager();
 
-    $this->assertNull($oldTransactionManager);
-    $this->assertEquals(spl_object_id($newTransactionManager), spl_object_id($retrievedNewTransactionManager));
+    expect($oldTransactionManager)->toBeNull();
+    expect(spl_object_id($retrievedNewTransactionManager))->toEqual(spl_object_id($newTransactionManager));
 });

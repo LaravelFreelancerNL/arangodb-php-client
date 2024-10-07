@@ -6,10 +6,10 @@ declare(strict_types=1);
 
 test('create and delete graph', function () {
     $result = $this->schemaManager->createGraph('locations', [], true);
-    $this->assertSame('_graphs/locations', $result->_id);
+    expect($result->_id)->toBe('_graphs/locations');
 
     $result = $this->schemaManager->deleteGraph('locations');
-    $this->assertTrue($result);
+    expect($result)->toBeTrue();
 });
 
 test('create graph with edges', function () {
@@ -32,8 +32,8 @@ test('create graph with edges', function () {
         ],
         true,
     );
-    $this->assertEquals(1, is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0);
-    $this->assertEquals($result->_id, '_graphs/relations');
+    expect(is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0)->toEqual(1);
+    expect('_graphs/relations')->toEqual($result->_id);
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');
@@ -44,7 +44,7 @@ test('create graph with edges', function () {
 test('get graphs no results', function () {
     $result = $this->schemaManager->getGraphs();
 
-    $this->assertLessThanOrEqual(0, count($result));
+    expect(count($result))->toBeLessThanOrEqual(0);
 });
 
 test('get graphs with results', function () {
@@ -57,9 +57,9 @@ test('get graphs with results', function () {
 
     $result = $this->schemaManager->getGraphs();
 
-    $this->assertEquals(2, count($result));
-    $this->assertEquals('characters', $result[0]->_key);
-    $this->assertEquals('locations', $result[1]->_key);
+    expect(count($result))->toEqual(2);
+    expect($result[0]->_key)->toEqual('characters');
+    expect($result[1]->_key)->toEqual('locations');
 
     $this->schemaManager->deleteGraph('characters');
     $this->schemaManager->deleteGraph('locations');
@@ -70,11 +70,11 @@ test('has graph', function () {
         $this->schemaManager->createGraph('locations');
     }
     $result = $this->schemaManager->hasGraph('locations');
-    $this->assertTrue($result);
+    expect($result)->toBeTrue();
 
     $this->schemaManager->deleteGraph('locations');
     $result = $this->schemaManager->hasGraph('locations');
-    $this->assertFalse($result);
+    expect($result)->toBeFalse();
 });
 
 test('get graph', function () {
@@ -84,7 +84,7 @@ test('get graph', function () {
 
     $result = $this->schemaManager->getGraph('locations');
 
-    $this->assertEquals('locations', $result->_key);
+    expect($result->_key)->toEqual('locations');
 
     $this->schemaManager->deleteGraph('locations');
 });
@@ -114,9 +114,9 @@ test('get graph vertices', function () {
 
     $results = $this->schemaManager->getGraphVertices('relations');
 
-    $this->assertEquals(2, count($results));
-    $this->assertEquals($results[0], 'characters');
-    $this->assertEquals($results[1], 'orphanVertices');
+    expect(count($results))->toEqual(2);
+    expect('characters')->toEqual($results[0]);
+    expect('orphanVertices')->toEqual($results[1]);
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');
@@ -147,8 +147,8 @@ test('add graph vertex', function () {
 
     $result = $this->schemaManager->addGraphVertex('relations', $newVertex);
 
-    $this->assertContains('orphanVertices', $result->orphanCollections);
-    $this->assertContains($newVertex, $result->orphanCollections);
+    expect($result->orphanCollections)->toContain('orphanVertices');
+    expect($result->orphanCollections)->toContain($newVertex);
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');
@@ -182,7 +182,7 @@ test('remove graph vertex', function () {
     $this->assertNotContains('orphanVertices', $result->orphanCollections);
 
     $checkDropped = $this->schemaManager->hasCollection('orphanVertices');
-    $this->assertFalse($checkDropped);
+    expect($checkDropped)->toBeFalse();
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');
@@ -214,8 +214,8 @@ test('get graph edges', function () {
 
     $results = $this->schemaManager->getGraphEdges('relations');
 
-    $this->assertEquals(1, count($results));
-    $this->assertEquals($results[0], 'children');
+    expect(count($results))->toEqual(1);
+    expect('children')->toEqual($results[0]);
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');
@@ -247,7 +247,7 @@ test('add graph edge', function () {
 
     $result = $this->schemaManager->addGraphEdge('relations', $newEdge);
 
-    $this->assertEquals($newEdge['collection'], $result->edgeDefinitions[1]->collection);
+    expect($result->edgeDefinitions[1]->collection)->toEqual($newEdge['collection']);
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');
@@ -286,7 +286,7 @@ test('replace graph edge', function () {
         true,
     );
 
-    $this->assertEquals($newEdge['collection'], $result->edgeDefinitions[0]->collection);
+    expect($result->edgeDefinitions[0]->collection)->toEqual($newEdge['collection']);
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');
@@ -322,8 +322,8 @@ test('remove graph edge', function () {
         true,
     );
 
-    $this->assertEquals(1, is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0);
-    $this->assertEquals('vassals', $result->edgeDefinitions[0]->collection);
+    expect(is_countable($result->edgeDefinitions) ? count($result->edgeDefinitions) : 0)->toEqual(1);
+    expect($result->edgeDefinitions[0]->collection)->toEqual('vassals');
 
     $this->schemaManager->deleteGraph('relations');
     $this->schemaManager->deleteCollection('children');

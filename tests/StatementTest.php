@@ -25,7 +25,7 @@ test('set and get query', function () {
 
     $statement = $this->statement->setQuery($query);
 
-    $this->assertSame($query, $statement->getQuery());
+    expect($statement->getQuery())->toBe($query);
 });
 
 test('explain', function () {
@@ -60,13 +60,13 @@ test('get count', function () {
     $statement = $this->arangoClient->prepare($query, [], $options);
     $statement->execute();
 
-    $this->assertSame(0, $statement->getCount());
+    expect($statement->getCount())->toBe(0);
 });
 
 test('get count not set', function () {
     $this->statement->execute();
 
-    $this->assertNull($this->statement->getCount());
+    expect($this->statement->getCount())->toBeNull();
 });
 
 test('fetch all', function () {
@@ -75,11 +75,11 @@ test('fetch all', function () {
     $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
     $this->statement->setQuery($query);
     $executed = $this->statement->execute();
-    $this->assertTrue($executed);
+    expect($executed)->toBeTrue();
 
     $results = $this->statement->fetchAll();
-    $this->assertEquals(10, is_countable($results) ? count($results) : 0);
-    $this->assertSame('test1', $results[0]->_key);
+    expect(is_countable($results) ? count($results) : 0)->toEqual(10);
+    expect($results[0]->_key)->toBe('test1');
 });
 
 test('results greater than batch size', function () {
@@ -90,11 +90,11 @@ test('results greater than batch size', function () {
     $options = ['batchSize' => 2];
     $statement = $this->arangoClient->prepare($query, [], $options);
     $executed = $statement->execute();
-    $this->assertTrue($executed);
+    expect($executed)->toBeTrue();
     $results = $statement->fetchAll();
 
-    $this->assertEquals(10, count($results));
-    $this->assertSame('test1', $results[0]->_key);
+    expect(count($results))->toEqual(10);
+    expect($results[0]->_key)->toBe('test1');
 });
 
 test('statement is iterable', function () {
@@ -106,7 +106,7 @@ test('statement is iterable', function () {
         $this->assertObjectHasProperty('foobar', $document);
         $count++;
     }
-    $this->assertEquals(10, $count);
+    expect($count)->toEqual(10);
 });
 
 test('get writes executed', function () {
@@ -120,7 +120,7 @@ test('get writes executed', function () {
     $statement = $this->arangoClient->prepare($query);
     $statement->execute();
 
-    $this->assertSame(10, $statement->getWritesExecuted());
+    expect($statement->getWritesExecuted())->toBe(10);
 });
 
 // Helpers

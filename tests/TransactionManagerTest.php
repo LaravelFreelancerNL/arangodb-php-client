@@ -13,7 +13,7 @@ beforeEach(function () {
 test('begin', function () {
     $transactionId = $this->transactionManager->begin();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
-    $this->assertSame($transactionId, $runningTransactions[0]->id);
+    expect($runningTransactions[0]->id)->toBe($transactionId);
 
     $this->transactionManager->abort();
 });
@@ -21,7 +21,7 @@ test('begin', function () {
 test('get transactions', function () {
     $transactions = [];
     $begunTransactions = $this->transactionManager->getTransactions();
-    $this->assertEmpty($begunTransactions);
+    expect($begunTransactions)->toBeEmpty();
 
     $id = $this->transactionManager->begin();
     $transactions[$id] = $id;
@@ -30,7 +30,7 @@ test('get transactions', function () {
 
     $begunTransactions = $this->transactionManager->getTransactions();
 
-    $this->assertSame($transactions, $begunTransactions);
+    expect($begunTransactions)->toBe($transactions);
 });
 
 test('get transaction', function () {
@@ -40,7 +40,7 @@ test('get transaction', function () {
 
     $lastTransaction = $this->transactionManager->getTransaction();
 
-    $this->assertSame($transactions[1], $lastTransaction);
+    expect($lastTransaction)->toBe($transactions[1]);
 });
 
 test('get transaction before begin', function () {
@@ -57,10 +57,10 @@ test('begin multiple transactions', function () {
     $transactionsListedInManager = $this->transactionManager->getTransactions();
 
     foreach ($transactions as $key => $id) {
-        $this->assertContains($id, $transactionsListedInManager);
+        expect($transactionsListedInManager)->toContain($id);
         $this->assertNotFalse(array_search($id, array_column($runningTransactions, 'id')));
     }
-    $this->assertEquals(count($transactions), count($transactionsListedInManager));
+    expect(count($transactionsListedInManager))->toEqual(count($transactions));
 
     $this->transactionManager->abortRunningTransactions();
 });
@@ -68,13 +68,13 @@ test('begin multiple transactions', function () {
 test('abort', function () {
     $transactionId = $this->transactionManager->begin();
     $aborted = $this->transactionManager->abort();
-    $this->assertTrue($aborted);
+    expect($aborted)->toBeTrue();
 
     $transactionsListedInManager = $this->transactionManager->getTransactions();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
 
     $this->assertArrayNotHasKey($transactionId, $transactionsListedInManager);
-    $this->assertFalse(array_search($transactionId, array_column($runningTransactions, 'id')));
+    expect(array_search($transactionId, array_column($runningTransactions, 'id')))->toBeFalse();
 });
 
 test('abort before commit', function () {
@@ -97,9 +97,9 @@ test('abort running transactions', function () {
     $transactionsListedInManager = $this->transactionManager->getTransactions();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
 
-    $this->assertEmpty($transactionsListedInManager);
+    expect($transactionsListedInManager)->toBeEmpty();
     foreach ($transactions as $id) {
-        $this->assertFalse(array_search($id, array_column($runningTransactions, 'id')));
+        expect(array_search($id, array_column($runningTransactions, 'id')))->toBeFalse();
     }
 });
 
@@ -133,7 +133,7 @@ test('commit', function () {
     $getStatement = $this->arangoClient->prepare($getQuery);
     $getStatement->execute();
 
-    $this->assertEquals(10, count($getStatement->fetchAll()));
+    expect(count($getStatement->fetchAll()))->toEqual(10);
 
     $this->transactionManager->commit();
 
@@ -141,7 +141,7 @@ test('commit', function () {
     $getStatement = $this->arangoClient->prepare($getQuery);
     $getStatement->execute();
 
-    $this->assertEquals(10, count($getStatement->fetchAll()));
+    expect(count($getStatement->fetchAll()))->toEqual(10);
 
     $this->arangoClient->schema()->deleteCollection('Users');
     $this->arangoClient->schema()->deleteCollection('Customers');

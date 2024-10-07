@@ -25,29 +25,29 @@ test('get analyzers', function () {
 
     $customAnalyzer = end($analyzers);
 
-    $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $customAnalyzer->name);
+    expect($customAnalyzer->name)->toBe('arangodb_php_client__test::' . $this->analyzer['name']);
 });
 
 test('get analyzer', function () {
     $analyzer = $this->schemaManager->getAnalyzer($this->analyzer['name']);
 
-    $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $analyzer->name);
+    expect($analyzer->name)->toBe('arangodb_php_client__test::' . $this->analyzer['name']);
     $this->assertObjectHasProperty('type', $analyzer);
 });
 
 test('get analyzer with full name', function () {
     $analyzer = $this->schemaManager->getAnalyzer('arangodb_php_client__test::' . $this->analyzer['name']);
 
-    $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $analyzer->name);
+    expect($analyzer->name)->toBe('arangodb_php_client__test::' . $this->analyzer['name']);
     $this->assertObjectHasProperty('type', $analyzer);
 });
 
 test('has analyzer', function () {
     $result = $this->schemaManager->hasAnalyzer($this->analyzer['name']);
-    $this->assertTrue($result);
+    expect($result)->toBeTrue();
 
     $result = $this->schemaManager->hasAnalyzer('someNoneExistingAnalyzer');
-    $this->assertFalse($result);
+    expect($result)->toBeFalse();
 });
 
 test('replace analyzer', function () {
@@ -58,7 +58,7 @@ test('replace analyzer', function () {
     ;
     $newAnalyzer = $this->schemaManager->replaceAnalyzer($this->analyzer['name'], $newAnalyzerProps);
 
-    $this->assertSame('arangodb_php_client__test::' . $this->analyzer['name'], $newAnalyzer->name);
+    expect($newAnalyzer->name)->toBe('arangodb_php_client__test::' . $this->analyzer['name']);
 });
 
 test('create and delete analyzer', function () {
@@ -68,10 +68,10 @@ test('create and delete analyzer', function () {
     ];
     $created = $this->schemaManager->createAnalyzer($analyzer);
     $this->assertObjectHasProperty('name', $created);
-    $this->assertSame('arangodb_php_client__test::' . $analyzer['name'], $created->name);
+    expect($created->name)->toBe('arangodb_php_client__test::' . $analyzer['name']);
 
     $deleted = $this->schemaManager->deleteAnalyzer($analyzer['name']);
-    $this->assertTrue($deleted);
+    expect($deleted)->toBeTrue();
 });
 
 test('delete with full name', function () {
@@ -86,5 +86,5 @@ test('delete with full name', function () {
     $deleted = $this->schemaManager->deleteAnalyzer($fullName);
 
     $hasAnalyzer = $this->schemaManager->hasAnalyzer($fullName);
-    $this->assertFalse($hasAnalyzer);
+    expect($hasAnalyzer)->toBeFalse();
 });

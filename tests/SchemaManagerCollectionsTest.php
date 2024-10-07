@@ -8,22 +8,22 @@ test('get collections before version38', function () {
     $this->skipTestOnArangoVersions('3.8', '>=');
     $result = $this->schemaManager->getCollections();
 
-    $this->assertLessThanOrEqual(count($result), 10);
-    $this->assertIsObject($result[0]);
+    expect(10)->toBeLessThanOrEqual(count($result));
+    expect($result[0])->toBeObject();
 });
 
 test('get collections', function () {
     $this->skipTestOnArangoVersions('3.8', '<');
     $result = $this->schemaManager->getCollections();
 
-    $this->assertLessThanOrEqual(count($result), 8);
-    $this->assertIsObject($result[0]);
+    expect(8)->toBeLessThanOrEqual(count($result));
+    expect($result[0])->toBeObject();
 });
 
 test('get collections without system', function () {
     $result = $this->schemaManager->getCollections(true);
 
-    $this->assertEmpty($result);
+    expect($result)->toBeEmpty();
 });
 
 test('get collection', function () {
@@ -31,17 +31,17 @@ test('get collection', function () {
 
     $result = $this->schemaManager->getCollection($collections[0]->name);
 
-    $this->assertIsObject($result);
+    expect($result)->toBeObject();
     $this->assertObjectHasProperty('name', $result);
     $this->assertObjectHasProperty('isSystem', $result);
 });
 
 test('has collection', function () {
     $result = $this->schemaManager->hasCollection('_graphs');
-    $this->assertTrue($result);
+    expect($result)->toBeTrue();
 
     $result = $this->schemaManager->hasCollection('someNoneExistingCollection');
-    $this->assertFalse($result);
+    expect($result)->toBeFalse();
 });
 
 test('get collection properties', function () {
@@ -49,7 +49,7 @@ test('get collection properties', function () {
 
     $result = $this->schemaManager->getCollectionProperties($collections[0]->name);
 
-    $this->assertIsObject($result);
+    expect($result)->toBeObject();
     $this->assertObjectHasProperty('name', $result);
     $this->assertObjectHasProperty('isSystem', $result);
     $this->assertObjectHasProperty('statusString', $result);
@@ -66,7 +66,7 @@ test('get collection with document count', function () {
     $this->assertObjectHasProperty('statusString', $result);
     $this->assertObjectHasProperty('keyOptions', $result);
     $this->assertObjectHasProperty('count', $result);
-    $this->assertIsNumeric($result->count);
+    expect($result->count)->toBeNumeric();
 });
 
 test('get collection document count', function () {
@@ -74,7 +74,7 @@ test('get collection document count', function () {
 
     $result = $this->schemaManager->getCollectionDocumentCount($collections[0]->name);
 
-    $this->assertIsNumeric($result);
+    expect($result)->toBeNumeric();
 });
 
 test('get collection statistics', function () {
@@ -103,7 +103,7 @@ test('update collection', function () {
 
     $newConfig = ['waitForSync' => true];
     $result = $this->schemaManager->updateCollection($collection, $newConfig);
-    $this->assertTrue($result->waitForSync);
+    expect($result->waitForSync)->toBeTrue();
 
     $this->schemaManager->deleteCollection($collection);
 });
@@ -121,7 +121,7 @@ test('rename collection', function () {
     }
 
     $result = $this->schemaManager->renameCollection($collection, $newName);
-    $this->assertSame($newName, $result->name);
+    expect($result->name)->toBe($newName);
 
     $this->schemaManager->deleteCollection($newName);
 });
@@ -131,7 +131,7 @@ test('truncate collection', function () {
     if (!$this->schemaManager->hasCollection($collection)) {
         $this->schemaManager->createCollection($collection);
     }
-    $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)->count);
+    expect($this->schemaManager->getCollectionWithDocumentCount($collection)->count)->toBe(0);
     $query = 'FOR i IN 1..10
       INSERT {
             _key: CONCAT("test", i),
@@ -141,11 +141,11 @@ test('truncate collection', function () {
     $statement = $this->arangoClient->prepare($query);
     $statement->execute();
 
-    $this->assertSame(0, count($statement->fetchAll()));
+    expect(count($statement->fetchAll()))->toBe(0);
 
     $this->schemaManager->truncateCollection($collection);
 
-    $this->assertSame(0, $this->schemaManager->getCollectionWithDocumentCount($collection)->count);
+    expect($this->schemaManager->getCollectionWithDocumentCount($collection)->count)->toBe(0);
     $this->schemaManager->deleteCollection($collection);
 });
 
@@ -155,12 +155,12 @@ test('create and delete collection', function () {
 
     if (!$this->schemaManager->hasCollection($collection)) {
         $result = $this->schemaManager->createCollection($collection, $options);
-        $this->assertEquals($collection, $result->name);
+        expect($result->name)->toEqual($collection);
     }
 
     $result = $this->schemaManager->deleteCollection($collection);
-    $this->assertTrue($result);
-    $this->assertFalse($this->schemaManager->hasCollection($collection));
+    expect($result)->toBeTrue();
+    expect($this->schemaManager->hasCollection($collection))->toBeFalse();
 });
 
 test('create collection with options', function () {
@@ -172,14 +172,14 @@ test('create collection with options', function () {
     }
 
     $collectionProperties = $this->schemaManager->getCollectionProperties('users');
-    $this->assertTrue($collectionProperties->waitForSync);
+    expect($collectionProperties->waitForSync)->toBeTrue();
 
     // $waitForSyncReplication & $enforceReplicationFactor are not listed in the properties, so the lack of
     // of an exception somewhat tests these options...
 
     $result = $this->schemaManager->deleteCollection($collection);
-    $this->assertTrue($result);
-    $this->assertFalse($this->schemaManager->hasCollection($collection));
+    expect($result)->toBeTrue();
+    expect($this->schemaManager->hasCollection($collection))->toBeFalse();
 });
 
 test('create edge collection', function () {
@@ -191,8 +191,8 @@ test('create edge collection', function () {
 
     $result = $this->schemaManager->createEdgeCollection($collection);
 
-    $this->assertEquals($collection, $result->name);
-    $this->assertSame(3, $result->type);
+    expect($result->name)->toEqual($collection);
+    expect($result->type)->toBe(3);
 
     $this->schemaManager->deleteCollection($collection);
 });

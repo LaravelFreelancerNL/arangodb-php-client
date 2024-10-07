@@ -19,9 +19,9 @@ afterEach(function () {
 test('get indexes', function () {
     $indexes = $this->schemaManager->getIndexes($this->collection);
 
-    $this->assertIsObject($indexes[0]);
+    expect($indexes[0])->toBeObject();
     $this->assertObjectHasProperty('name', $indexes[0]);
-    $this->assertSame('primary', $indexes[0]->name);
+    expect($indexes[0]->name)->toBe('primary');
 });
 
 test('get index', function () {
@@ -41,7 +41,7 @@ test('get index by name', function () {
 
     $index = $this->schemaManager->getIndexByName($this->collection, $indexName);
 
-    $this->assertSame($indexName, $index->name);
+    expect($index->name)->toBe($indexName);
 });
 
 test('create index', function () {
@@ -55,10 +55,10 @@ test('create index', function () {
     $created = $this->schemaManager->createIndex($this->collection, $index);
     $result = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
 
-    $this->assertSame($index['name'], $result->name);
-    $this->assertSame($index['fields'][0], $result->fields[0]);
-    $this->assertSame($index['unique'], $result->unique);
-    $this->assertSame($index['sparse'], $result->sparse);
+    expect($result->name)->toBe($index['name']);
+    expect($result->fields[0])->toBe($index['fields'][0]);
+    expect($result->unique)->toBe($index['unique']);
+    expect($result->sparse)->toBe($index['sparse']);
 });
 
 test('delete index', function () {
@@ -73,7 +73,7 @@ test('delete index', function () {
     $found = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
 
     $deleted = $this->schemaManager->deleteIndex($found->id);
-    $this->assertEquals($created->id, $deleted->id);
+    expect($deleted->id)->toEqual($created->id);
     $searchForDeleted = $this->schemaManager->getIndexByName($this->collection, 'email_persistent_unique');
-    $this->assertFalse($searchForDeleted);
+    expect($searchForDeleted)->toBeFalse();
 });

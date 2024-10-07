@@ -30,7 +30,7 @@ test('get config', function () {
     ];
 
     $config = $this->arangoClient->getConfig();
-    $this->assertSame($defaultConfig, $config);
+    expect($config)->toBe($defaultConfig);
 });
 
 test('get config with endpoint without host port', function () {
@@ -40,7 +40,7 @@ test('get config with endpoint without host port', function () {
     ];
 
     $returnedConfig = $this->arangoClient->getConfig();
-    $this->assertSame($config['endpoint'], $returnedConfig['endpoint']);
+    expect($returnedConfig['endpoint'])->toBe($config['endpoint']);
 });
 
 test('client with host port config', function () {
@@ -52,7 +52,7 @@ test('client with host port config', function () {
     $client = new ArangoClient($config);
     $retrievedConfig = $client->getConfig();
 
-    $this->assertEquals('http://127.0.0.1:1234', $retrievedConfig['endpoint']);
+    expect($retrievedConfig['endpoint'])->toEqual('http://127.0.0.1:1234');
 });
 
 test('config with alien properties', function () {
@@ -77,32 +77,32 @@ test('set and get http client', function () {
     $this->arangoClient->setHttpClient($newClient);
     $retrievedClient = $this->arangoClient->getHttpClient();
 
-    $this->assertInstanceOf(Client::class, $oldClient);
-    $this->assertEquals($newClient::class, $retrievedClient::class);
+    expect($oldClient)->toBeInstanceOf(Client::class);
+    expect($retrievedClient::class)->toEqual($newClient::class);
 });
 
 test('request', function () {
     $result = $this->arangoClient->request('get', '/_api/version', []);
 
-    $this->assertSame('arango', $result->server);
-    $this->assertSame('community', $result->license);
-    $this->assertIsString($result->version);
+    expect($result->server)->toBe('arango');
+    expect($result->license)->toBe('community');
+    expect($result->version)->toBeString();
 });
 
 test('get user', function () {
     $user = $this->arangoClient->getUser();
-    $this->assertSame('root', $user);
+    expect($user)->toBe('root');
 });
 
 test('set and get database name', function () {
     $database = $this->arangoClient->getDatabase();
-    $this->assertSame($this->testDatabaseName, $database);
+    expect($database)->toBe($this->testDatabaseName);
 
     $newDatabaseName = 'ArangoClientDB';
     $this->arangoClient->setDatabase($newDatabaseName);
 
     $database = $this->arangoClient->getDatabase();
-    $this->assertSame($newDatabaseName, $database);
+    expect($database)->toBe($newDatabaseName);
 });
 
 test('database name is used in requests', function () {
@@ -126,7 +126,7 @@ test('database name is used in requests', function () {
     $this->arangoClient->request('get', $uri, ['handler' => $handlerStack]);
 
     foreach ($container as $transaction) {
-        $this->assertSame('/_db/' . $database . $uri, $transaction['request']->getUri()->getPath());
+        expect($transaction['request']->getUri()->getPath())->toBe('/_db/' . $database . $uri);
     }
 
     $this->arangoClient->schema()->deleteDatabase($database);
@@ -134,7 +134,7 @@ test('database name is used in requests', function () {
 
 test('schema', function () {
     $result = $this->arangoClient->schema();
-    $this->assertInstanceOf(SchemaManager::class, $result);
+    expect($result)->toBeInstanceOf(SchemaManager::class);
 
     $database = $this->arangoClient->schema()->getCurrentDatabase();
 
@@ -143,7 +143,7 @@ test('schema', function () {
 
 test('admin', function () {
     $result = $this->arangoClient->admin();
-    $this->assertInstanceOf(AdminManager::class, $result);
+    expect($result)->toBeInstanceOf(AdminManager::class);
 
     $version = $this->arangoClient->admin()->getVersion();
 
@@ -153,7 +153,7 @@ test('admin', function () {
 test('prepare', function () {
     $statement = $this->arangoClient->prepare('FOR doc IN users RETURN doc');
 
-    $this->assertInstanceOf(Statement::class, $statement);
+    expect($statement)->toBeInstanceOf(Statement::class);
 });
 
 test('connection protocol version', function () {
@@ -165,7 +165,7 @@ test('connection protocol version', function () {
     $options['version'] = 2;
     $response = $this->arangoClient->debugRequest('get', $uri, $options);
 
-    $this->assertEquals(2, $response->getProtocolVersion());
+    expect($response->getProtocolVersion())->toEqual(2);
 });
 
 test('connection protocol version with default setting', function () {
@@ -179,25 +179,25 @@ test('connection protocol version with default setting', function () {
     $options['version'] = 2;
     $response = $this->arangoClient->debugRequest('get', $uri, $options);
 
-    $this->assertEquals(2, $response->getProtocolVersion());
+    expect($response->getProtocolVersion())->toEqual(2);
 });
 
 test('json encode', function () {
     $results = $this->arangoClient->jsonEncode([]);
 
-    $this->assertSame('{}', $results);
+    expect($results)->toBe('{}');
 });
 
 test('json encode empty array', function () {
     $results = $this->arangoClient->jsonEncode([]);
 
-    $this->assertSame('{}', $results);
+    expect($results)->toBe('{}');
 });
 
 test('json encode empty string', function () {
     $results = $this->arangoClient->jsonEncode('');
 
-    $this->assertSame('""', $results);
+    expect($results)->toBe('""');
 });
 
 test('json encode invalid data', function () {
@@ -230,7 +230,7 @@ test('response data matches request data', function () {
     $statement->execute();
     $users = $statement->fetchAll();
 
-    $this->assertEquals($insertResult[0], $users[0]);
+    expect($users[0])->toEqual($insertResult[0]);
 
     $this->schemaManager->deleteCollection($collection);
 });

@@ -25,21 +25,21 @@ test('get user', function () {
     $name = 'root';
     $user = $this->schemaManager->getUser($name);
 
-    $this->assertSame($name, $user->user);
+    expect($user->user)->toBe($name);
 });
 
 test('get users', function () {
     $users = $this->schemaManager->getUsers();
-    $this->assertIsArray($users);
+    expect($users)->toBeArray();
     $this->assertObjectHasProperty('user', $users[0]);
 });
 
 test('has user', function () {
     $result = $this->schemaManager->hasUser('root');
-    $this->assertTrue($result);
+    expect($result)->toBeTrue();
 
     $result = $this->schemaManager->hasUser('nonExistingUser');
-    $this->assertFalse($result);
+    expect($result)->toBeFalse();
 });
 
 test('create and delete user', function () {
@@ -58,11 +58,11 @@ test('create and delete user', function () {
     }
 
     $created = $this->schemaManager->createUser($user);
-    $this->assertSame($user['user'], $created->user);
+    expect($created->user)->toBe($user['user']);
 
     $this->schemaManager->deleteUser($user['user']);
     $checkDeleted = $this->schemaManager->hasUser($user['user']);
-    $this->assertFalse($checkDeleted);
+    expect($checkDeleted)->toBeFalse();
 });
 
 test('update user', function () {
@@ -72,7 +72,7 @@ test('update user', function () {
     ];
     $updated = $this->schemaManager->updateUser($this->userName, $newUserData);
 
-    $this->assertSame($newUserData['user'], $updated->user);
+    expect($updated->user)->toBe($newUserData['user']);
 });
 
 test('replace user', function () {
@@ -82,13 +82,13 @@ test('replace user', function () {
     ];
     $replaced = $this->schemaManager->replaceUser($this->userName, $newUserData);
 
-    $this->assertSame($this->userName, $replaced->user);
+    expect($replaced->user)->toBe($this->userName);
 });
 
 test('get database access level', function () {
     $accessLevel = $this->schemaManager->getDatabaseAccessLevel('root', '_system');
 
-    $this->assertSame('rw', $accessLevel);
+    expect($accessLevel)->toBe('rw');
 });
 
 test('set database access level', function () {
@@ -99,8 +99,8 @@ test('set database access level', function () {
     $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
     $this->assertObjectHasProperty($this->accessDatabase, $results);
-    $this->assertSame($grant, $results->{$this->accessDatabase});
-    $this->assertSame($grant, $accessLevel);
+    expect($results->{$this->accessDatabase})->toBe($grant);
+    expect($accessLevel)->toBe($grant);
 
     tearDownAccessTest();
 });
@@ -111,13 +111,13 @@ test('clear database access level', function () {
 
     $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
     $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
-    $this->assertSame($grant, $accessLevel);
+    expect($accessLevel)->toBe($grant);
 
     $result = $this->schemaManager->clearDatabaseAccessLevel($this->userName, $this->accessDatabase);
     $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
-    $this->assertTrue($result);
-    $this->assertSame('none', $accessLevel);
+    expect($result)->toBeTrue();
+    expect($accessLevel)->toBe('none');
 
     tearDownAccessTest();
 });

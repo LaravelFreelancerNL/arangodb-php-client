@@ -19,13 +19,13 @@ afterEach(function () {
 test('get views', function () {
     $views = $this->schemaManager->getViews();
 
-    $this->assertSame($this->view['name'], $views[0]->name);
+    expect($views[0]->name)->toBe($this->view['name']);
 });
 
 test('get view', function () {
     $view = $this->schemaManager->getView($this->view['name']);
 
-    $this->assertSame($this->view['name'], $view->name);
+    expect($view->name)->toBe($this->view['name']);
     $this->assertObjectHasProperty('type', $view);
     $this->assertObjectHasProperty('links', $view);
 });
@@ -33,23 +33,23 @@ test('get view', function () {
 test('get view properties', function () {
     $view = $this->schemaManager->getViewProperties($this->view['name']);
 
-    $this->assertSame($this->view['name'], $view->name);
+    expect($view->name)->toBe($this->view['name']);
     $this->assertObjectHasProperty('type', $view);
     $this->assertObjectHasProperty('links', $view);
 });
 
 test('has view', function () {
     $result = $this->schemaManager->hasView($this->view['name']);
-    $this->assertTrue($result);
+    expect($result)->toBeTrue();
 
     $result = $this->schemaManager->hasView('someNoneExistingView');
-    $this->assertFalse($result);
+    expect($result)->toBeFalse();
 });
 
 test('rename view', function () {
     $newName = 'newName';
     $result = $this->schemaManager->renameView($this->view['name'], $newName);
-    $this->assertSame($newName, $result->name);
+    expect($result->name)->toBe($newName);
 
     $this->schemaManager->deleteView($newName);
 });
@@ -61,7 +61,7 @@ test('update view', function () {
     ];
     $result = $this->schemaManager->updateView($this->view['name'], $newViewProps);
 
-    $this->assertSame(3, $result->cleanupIntervalStep);
+    expect($result->cleanupIntervalStep)->toBe(3);
 });
 
 test('replace view', function () {
@@ -73,8 +73,8 @@ test('replace view', function () {
     ];
     $newView = $this->schemaManager->replaceView($this->view['name'], $newViewProps);
 
-    $this->assertSame($newViewProps['primarySort'][0]['field'], $newView->primarySort[0]->field);
-    $this->assertFalse($newView->primarySort[0]->asc);
+    expect($newView->primarySort[0]->field)->toBe($newViewProps['primarySort'][0]['field']);
+    expect($newView->primarySort[0]->asc)->toBeFalse();
 });
 
 test('create and delete view', function () {
@@ -83,8 +83,8 @@ test('create and delete view', function () {
     ];
     $created = $this->schemaManager->createView($view);
     $this->assertObjectHasProperty('name', $created);
-    $this->assertSame($view['name'], $created->name);
+    expect($created->name)->toBe($view['name']);
 
     $deleted = $this->schemaManager->deleteView($view['name']);
-    $this->assertTrue($deleted);
+    expect($deleted)->toBeTrue();
 });

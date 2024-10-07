@@ -8,9 +8,9 @@ uses(Tests\TestCase::class);
 
 test('get metrics', function () {
     $result = $this->arangoClient->monitor()->getMetrics();
-    $this->assertIsObject($result);
-    $this->assertEquals("gauge", $result->arangodb_agency_cache_callback_number->type);
-    $this->assertCount(1, $result->arangodb_agency_cache_callback_number->labels);
+    expect($result)->toBeObject();
+    expect($result->arangodb_agency_cache_callback_number->type)->toEqual("gauge");
+    expect($result->arangodb_agency_cache_callback_number->labels)->toHaveCount(1);
 });
 
 test('summary metric', function () {
@@ -26,7 +26,7 @@ prometheus_rule_evaluation_duration_seconds_count 1.112293682e+09';
 
 
     $result = $prometheus->parseText($rawMetrics);
-    $this->assertIsObject($result);
+    expect($result)->toBeObject();
 });
 
 test('historgram parsing', function () {
@@ -59,9 +59,9 @@ arangodb_aql_query_time_sum{role="SINGLE"} 0.035180
 ';
 
     $result = $prometheus->parseText($rawMetrics);
-    $this->assertCount(20, $result->arangodb_aql_query_time->buckets);
-    $this->assertEquals(177, $result->arangodb_aql_query_time->count);
-    $this->assertEquals(0.03518, $result->arangodb_aql_query_time->sum);
+    expect($result->arangodb_aql_query_time->buckets)->toHaveCount(20);
+    expect($result->arangodb_aql_query_time->count)->toEqual(177);
+    expect($result->arangodb_aql_query_time->sum)->toEqual(0.03518);
 });
 
 test('timestamp parsing', function () {
@@ -72,6 +72,6 @@ test('timestamp parsing', function () {
 arangodb_aql_local_query_memory_limit_reached_total{role="SINGLE"} 0 2211753600';
 
     $result = $prometheus->parseText($rawMetrics);
-    $this->assertIsObject($result);
-    $this->assertEquals(2211753600, $result->arangodb_aql_local_query_memory_limit_reached_total->timestamp);
+    expect($result)->toBeObject();
+    expect($result->arangodb_aql_local_query_memory_limit_reached_total->timestamp)->toEqual(2211753600);
 });
