@@ -11,8 +11,6 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
-use stdClass;
 
 uses(Tests\TestCase::class);
 

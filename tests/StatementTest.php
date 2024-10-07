@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Traversable;
 
 uses(Tests\TestCase::class);
 beforeEach(function () {
