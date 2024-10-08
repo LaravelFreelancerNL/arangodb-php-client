@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 uses(Tests\TestCase::class);
 
-declare(strict_types=1);
 beforeEach(function () {
     if (!$this->schemaManager->hasView($this->view['name'])) {
         $this->schemaManager->createView($this->view);

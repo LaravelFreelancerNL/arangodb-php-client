@@ -72,6 +72,5 @@ test('timestamp parsing', function () {
 arangodb_aql_local_query_memory_limit_reached_total{role="SINGLE"} 0 2211753600';
 
     $result = $prometheus->parseText($rawMetrics);
-    expect($result)->toBeObject();
     expect($result->arangodb_aql_local_query_memory_limit_reached_total->timestamp)->toEqual(2211753600);
 });

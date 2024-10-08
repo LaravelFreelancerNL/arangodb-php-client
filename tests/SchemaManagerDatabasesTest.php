@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 uses(Tests\TestCase::class);
 
-declare(strict_types=1);
-beforeEach(function () {
-});
+beforeEach(function () {});
 
 
 test('get database', function () {

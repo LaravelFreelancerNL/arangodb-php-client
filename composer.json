@@ -46,10 +46,13 @@
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
-        "test:coverage": "vendor/bin/phpunit --coverage-clover clover.xml --whitelist src",
+        "test:coverage": "vendor/bin/pest --coverage-clover clover.xml",
         "style": "vendor/bin/pint"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }

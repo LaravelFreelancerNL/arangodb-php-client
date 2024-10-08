@@ -234,14 +234,3 @@ test('response data matches request data', function () {
 
     $this->schemaManager->deleteCollection($collection);
 });
-
-// Helpers
-function checkHttp2Support()
-{
-    // First assert that CURL supports http2!
-    if (!curl_version()['features'] || CURL_VERSION_HTTP2 === 0) {
-        test()->markTestSkipped('The installed version of CURL does not support the HTTP2 protocol.');
-    }
-    // HTTP/2 is only supported by ArangoDB 3.7 and up.
-    test()->skipTestOnArangoVersions('3.7');
-}

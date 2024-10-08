@@ -1,19 +1,10 @@
 <?php
 
-uses(Tests\TestCase::class);
-
 declare(strict_types=1);
 
-test('get collections before version38', function () {
-    $this->skipTestOnArangoVersions('3.8', '>=');
-    $result = $this->schemaManager->getCollections();
-
-    expect(10)->toBeLessThanOrEqual(count($result));
-    expect($result[0])->toBeObject();
-});
+uses(Tests\TestCase::class);
 
 test('get collections', function () {
-    $this->skipTestOnArangoVersions('3.8', '<');
     $result = $this->schemaManager->getCollections();
 
     expect(8)->toBeLessThanOrEqual(count($result));
@@ -32,8 +23,7 @@ test('get collection', function () {
     $result = $this->schemaManager->getCollection($collections[0]->name);
 
     expect($result)->toBeObject();
-    $this->assertObjectHasProperty('name', $result);
-    $this->assertObjectHasProperty('isSystem', $result);
+    expect((array) $result)->toHaveKeys(['globallyUniqueId', 'isSystem', 'status', 'type', 'name', 'id']);
 });
 
 test('has collection', function () {
@@ -131,7 +121,9 @@ test('truncate collection', function () {
     if (!$this->schemaManager->hasCollection($collection)) {
         $this->schemaManager->createCollection($collection);
     }
+
     expect($this->schemaManager->getCollectionWithDocumentCount($collection)->count)->toBe(0);
+
     $query = 'FOR i IN 1..10
       INSERT {
             _key: CONCAT("test", i),
@@ -146,7 +138,11 @@ test('truncate collection', function () {
     $this->schemaManager->truncateCollection($collection);
 
     expect($this->schemaManager->getCollectionWithDocumentCount($collection)->count)->toBe(0);
-    $this->schemaManager->deleteCollection($collection);
+
+    if ($this->schemaManager->hasCollection($collection)) {
+        $this->schemaManager->deleteCollection($collection);
+    }
+
 });
 
 test('create and delete collection', function () {

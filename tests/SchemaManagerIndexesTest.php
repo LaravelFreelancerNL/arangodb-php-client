@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 uses(Tests\TestCase::class);
 
-declare(strict_types=1);
 beforeEach(function () {
     if (!$this->schemaManager->hasCollection($this->collection)) {
         $this->schemaManager->createCollection($this->collection);

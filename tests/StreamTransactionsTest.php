@@ -5,9 +5,6 @@ declare(strict_types=1);
 use ArangoClient\Transactions\TransactionManager;
 
 uses(Tests\TestCase::class);
-beforeEach(function () {
-});
-
 
 test('transactions', function () {
     $transactionManager = $this->arangoClient->transactions();
@@ -25,7 +22,8 @@ test('begin transaction', function () {
 test('begin', function () {
     $transactionId = $this->arangoClient->begin();
     $runningTransactions = $this->arangoClient->admin()->getRunningTransactions();
-    expect($runningTransactions[0]->id)->toBe($transactionId);
+    $latestTransaction = end($runningTransactions);
+    expect($latestTransaction->id)->toBe($transactionId);
 
     $this->arangoClient->abort();
 });

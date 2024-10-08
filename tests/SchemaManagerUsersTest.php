@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 uses(Tests\TestCase::class);
 
-declare(strict_types=1);
 beforeEach(function () {
     $user = [
         'user' => $this->userName,
@@ -92,7 +93,7 @@ test('get database access level', function () {
 });
 
 test('set database access level', function () {
-    setUpAccessTest();
+    $this->setUpAccessTest();
     $grant = 'rw';
 
     $results = $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
@@ -102,11 +103,11 @@ test('set database access level', function () {
     expect($results->{$this->accessDatabase})->toBe($grant);
     expect($accessLevel)->toBe($grant);
 
-    tearDownAccessTest();
+    $this->tearDownAccessTest();
 });
 
 test('clear database access level', function () {
-    setUpAccessTest();
+    $this->setUpAccessTest();
     $grant = 'rw';
 
     $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
@@ -119,18 +120,5 @@ test('clear database access level', function () {
     expect($result)->toBeTrue();
     expect($accessLevel)->toBe('none');
 
-    tearDownAccessTest();
+    $this->tearDownAccessTest();
 });
-
-// Helpers
-function setUpAccessTest()
-{
-    if (!test()->schemaManager->hasDatabase(test()->accessDatabase)) {
-        test()->schemaManager->createDatabase(test()->accessDatabase);
-    }
-}
-
-function tearDownAccessTest()
-{
-    test()->schemaManager->deleteDatabase(test()->accessDatabase);
-}

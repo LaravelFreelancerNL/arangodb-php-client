@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-
 uses(Tests\TestCase::class);
+
 beforeEach(function () {
     if (!$this->schemaManager->hasCollection($this->collection)) {
         $this->schemaManager->createCollection($this->collection);
@@ -18,7 +18,6 @@ afterEach(function () {
         $this->schemaManager->deleteCollection($this->collection);
     }
 });
-
 
 test('set and get query', function () {
     $query = 'FOR doc IN ' . $this->collection . ' LIMIT 1 RETURN doc';
@@ -70,7 +69,7 @@ test('get count not set', function () {
 });
 
 test('fetch all', function () {
-    generateTestDocuments();
+    $this->generateTestDocuments();
 
     $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
     $this->statement->setQuery($query);
@@ -83,7 +82,7 @@ test('fetch all', function () {
 });
 
 test('results greater than batch size', function () {
-    generateTestDocuments();
+    $this->generateTestDocuments();
 
     // Retrieve data in batches of 2
     $query = 'FOR doc IN ' . $this->collection . ' RETURN doc';
@@ -98,7 +97,7 @@ test('results greater than batch size', function () {
 });
 
 test('statement is iterable', function () {
-    generateTestDocuments();
+    $this->generateTestDocuments();
     $this->statement->execute();
 
     $count = 0;
@@ -122,18 +121,3 @@ test('get writes executed', function () {
 
     expect($statement->getWritesExecuted())->toBe(10);
 });
-
-// Helpers
-function generateTestDocuments(): void
-{
-    $query = 'FOR i IN 1..10
-      INSERT {
-            _key: CONCAT("test", i),
-        name: "test",
-        foobar: true
-      } INTO ' . test()->collection . ' OPTIONS { ignoreErrors: true }';
-
-    $statement = test()->arangoClient->prepare($query);
-
-    $statement->execute();
-}

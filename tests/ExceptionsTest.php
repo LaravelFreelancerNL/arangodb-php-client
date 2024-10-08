@@ -1,8 +1,8 @@
 <?php
 
-uses(Tests\TestCase::class);
-
 declare(strict_types=1);
+
+uses(Tests\TestCase::class);
 
 test('test409 conflict exception', function () {
     $database = 'test_arangodb_php_existing_database';

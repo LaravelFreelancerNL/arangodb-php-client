@@ -1,24 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 uses(Tests\TestCase::class);
 
-declare(strict_types=1);
 beforeEach(function () {
-    \Tests\TestCase::setUp();
-
     if (!$this->schemaManager->hasAnalyzer($this->analyzer['name'])) {
         $this->schemaManager->createAnalyzer($this->analyzer);
     }
 });
 
 afterEach(function () {
-    \Tests\TestCase::tearDown();
-
     if ($this->schemaManager->hasAnalyzer($this->analyzer['name'])) {
         $this->schemaManager->deleteAnalyzer($this->analyzer['name']);
     }
 });
-
 
 test('get analyzers', function () {
     $analyzers = $this->schemaManager->getAnalyzers();
@@ -79,11 +75,11 @@ test('delete with full name', function () {
         'name' => 'coolnewanalyzer',
         'type' => 'identity',
     ];
-    $created = $this->schemaManager->createAnalyzer($analyzer);
+    $this->schemaManager->createAnalyzer($analyzer);
 
     $fullName = 'arangodb_php_client__test::' . $analyzer['name'];
 
-    $deleted = $this->schemaManager->deleteAnalyzer($fullName);
+    $this->schemaManager->deleteAnalyzer($fullName);
 
     $hasAnalyzer = $this->schemaManager->hasAnalyzer($fullName);
     expect($hasAnalyzer)->toBeFalse();

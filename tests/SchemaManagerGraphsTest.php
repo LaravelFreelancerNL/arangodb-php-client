@@ -1,8 +1,8 @@
 <?php
 
-uses(Tests\TestCase::class);
-
 declare(strict_types=1);
+
+uses(Tests\TestCase::class);
 
 test('create and delete graph', function () {
     $result = $this->schemaManager->createGraph('locations', [], true);

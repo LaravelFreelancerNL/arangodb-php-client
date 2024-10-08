@@ -5,6 +5,7 @@ declare(strict_types=1);
 use ArangoClient\Admin\AdminManager;
 
 uses(Tests\TestCase::class);
+
 beforeEach(function () {
     $this->adminManager = new AdminManager($this->arangoClient);
 });
@@ -28,5 +29,6 @@ test('get version with details', function () {
 
 test('get running transactions', function () {
     $transactions = $this->adminManager->getRunningTransactions();
+
     expect($transactions)->toBeEmpty();
 });
