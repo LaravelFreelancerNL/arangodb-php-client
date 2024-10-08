@@ -2,156 +2,123 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+uses(Tests\TestCase::class);
 
-class SchemaManagerUsersTest extends TestCase
-{
-    protected string $userName = 'kimiko';
+beforeEach(function () {
+    $user = [
+        'user' => $this->userName,
+        'password' => 'yee random pw',
+    ];
 
-    protected string $accessDatabase = 'arangodb_php_client_access__test';
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $user = [
-            'user' => $this->userName,
-            'password' => 'yee random pw',
-        ];
-
-        if (!$this->schemaManager->hasUser($this->userName)) {
-            $this->schemaManager->createUser($user);
-        }
+    if (!$this->schemaManager->hasUser($this->userName)) {
+        $this->schemaManager->createUser($user);
     }
+});
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        if ($this->schemaManager->hasUser($this->userName)) {
-            $this->schemaManager->deleteUser($this->userName);
-        }
+afterEach(function () {
+    if ($this->schemaManager->hasUser($this->userName)) {
+        $this->schemaManager->deleteUser($this->userName);
     }
+});
 
-    public function testGetUser()
-    {
-        $name = 'root';
-        $user = $this->schemaManager->getUser($name);
 
-        $this->assertSame($name, $user->user);
-    }
+test('get user', function () {
+    $name = 'root';
+    $user = $this->schemaManager->getUser($name);
 
-    public function testGetUsers()
-    {
-        $users = $this->schemaManager->getUsers();
-        $this->assertIsArray($users);
-        $this->assertObjectHasProperty('user', $users[0]);
-    }
+    expect($user->user)->toBe($name);
+});
 
-    public function testHasUser()
-    {
-        $result = $this->schemaManager->hasUser('root');
-        $this->assertTrue($result);
+test('get users', function () {
+    $users = $this->schemaManager->getUsers();
+    expect($users)->toBeArray();
+    $this->assertObjectHasProperty('user', $users[0]);
+});
 
-        $result = $this->schemaManager->hasUser('nonExistingUser');
-        $this->assertFalse($result);
-    }
+test('has user', function () {
+    $result = $this->schemaManager->hasUser('root');
+    expect($result)->toBeTrue();
 
-    public function testCreateAndDeleteUser()
-    {
-        $user = [
-            'user' => 'admin',
-            'passwd' => 'highly secretive password',
-            'active' => true,
-            'extra' => [
-                'profile' => [
-                    'name' => 'Billy Butcher',
-                ],
+    $result = $this->schemaManager->hasUser('nonExistingUser');
+    expect($result)->toBeFalse();
+});
+
+test('create and delete user', function () {
+    $user = [
+        'user' => 'admin',
+        'passwd' => 'highly secretive password',
+        'active' => true,
+        'extra' => [
+            'profile' => [
+                'name' => 'Billy Butcher',
             ],
-        ];
-        if ($this->schemaManager->hasUser($user['user'])) {
-            $this->schemaManager->deleteUser($user['user']);
-        }
-
-        $created = $this->schemaManager->createUser($user);
-        $this->assertSame($user['user'], $created->user);
-
+        ],
+    ];
+    if ($this->schemaManager->hasUser($user['user'])) {
         $this->schemaManager->deleteUser($user['user']);
-        $checkDeleted = $this->schemaManager->hasUser($user['user']);
-        $this->assertFalse($checkDeleted);
     }
 
-    public function testUpdateUser()
-    {
-        $newUserData = [
-            'user' => $this->userName,
-            'active' => false,
-        ];
-        $updated = $this->schemaManager->updateUser($this->userName, $newUserData);
+    $created = $this->schemaManager->createUser($user);
+    expect($created->user)->toBe($user['user']);
 
-        $this->assertSame($newUserData['user'], $updated->user);
-    }
+    $this->schemaManager->deleteUser($user['user']);
+    $checkDeleted = $this->schemaManager->hasUser($user['user']);
+    expect($checkDeleted)->toBeFalse();
+});
 
-    public function testReplaceUser()
-    {
-        $newUserData = [
-            'user' => 'newUserName',
-            'active' => false,
-        ];
-        $replaced = $this->schemaManager->replaceUser($this->userName, $newUserData);
+test('update user', function () {
+    $newUserData = [
+        'user' => $this->userName,
+        'active' => false,
+    ];
+    $updated = $this->schemaManager->updateUser($this->userName, $newUserData);
 
-        $this->assertSame($this->userName, $replaced->user);
-    }
+    expect($updated->user)->toBe($newUserData['user']);
+});
 
-    public function testGetDatabaseAccessLevel()
-    {
-        $accessLevel = $this->schemaManager->getDatabaseAccessLevel('root', '_system');
+test('replace user', function () {
+    $newUserData = [
+        'user' => 'newUserName',
+        'active' => false,
+    ];
+    $replaced = $this->schemaManager->replaceUser($this->userName, $newUserData);
 
-        $this->assertSame('rw', $accessLevel);
-    }
+    expect($replaced->user)->toBe($this->userName);
+});
 
-    public function testSetDatabaseAccessLevel()
-    {
-        $this->setUpAccessTest();
-        $grant = 'rw';
+test('get database access level', function () {
+    $accessLevel = $this->schemaManager->getDatabaseAccessLevel('root', '_system');
 
-        $results = $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
-        $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
+    expect($accessLevel)->toBe('rw');
+});
 
-        $this->assertObjectHasProperty($this->accessDatabase, $results);
-        $this->assertSame($grant, $results->{$this->accessDatabase});
-        $this->assertSame($grant, $accessLevel);
+test('set database access level', function () {
+    $this->setUpAccessTest();
+    $grant = 'rw';
 
-        $this->tearDownAccessTest();
-    }
+    $results = $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
+    $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
-    public function testClearDatabaseAccessLevel()
-    {
-        $this->setUpAccessTest();
-        $grant = 'rw';
+    $this->assertObjectHasProperty($this->accessDatabase, $results);
+    expect($results->{$this->accessDatabase})->toBe($grant);
+    expect($accessLevel)->toBe($grant);
 
-        $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
-        $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
-        $this->assertSame($grant, $accessLevel);
+    $this->tearDownAccessTest();
+});
 
-        $result = $this->schemaManager->clearDatabaseAccessLevel($this->userName, $this->accessDatabase);
-        $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
+test('clear database access level', function () {
+    $this->setUpAccessTest();
+    $grant = 'rw';
 
-        $this->assertTrue($result);
-        $this->assertSame('none', $accessLevel);
+    $this->schemaManager->setDatabaseAccessLevel($this->userName, $this->accessDatabase, $grant);
+    $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
+    expect($accessLevel)->toBe($grant);
 
-        $this->tearDownAccessTest();
-    }
+    $result = $this->schemaManager->clearDatabaseAccessLevel($this->userName, $this->accessDatabase);
+    $accessLevel = $this->schemaManager->getDatabaseAccessLevel($this->userName, $this->accessDatabase);
 
-    protected function setUpAccessTest()
-    {
-        if (!$this->schemaManager->hasDatabase($this->accessDatabase)) {
-            $this->schemaManager->createDatabase($this->accessDatabase);
-        }
-    }
+    expect($result)->toBeTrue();
+    expect($accessLevel)->toBe('none');
 
-    protected function tearDownAccessTest()
-    {
-        $this->schemaManager->deleteDatabase($this->accessDatabase);
-    }
-}
+    $this->tearDownAccessTest();
+});

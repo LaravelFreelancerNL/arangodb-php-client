@@ -14,7 +14,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "prefer-stable" : true,
+    "prefer-stable": true,
     "require": {
         "php": "^8.1",
         "ext-curl": "*",
@@ -29,9 +29,9 @@
         "mockery/mockery": "^1.4",
         "phpmd/phpmd": "^2.9",
         "phpstan/phpstan": "^1.0",
-        "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.14.8",
-        "scrutinizer/ocular": "^1.8"
+        "scrutinizer/ocular": "^1.8",
+        "pestphp/pest": "^2.2"
     },
     "autoload": {
         "psr-4": {
@@ -45,11 +45,14 @@
     },
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/phpunit",
-        "test:coverage": "vendor/bin/phpunit --coverage-clover clover.xml --whitelist src",
+        "test": "vendor/bin/pest",
+        "test:coverage": "vendor/bin/pest --coverage-clover clover.xml",
         "style": "vendor/bin/pint"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }

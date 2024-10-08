@@ -2,58 +2,49 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+uses(Tests\TestCase::class);
 
-class SchemaManagerDatabasesTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {});
+
+
+test('get database', function () {
+    $this->arangoClient->setDatabase('_system');
+    $result = $this->schemaManager->getCurrentDatabase();
+
+    expect($result->id)->toBe('1');
+    expect($result->name)->toBe('_system');
+    expect($result->isSystem)->toBe(true);
+    expect($result->path)->toBe('none');
+});
+
+test('get databases', function () {
+    $result = $this->schemaManager->getDatabases();
+
+    expect(2)->toBeLessThanOrEqual(count($result));
+    foreach ($result as $database) {
+        expect($database)->toBeString();
+    }
+});
+
+test('create and delete database', function () {
+    $database = 'arangodb_php_client_database__test';
+    $existingDatabases = $this->schemaManager->getDatabases();
+
+    if (!in_array($database, $existingDatabases)) {
+        $result = $this->schemaManager->createDatabase($database);
+        expect($result)->toBeTrue();
     }
 
-    public function testGetDatabase()
-    {
-        $this->arangoClient->setDatabase('_system');
-        $result = $this->schemaManager->getCurrentDatabase();
+    $result = $this->schemaManager->deleteDatabase($database);
+    expect($result)->toBeTrue();
+    $existingDatabases = $this->schemaManager->getDatabases();
+    $this->assertNotContains($database, $existingDatabases);
+});
 
-        $this->assertSame('1', $result->id);
-        $this->assertSame('_system', $result->name);
-        $this->assertSame(true, $result->isSystem);
-        $this->assertSame('none', $result->path);
-    }
+test('has database', function () {
+    $check = $this->schemaManager->hasDatabase('someNoneExistingDatabase');
+    expect($check)->toBeFalse();
 
-    public function testGetDatabases()
-    {
-        $result = $this->schemaManager->getDatabases();
-
-        $this->assertLessThanOrEqual(count($result), 2);
-        foreach ($result as $database) {
-            $this->assertIsString($database);
-        }
-    }
-
-    public function testCreateAndDeleteDatabase()
-    {
-        $database = 'arangodb_php_client_database__test';
-        $existingDatabases = $this->schemaManager->getDatabases();
-
-        if (!in_array($database, $existingDatabases)) {
-            $result = $this->schemaManager->createDatabase($database);
-            $this->assertTrue($result);
-        }
-
-        $result = $this->schemaManager->deleteDatabase($database);
-        $this->assertTrue($result);
-        $existingDatabases = $this->schemaManager->getDatabases();
-        $this->assertNotContains($database, $existingDatabases);
-    }
-
-    public function testHasDatabase()
-    {
-        $check = $this->schemaManager->hasDatabase('someNoneExistingDatabase');
-        $this->assertFalse($check);
-
-        $check = $this->schemaManager->hasDatabase($this->testDatabaseName);
-        $this->assertTrue($check);
-    }
-}
+    $check = $this->schemaManager->hasDatabase($this->testDatabaseName);
+    expect($check)->toBeTrue();
+});
