@@ -17,4 +17,11 @@ class MonitorManager extends Manager
 
         return $this->arangoClient->request('get', $uri);
     }
+
+    public function getCurrentConnections(): int
+    {
+        $metrics = $this->getMetrics();
+
+        return $metrics->arangodb_http1_connections_total->value + $metrics->arangodb_http2_connections_total->value;
+    }
 }
