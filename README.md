@@ -93,7 +93,7 @@ $client->transactions()->begin(['write' => ['users', 'teams']]);
 2) [AQL query statements](docs/statements.md)
 3) [Admin manager](docs/admin-manager.md)
 4) [Monitor manager](docs/monitor-manager.md)
-5Schema manager
+5) Schema manager
     1) [Database schema](docs/schema-databases.md)
     2) [User schema](docs/schema-users.md)
     3) [Collection schema](docs/schema-collections.md)
