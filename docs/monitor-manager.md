@@ -11,3 +11,11 @@ Get Prometheus metrics of the server
 ```
 $arangoClient->monitor()->getMetrics();
 ```
+
+
+### getCurrentConnections(): int
+Get the total number of active connections (HTTP/1.1 & HTTP/2 combined)
+
+```
+$arangoClient->monitor()->getCurrentConnections();
+```
