@@ -42,7 +42,7 @@ class ArangoClient
      *
      * @throws UnknownProperties
      */
-    public function __construct(array $config = [], GuzzleClient $httpClient = null)
+    public function __construct(array $config = [], ?GuzzleClient $httpClient = null)
     {
         $config['endpoint'] = $this->generateEndpoint($config);
         $this->config = new HttpClientConfig($config);
@@ -196,7 +196,7 @@ class ArangoClient
     /**
      * @return mixed
      */
-    public function getConfig(string $value = null): mixed
+    public function getConfig(?string $value = null): mixed
     {
         if ($value) {
             return $this->config->$value;

@@ -53,7 +53,7 @@ trait SupportsTransactions
      *
      * @throws ArangoException
      */
-    public function abort(string $id = null): bool
+    public function abort(?string $id = null): bool
     {
         return $this->transactions()->abort($id);
     }
@@ -64,7 +64,7 @@ trait SupportsTransactions
      *
      * @throws ArangoException
      */
-    public function rollBack(string $id = null): bool
+    public function rollBack(?string $id = null): bool
     {
         return $this->transactions()->abort($id);
     }
@@ -75,7 +75,7 @@ trait SupportsTransactions
      *
      * @throws ArangoException
      */
-    public function commit(string $id = null): bool
+    public function commit(?string $id = null): bool
     {
         return $this->transactions()->commit($id);
     }
@@ -89,8 +89,8 @@ trait SupportsTransactions
         string $method,
         string $uri,
         array|HttpRequestOptions $options = [],
-        string $database = null,
-        int $transactionId = null,
+        ?string $database = null,
+        ?int $transactionId = null,
     ): stdClass {
         if (is_array($options)) {
             $options = $this->prepareRequestOptions($options);
