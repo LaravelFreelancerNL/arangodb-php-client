@@ -25,5 +25,6 @@ class Metric
         public int|float|null $value = null,
         public ?array $buckets = [],
         public ?array $labels = [],
+        public null|int $timestamp = null,
     ) {}
 }
