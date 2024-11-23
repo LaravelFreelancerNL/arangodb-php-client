@@ -101,7 +101,7 @@ $client->transactions()->begin(['write' => ['users', 'teams']]);
     5) [Graph schema](docs/schema-graphs.md)
     6) [View schema](docs/schema-views.md)
     7) [Analyzer schema](docs/schema-analyzers.md)
-6[Transaction manager](docs/transaction-manager.md)
+6) [Transaction manager](docs/transaction-manager.md)
 
 ## Related packages
 * [AQL query builder](https://github.com/LaravelFreelancerNL/fluentaql)
