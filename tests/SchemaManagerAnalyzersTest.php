@@ -84,3 +84,23 @@ test('delete with full name', function () {
     $hasAnalyzer = $this->schemaManager->hasAnalyzer($fullName);
     expect($hasAnalyzer)->toBeFalse();
 });
+
+test('deleteAllAnalyzers', function () {
+    $initialAnalyzers = $this->schemaManager->getAnalyzers();
+
+    $this->schemaManager->createAnalyzer([
+        'name' => 'customAnalyzer1',
+        'type' => 'identity',
+    ]);
+    $this->schemaManager->createAnalyzer([
+        'name' => 'customAnalyzer2',
+        'type' => 'identity',
+    ]);
+
+    $this->schemaManager->deleteAllAnalyzers();
+
+    $endAnalyzers = $this->schemaManager->getAnalyzers();
+
+    // We already have an analyzer that is created before all tests. So, three analyzers are actually deleted.
+    expect(count($initialAnalyzers) - 1)->toBe(count($endAnalyzers));
+});

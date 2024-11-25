@@ -54,6 +54,34 @@ trait ManagesAnalyzers
     }
 
     /**
+     * Removes all custom analyzes defined for the current database.
+     *
+     * @see https://docs.arangodb.com/stable/develop/http-api/analyzers/#remove-an-analyzer
+     *
+     * @throws ArangoException
+     */
+    public function deleteAllAnalyzers(): bool
+    {
+        $analyzers = $this->getAnalyzers();
+
+        $database = $this->arangoClient->getDatabase();
+
+        foreach ($analyzers as $analyzer) {
+            if (!str_starts_with($analyzer->name, "$database::")) {
+                continue;
+            }
+
+            $uri = '/_api/analyzer/' . $analyzer->name;
+
+            $this->arangoClient->request('delete', $uri);
+        }
+
+        return true;
+    }
+
+
+
+    /**
      * @see https://docs.arangodb.com/stable/develop/http-api/analyzers/#list-all-analyzers
      *
      * @return array<mixed>
