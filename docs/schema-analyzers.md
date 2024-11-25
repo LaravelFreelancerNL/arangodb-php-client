@@ -37,7 +37,16 @@ $arangoClient->schema()->replaceAnalyzer('myAnalyzer', [
 ```
 
 ###  deleteAnalyzer(string $name): bool
+Delete the analyzer by its name.
+
 ```
 $arangoClient->schema()->deleteAnalyzer('myAnalyzer');
+```
+
+###  deleteAllAnalyzers(): bool
+This method deletes all custom analyzers available on the current database.
+
+```
+$arangoClient->schema()->deleteAllAnalyzers();
 ```
 
