@@ -93,6 +93,20 @@ trait ManagesGraphs
     }
 
     /**
+     * @throws ArangoException
+     */
+    public function deleteAllGraphs(): bool
+    {
+        $graphs = $this->getGraphs();
+
+        foreach ($graphs as $graph) {
+            $this->deleteGraph($graph->name);
+        }
+
+        return true;
+    }
+
+    /**
      * @see https://www.arangodb.com/docs/stable/http/gharial-management.html#list-vertex-collections
      *
      * @return array<mixed>

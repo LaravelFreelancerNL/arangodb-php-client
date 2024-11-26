@@ -331,3 +331,18 @@ test('remove graph edge', function () {
     $this->schemaManager->deleteCollection('characters');
     $this->schemaManager->deleteCollection('vassals');
 });
+
+test('deleteAllGraphs', function () {
+    $result = $this->schemaManager->createGraph('graph1', [], true);
+    $result = $this->schemaManager->createGraph('graph2', [], true);
+
+    $createdGraphs = $this->schemaManager->getGraphs();
+
+    $result = $this->schemaManager->deleteAllGraphs();
+
+    $finalGraphs = $this->schemaManager->getGraphs();
+
+    expect($result)->toBeTrue();
+    expect(count($createdGraphs))->toBe(2);
+    expect(count($finalGraphs))->toBe(0);
+})->only();
