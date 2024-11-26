@@ -214,4 +214,18 @@ trait ManagesCollections
 
         return (bool) $this->arangoClient->request('delete', $uri);
     }
+
+    /**
+     * @throws ArangoException
+     */
+    public function deleteAllCollections(): bool
+    {
+        $collections = $this->getCollections(true);
+
+        foreach ($collections as $collection) {
+            $this->deleteCollection($collection->name);
+        }
+
+        return true;
+    }
 }
