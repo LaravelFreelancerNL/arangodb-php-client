@@ -64,3 +64,10 @@ $arangoClient->schema()->updateView('pages', [
 $arangoClient->schema()->deleteView('testViewBasics');
 ```
 
+###  deleteAllViews(): bool
+This method deletes all views available on the current database.
+
+```
+$arangoClient->schema()->deleteAllViews();
+```
+
