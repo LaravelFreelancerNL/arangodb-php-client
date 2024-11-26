@@ -89,3 +89,25 @@ test('create and delete view', function () {
     $deleted = $this->schemaManager->deleteView($view['name']);
     expect($deleted)->toBeTrue();
 });
+
+test('deleteAllViews', function () {
+    $view1 = [
+        'name' => 'view1',
+    ];
+    $view2 = [
+        'name' => 'view2',
+    ];
+    $this->schemaManager->createView($view1);
+    $this->schemaManager->createView($view2);
+
+
+    $createdViews = $this->schemaManager->getViews();
+
+    $result = $this->schemaManager->deleteAllViews();
+
+    $finalViews = $this->schemaManager->getViews();
+
+    expect($result)->toBeTrue();
+    expect(count($createdViews))->toBe(3);
+    expect(count($finalViews))->toBe(0);
+});

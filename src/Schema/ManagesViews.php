@@ -48,6 +48,20 @@ trait ManagesViews
     }
 
     /**
+     * @throws ArangoException
+     */
+    public function deleteAllViews(): bool
+    {
+        $views = $this->getViews();
+
+        foreach ($views as $view) {
+            $this->deleteView($view->name);
+        }
+
+        return true;
+    }
+
+    /**
      * @see https://www.arangodb.com/docs/stable/http/views-arangosearch.html#list-all-views
      *
      * @return array<mixed>
