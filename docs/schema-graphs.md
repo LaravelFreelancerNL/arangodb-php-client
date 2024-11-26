@@ -44,6 +44,13 @@ $arangoClient->schema()->hasGraph('relations');
 $arangoClient->schema()->deleteGraph('locations');
 ```
 
+###  deleteAllGraphs(): bool
+This method deletes all named graphs available on the current database.
+
+```
+$arangoClient->schema()->deleteAllGraphs();
+```
+
 ###  getGraphVertices(string $name): array
 ```
 $arangoClient->schema()->getGraphVertices('relations');
