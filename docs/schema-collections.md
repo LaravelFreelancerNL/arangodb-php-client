@@ -81,4 +81,10 @@ Delete a collection
 ```
 $arangoClient->schema()->deleteCollection('users');
 ```
+###  deleteAllCollections(): bool
+This method deletes all non-system collections available on the current database.
+
+```
+$arangoClient->schema()->deleteAllCollections();
+```
 

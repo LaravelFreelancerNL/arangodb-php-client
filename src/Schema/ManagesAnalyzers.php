@@ -71,9 +71,7 @@ trait ManagesAnalyzers
                 continue;
             }
 
-            $uri = '/_api/analyzer/' . $analyzer->name;
-
-            $this->arangoClient->request('delete', $uri);
+            $this->deleteAnalyzer($analyzer->name);
         }
 
         return true;

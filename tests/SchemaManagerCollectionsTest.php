@@ -192,3 +192,28 @@ test('create edge collection', function () {
 
     $this->schemaManager->deleteCollection($collection);
 });
+
+test('deleteAllCollections', function () {
+    $collection1 = 'collection1';
+    $collection2 = 'collection2';
+
+    if (!$this->schemaManager->hasCollection($collection1)) {
+        $result = $this->schemaManager->createCollection($collection1, []);
+        expect($result->name)->toEqual($collection1);
+    }
+
+    if (!$this->schemaManager->hasCollection($collection2)) {
+        $result = $this->schemaManager->createCollection($collection2, []);
+        expect($result->name)->toEqual($collection2);
+    }
+
+    $createdCollections = $this->schemaManager->getCollections(true);
+
+    $result = $this->schemaManager->deleteAllCollections();
+
+    $finalCollections = $this->schemaManager->getCollections(true);
+
+    expect($result)->toBeTrue();
+    expect(count($createdCollections))->toBe(2);
+    expect(count($finalCollections))->toBe(0);
+});
