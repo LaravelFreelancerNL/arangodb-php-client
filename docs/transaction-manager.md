@@ -53,7 +53,7 @@ Get the latest transaction id, or validate a given id. This method will throw if
 $arangoClient->transactions()->getTransaction('123');
 ```
 
-### getTransaction()
+### getTransactions()
 Get a list of all running transactions for this TransactionManager object.
 
 ```
