@@ -4,7 +4,7 @@ You can use the schema manager to perform CRUD actions on named graphs.
 ## Graph functions
 The schema manager supports the following graph functions:
 
-###  public function createGraph(string $name, array $config = [], $waitForSync = false): stdClass
+###  createGraph(string $name, array $config = [], $waitForSync = false): stdClass
 ```
 $arangoClient->schema()->createGraph(
     'relations',
