@@ -50,6 +50,42 @@ class ArangoClient
         $this->httpClient = $httpClient ?? new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
     }
 
+    public function __destruct()
+    {
+        $this->disconnect();
+    }
+
+    public function disconnect(): bool
+    {
+        $config = $this->getConfig();
+
+        if ($config['connection'] !== 'Keep-Alive') {
+            return true;
+        }
+
+        $response = $this->rawRequest(
+            'HEAD',
+            '/_api/version',
+            [
+                'headers' => [
+                    'Connection' => 'close',
+                ],
+            ],
+        );
+
+        if ($response === null) {
+            return false;
+        }
+
+        $connection = $response->getHeader('Connection');
+        if (reset($connection) !== 'Close') {
+            return false;
+        }
+
+        return true;
+    }
+
+
     /**
      * @param  array<mixed>  $config
      */
@@ -58,10 +94,12 @@ class ArangoClient
         if (isset($config['endpoint'])) {
             return (string) $config['endpoint'];
         }
+
         $endpoint = 'http://localhost:8529';
         if (isset($config['host'])) {
             $endpoint = (string) $config['host'];
         }
+
         if (isset($config['port'])) {
             $endpoint .= ':' . (string) $config['port'];
         }
@@ -95,6 +133,28 @@ class ArangoClient
 
         return new stdClass();
     }
+
+    /**
+     * @param  array<mixed>|HttpRequestOptions  $options
+     *
+     * @throws ArangoException
+     */
+    public function rawRequest(string $method, string $uri, array|HttpRequestOptions $options = []): ResponseInterface|null
+    {
+        if (is_array($options)) {
+            $options = $this->prepareRequestOptions($options);
+        }
+
+        $response = null;
+        try {
+            $response = $this->httpClient->request($method, $uri, $options->all());
+        } catch (Throwable $e) {
+            $this->handleGuzzleException($e);
+        }
+
+        return $response;
+    }
+
 
     /**
      * @param  array<mixed>  $options

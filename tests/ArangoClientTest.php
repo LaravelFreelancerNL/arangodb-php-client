@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 use ArangoClient\Admin\AdminManager;
 use ArangoClient\ArangoClient;
+use ArangoClient\Http\HttpClientConfig;
 use ArangoClient\Schema\SchemaManager;
 use ArangoClient\Statement\Statement;
 use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+
+use function PHPUnit\Framework\assertTrue;
 
 uses(Tests\TestCase::class);
 
@@ -46,13 +50,13 @@ test('get config with endpoint without host port', function () {
 test('client with host port config', function () {
     $config = [
         'host' => 'http://127.0.0.1',
-        'port' => '1234',
+        'port' => '8529',
         'username' => 'root',
     ];
     $client = new ArangoClient($config);
     $retrievedConfig = $client->getConfig();
 
-    expect($retrievedConfig['endpoint'])->toEqual('http://127.0.0.1:1234');
+    expect($retrievedConfig['endpoint'])->toEqual('http://127.0.0.1:8529');
 });
 
 test('config with alien properties', function () {
@@ -60,7 +64,7 @@ test('config with alien properties', function () {
         'name' => 'arangodb',
         'driver' => 'arangodb',
         'host' => 'http://127.0.0.1',
-        'port' => '1234',
+        'port' => '8529',
         'username' => 'root',
     ];
     $client = new ArangoClient($config);
@@ -73,8 +77,26 @@ test('config with alien properties', function () {
 test('set and get http client', function () {
     $oldClient = $this->arangoClient->getHttpClient();
 
-    $newClient = Mockery::mock(Client::class);
+    $defaultConfig = [
+        'endpoint' => 'http://localhost:8529',
+        'host' => null,
+        'port' => null,
+        'version' => 1.1,
+        'connection' => 'Keep-Alive',
+        'allow_redirects' => false,
+        'connect_timeout' => 0.0,
+        'username' => 'root',
+        'password' => null,
+        'database' => $this->testDatabaseName,
+        'jsonStreamDecoderThreshold' => 1048576,
+    ];
+
+    $config = new HttpClientConfig($defaultConfig);
+
+    $newClient = new GuzzleClient($config->mapGuzzleHttpClientConfig());
+
     $this->arangoClient->setHttpClient($newClient);
+
     $retrievedClient = $this->arangoClient->getHttpClient();
 
     expect($oldClient)->toBeInstanceOf(Client::class);
@@ -103,10 +125,13 @@ test('set and get database name', function () {
 
     $database = $this->arangoClient->getDatabase();
     expect($database)->toBe($newDatabaseName);
+
+    // Reset DB name
+    $this->arangoClient->setDatabase($this->testDatabaseName);
 });
 
 test('database name is used in requests', function () {
-    $database = 'some_database';
+    $database = 'arangodb_php_client__test';
     if (!$this->arangoClient->schema()->hasDatabase($database)) {
         $this->arangoClient->schema()->createDatabase($database);
     }
@@ -233,4 +258,10 @@ test('response data matches request data', function () {
     expect($users[0])->toEqual($insertResult[0]);
 
     $this->schemaManager->deleteCollection($collection);
+});
+
+test('disconnect', function () {
+    $disconnected = $this->arangoClient->disconnect();
+
+    assertTrue($disconnected);
 });

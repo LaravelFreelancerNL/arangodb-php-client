@@ -66,8 +66,28 @@ Send a request to ArangoDB's HTTP REST API. This is mostly for internal use but 
 $arangoClient->request(
     'get',
      '/_api/version', 
-    'query' => [
-        'details' => $details
+     [
+        'query' => [
+            'details' => $details
+        ]
+    ]
+]);
+```
+
+### rawRequest(string $method, string $uri, array|HttpRequestOptions $options = []): ResponseInterface|null
+Returns the raw response of the request. 
+*Note* that the request itself is made against the configured endpoint but the databasename is _not_ automatically 
+prepended to the uri as opposed to a regular request.
+
+
+```
+$arangoClient->rawRequest(
+    'get',
+     '/_api/version', 
+     [
+        'query' => [
+            'details' => $details
+        ]
     ]
 ]);
 ```
@@ -106,4 +126,12 @@ $arangoClient->schema()->createCollection('users');
 Pass chained method to the admin manager.
 ```
 $arangoClient->admin()->getVersion();
+```
+
+### disconnect(): bool
+Disconnect from the current keep-alive connection, if any.
+*Note* that a disconnect request is sent to the database upon destruction of the arangoClient object as well.
+
+```
+$arangoClient->disconnect();
 ```
