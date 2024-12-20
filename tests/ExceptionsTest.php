@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use ArangoClient\Exceptions\ArangoException;
+
 uses(Tests\TestCase::class);
 
 test('test409 conflict exception', function () {
@@ -18,6 +20,7 @@ test('test409 conflict exception', function () {
 
 test('calls to none existing db throw', function () {
     $this->arangoClient->setDatabase('NoneExistingDb');
-    $this->expectExceptionCode(404);
     $this->schemaManager->hasCollection('dummy');
-});
+
+    $this->arangoClient->setDatabase($this->testDatabaseName);
+})->throws(ArangoException::class);
