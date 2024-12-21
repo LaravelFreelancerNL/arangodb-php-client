@@ -44,11 +44,39 @@ class ArangoClient
      */
     public function __construct(array $config = [], ?GuzzleClient $httpClient = null)
     {
+        $this->connect($config, $httpClient);
+    }
+
+    /**
+     * ArangoClient constructor.
+     *
+     * @param  array<string|numeric|null>  $config
+     * @param  GuzzleClient|null  $httpClient
+     *
+     * @throws UnknownProperties
+     */
+    public function connect(array $config = [], ?GuzzleClient $httpClient = null): bool
+    {
         $config['endpoint'] = $this->generateEndpoint($config);
         $this->config = new HttpClientConfig($config);
 
         $this->httpClient = $httpClient ?? new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
+
+        return true;
     }
+
+    /**
+     * We disconnect by creating a new guzzle client. The old client will remove the current connection upon destruction.
+     *
+     * @return bool
+     */
+    public function disconnect(): bool
+    {
+        $this->httpClient = new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
+
+        return true;
+    }
+
 
     /**
      * @param  array<mixed>  $config
@@ -58,10 +86,12 @@ class ArangoClient
         if (isset($config['endpoint'])) {
             return (string) $config['endpoint'];
         }
+
         $endpoint = 'http://localhost:8529';
         if (isset($config['host'])) {
             $endpoint = (string) $config['host'];
         }
+
         if (isset($config['port'])) {
             $endpoint .= ':' . (string) $config['port'];
         }
@@ -95,6 +125,28 @@ class ArangoClient
 
         return new stdClass();
     }
+
+    /**
+     * @param  array<mixed>|HttpRequestOptions  $options
+     *
+     * @throws ArangoException
+     */
+    public function rawRequest(string $method, string $uri, array|HttpRequestOptions $options = []): ResponseInterface|null
+    {
+        if (is_array($options)) {
+            $options = $this->prepareRequestOptions($options);
+        }
+
+        $response = null;
+        try {
+            $response = $this->httpClient->request($method, $uri, $options->all());
+        } catch (Throwable $e) {
+            $this->handleGuzzleException($e);
+        }
+
+        return $response;
+    }
+
 
     /**
      * @param  array<mixed>  $options

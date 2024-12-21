@@ -345,4 +345,4 @@ test('deleteAllGraphs', function () {
     expect($result)->toBeTrue();
     expect(count($createdGraphs))->toBe(2);
     expect(count($finalGraphs))->toBe(0);
-})->only();
+});
