@@ -130,7 +130,6 @@ $arangoClient->admin()->getVersion();
 
 ### disconnect(): bool
 Disconnect from the current keep-alive connection, if any.
-*Note* that a disconnect request is sent to the database upon destruction of the arangoClient object as well.
 
 ```
 $arangoClient->disconnect();
