@@ -44,43 +44,33 @@ class ArangoClient
      */
     public function __construct(array $config = [], ?GuzzleClient $httpClient = null)
     {
+        $this->connect($config, $httpClient);
+    }
+
+    /**
+     * ArangoClient constructor.
+     *
+     * @param  array<string|numeric|null>  $config
+     * @param  GuzzleClient|null  $httpClient
+     *
+     * @throws UnknownProperties
+     */
+    public function connect(array $config = [], ?GuzzleClient $httpClient = null): void
+    {
         $config['endpoint'] = $this->generateEndpoint($config);
         $this->config = new HttpClientConfig($config);
 
         $this->httpClient = $httpClient ?? new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
     }
 
-    public function __destruct()
-    {
-        $this->disconnect();
-    }
-
+    /**
+     * We disconnect by creating a new guzzle client. The old client will remove the current connection upon destruction.
+     *
+     * @return bool
+     */
     public function disconnect(): bool
     {
-        $config = $this->getConfig();
-
-        if ($config['connection'] !== 'Keep-Alive') {
-            return true;
-        }
-
-        $response = $this->rawRequest(
-            'HEAD',
-            '/_api/version',
-            [
-                'headers' => [
-                    'Connection' => 'close',
-                ],
-            ],
-        );
-
-        if ($response === null) {
-            return false;
-        }
-
-        $connection = $response->getHeader('Connection');
-        if (reset($connection) !== 'Close') {
-            return false;
-        }
+        $this->httpClient = new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
 
         return true;
     }
