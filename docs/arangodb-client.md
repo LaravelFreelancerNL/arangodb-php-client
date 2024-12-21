@@ -128,6 +128,22 @@ Pass chained method to the admin manager.
 $arangoClient->admin()->getVersion();
 ```
 
+### connect(array $config = [], ?GuzzleClient $httpClient = null): void
+You can update the config by calling the connect method. This replaces the underlying connection
+and prepares the connection for any requests that follow.
+
+```
+$config = [
+    'host' => 'http://localhost',
+    'port' => '8529',
+    'username' => 'your-other-database-username',
+    'password' => 'your-other-database-password',
+    'database'=> 'your-other-database'
+];
+
+$arangoClient->connect($config): void
+```
+
 ### disconnect(): bool
 Disconnect from the current keep-alive connection, if any.
 
