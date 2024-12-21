@@ -111,6 +111,14 @@ test('request', function () {
     expect($result->version)->toBeString();
 });
 
+
+test('rawRequest', function () {
+    $response = $this->arangoClient->rawRequest('get', '/_api/version', []);
+
+    expect($response->getStatusCode())->toBe(200);
+    expect($response->getHeader('Connection')[0])->toBe('Keep-Alive');
+});
+
 test('get user', function () {
     $user = $this->arangoClient->getUser();
     expect($user)->toBe('root');
