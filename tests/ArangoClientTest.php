@@ -283,12 +283,13 @@ test('connect', function () {
         'jsonStreamDecoderThreshold' => 1048576,
     ];
 
-    $this->arangoClient->connect($newConfig);
+    $response = $this->arangoClient->connect($newConfig);
 
     $newHttpClient = $this->arangoClient->getHttpClient();
     $newHttpClientObjectId = spl_object_id($newHttpClient);
 
     expect($oldHttpClientObjectId)->not()->toBe($newHttpClientObjectId);
+    expect($response)->toBeTrue();
 
     $this->arangoClient->setHttpClient($oldHttpClient);
 });

@@ -55,12 +55,14 @@ class ArangoClient
      *
      * @throws UnknownProperties
      */
-    public function connect(array $config = [], ?GuzzleClient $httpClient = null): void
+    public function connect(array $config = [], ?GuzzleClient $httpClient = null): bool
     {
         $config['endpoint'] = $this->generateEndpoint($config);
         $this->config = new HttpClientConfig($config);
 
         $this->httpClient = $httpClient ?? new GuzzleClient($this->config->mapGuzzleHttpClientConfig());
+
+        return true;
     }
 
     /**
