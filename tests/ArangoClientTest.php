@@ -268,6 +268,33 @@ test('response data matches request data', function () {
     $this->schemaManager->deleteCollection($collection);
 });
 
+
+test('connect', function () {
+    $oldHttpClient = $this->arangoClient->getHttpClient();
+    $oldHttpClientObjectId = spl_object_id($oldHttpClient);
+
+    $newConfig = [
+        'endpoint' => 'http://localhost:8529',
+        'version' => 2,
+        'connection' => 'Close',
+        'username' => 'root',
+        'password' => null,
+        'database' => $this->testDatabaseName,
+        'jsonStreamDecoderThreshold' => 1048576,
+    ];
+
+    $this->arangoClient->connect($newConfig);
+
+    $newHttpClient = $this->arangoClient->getHttpClient();
+    $newHttpClientObjectId = spl_object_id($newHttpClient);
+
+    expect($oldHttpClientObjectId)->not()->toBe($newHttpClientObjectId);
+
+    $this->arangoClient->setHttpClient($oldHttpClient);
+});
+
+
+
 test('disconnect', function () {
     $disconnected = $this->arangoClient->disconnect();
 
