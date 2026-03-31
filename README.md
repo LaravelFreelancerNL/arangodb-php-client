@@ -9,6 +9,33 @@ Low level PHP client for ArangoDB. Supports PHP ^8.0.
 <a href="https://packagist.org/packages/laravel-freelancer-nl/arangodb-php-client"><img src="https://poser.pugx.org/laravel-freelancer-nl/arangodb-php-client/downloads" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/laravel-freelancer-nl/arangodb-php-client"><img src="https://poser.pugx.org/laravel-freelancer-nl/arangodb-php-client/license" alt="License"></a>
 
+
+---------
+# I’m archiving my ArangoDB PHP/Laravel packages
+
+Due to the license changes ArangoDB introduced last year, it no longer makes sense for me to continue using the product or to invest further time in developing, maintaining, and improving these packages.
+
+While building and running side projects is in many ways easier and more affordable than ever, the new license creates a significant barrier for my own projects.
+
+I’ve genuinely enjoyed working with ArangoDB, and I still believe it is an excellent product. However, under the current licensing model, I can no longer justify the time required to support these packages. Time is my most limited resource, and I need to allocate it where it makes sense professionally.
+
+As a result, I am archiving the following packages:
+
+- The Laravel driver: https://github.com/LaravelFreelancerNL/laravel-arangodb
+- The PHP client: https://github.com/LaravelFreelancerNL/arangodb-php-client
+- The AQL query builder: https://github.com/LaravelFreelancerNL/fluentaql
+
+If there is interest in continuing their development, you are welcome to fork them and maintain your own versions. Alternatively, if you would like to sponsor or hire me to continue maintaining them, please feel free to get in touch.
+
+Thank you to everyone who has used, supported, or contributed to these packages.
+
+So long, and thanks for all the fish.
+
+Bas  
+Laravel Freelancer NL
+---------
+
+
 This client is a conduit to ArangoDB and back, so it doesn't make any presumptions on the returned data itself. 
 JSON objects are decoded to POPO's. You can cast those to what you need in your ODM or project. 
 
